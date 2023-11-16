@@ -1,0 +1,1 @@
+from .model_vit import SentenceModel as build_model
