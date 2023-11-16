@@ -1,11 +1,12 @@
 import torch
 from .layers import *
+from functools import partial
 
 class SentenceModel(nn.Module):
-    def __init__(self, patch_size=16, num_classes=1000, embed_dim=768, depth=12,
-                 num_heads=12, mlp_ratio=4., qkv_bias=False, qk_scale=None, drop_rate=0., attn_drop_rate=0.,
-                 drop_path_rate=0., num_patches=5, norm_layer=nn.LayerNorm):
-        
+    def __init__(self, patch_size=16, num_classes=1000,embed_dim=1024, depth=24,
+                 num_heads=16, mlp_ratio=4., qkv_bias=True, qk_scale=None, drop_rate=0., attn_drop_rate=0.,
+                 drop_path_rate=0., num_patches=5, norm_layer=partial(nn.LayerNorm, eps=1e-6)):
+        super().__init__()
         self.patch_embed = CustomPatchEmbed(patch_size=patch_size,embed_dim=embed_dim)
         self.cls_token = nn.Parameter(torch.zeros(1, 1, embed_dim))
         self.pos_embed = nn.Parameter(torch.zeros(1, num_patches + 1, embed_dim))
@@ -16,16 +17,14 @@ class SentenceModel(nn.Module):
                 dim=embed_dim, num_heads=num_heads, mlp_ratio=mlp_ratio, qkv_bias=qkv_bias, qk_scale=qk_scale,
                 drop=drop_rate, attn_drop=attn_drop_rate, drop_path=dpr[i], norm_layer=norm_layer)
             for i in range(depth)])
-        self.head=nn.Linear(embed_dim,num_classes)
-        
+        self.head=nn.Linear(embed_dim+num_patches,num_classes)
+        self.norm = norm_layer(embed_dim)
     def load_pretrained(self, pretrained_path):
         # Load the state dict from the pretrained model
         checkpoint = torch.load(pretrained_path, map_location='cpu')
         state_dict = checkpoint['model']
     
         # Custom loading for patch_embed
-        patch_embed_state_dict = {k.replace('patch_embed.', ''): v for k, v in state_dict.items() if 'patch_embed' in k}
-        self.patch_embed.load_state_dict(patch_embed_state_dict)
     
         # Initialize cls_token and pos_embed with trunc_normal
         nn.init.trunc_normal_(self.cls_token, std=.02)
@@ -43,6 +42,8 @@ class SentenceModel(nn.Module):
                 else:
                     model_state_dict[name].copy_(param)
             else:
+                if name.startswith("decoder"):
+                    continue
                 print(f"Skipping loading parameter: {name}")
     
         # Initialize the head with trunc_normal
@@ -63,7 +64,9 @@ class SentenceModel(nn.Module):
         x = self.norm(x)
         return x[:, 0]
 
-    def forward(self, x):
+    def forward(self, x_val):
+        x,val=x_val
         x = self.forward_features(x)
+        x=torch.cat([x,val],dim=1)
         x = self.head(x)
         return x

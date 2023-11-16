@@ -1,26 +1,22 @@
 from PIL import Image, ImageOps
-
-def crop_patches(image_path, ori_w, ori_h, point_list, resize_height=224, word_number=5, patch_size=16, save_path=None):
+import os
+def crop_patches(image_path, point_list, word_number=5, patch_size=16, save_path=None):
+    '''
+    const resize_height=600
+    const resize_weight=800
+    keep the size as conv ridge segmentation model
+    '''
     # Load image
     img = Image.open(image_path)
-    orig_width, orig_height = img.size
-
-    # Calculate resize width while keeping aspect ratio
-    aspect_ratio = orig_width / orig_height
-    resize_width = int(resize_height * aspect_ratio)
 
     # Resize image
-    img = img.resize((resize_width, resize_height))
+    img = img.resize((800,600))
 
     # Scale factor for coordinates
-    scale_x = resize_width / ori_w
-    scale_y = resize_height / ori_h
-
+    cnt=0
     # Prepare patches
-    patches = []
-    for point in point_list[:word_number]:  # Use only first 'word_number' points
+    for y, x in point_list[:word_number]:  # Use only first 'word_number' points
         # Scale points according to resized image
-        y, x = int(point[0] * scale_x), int(point[1] * scale_y)
         
         left = x - patch_size // 2
         upper = y - patch_size // 2
@@ -28,26 +24,11 @@ def crop_patches(image_path, ori_w, ori_h, point_list, resize_height=224, word_n
         lower = y + patch_size // 2
 
         # Pad if necessary
-        padding = [max(0, -left), max(0, -upper), max(0, right - resize_width), max(0, lower - resize_height)]
-        patch = img.crop((max(0, left), max(0, upper), min(resize_width, right), min(resize_height, lower)))
-        patch = ImageOps.expand(patch, tuple(padding), fill=5)  # Fill value 5 for padding
+        padding = [max(0, -left), max(0, -upper), max(0, right - 800), max(0, lower - 600)]
+        patch = img.crop((max(0, left), max(0, upper), min(800, right), min(600, lower)))
+        patch = ImageOps.expand(patch, tuple(padding), fill=255)  # Fill value 5 for padding
 
-        patches.append(patch)
-
-    # Add zero images if fewer points than word_number
-    while len(patches) < word_number:
-        patches.append(Image.new('RGB', (patch_size, patch_size), (0, 0, 0)))
-
-    # Concatenate patches
-    concatenated_image = Image.new('RGB', (patch_size * word_number, patch_size))
-    for i, patch in enumerate(patches):
-        concatenated_image.paste(patch, (i * patch_size, 0))
-
-    # Save or return the concatenated image
-    if save_path:
-        concatenated_image.save(save_path)
-    
-    return concatenated_image
-
+        patch.save(os.path.join(save_path,f"{str(cnt)}.jpg"))
+        cnt+=1
 # Example usage
 # crop_patches("path_to_image.jpg", original_width, original_height, [(50, 50), (100, 100)], save_path="output.jpg")

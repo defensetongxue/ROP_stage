@@ -1,5 +1,7 @@
 import torch
 import torch.nn as nn
+import os
+from torchvision.models.resnet import resnet18
 def drop_path(x, drop_prob: float = 0., training: bool = False):
     """Drop paths (Stochastic Depth) per sample (when applied in main path of residual blocks).
 
@@ -30,28 +32,30 @@ class DropPath(nn.Module):
         return drop_path(x, self.drop_prob, self.training)
 
 class CustomPatchEmbed(nn.Module):
-    """ Custom Patch Embedding for pre-extracted patches """
-    def __init__(self, img_size=224, patch_size=16, in_chans=3, embed_dim=768):
+    """ Custom Patch Embedding using ResNet blocks for larger patches """
+    def __init__(self, patch_size=112, in_chans=3, embed_dim=768, word_size=5):
         super().__init__()
-        self.img_size = img_size
         self.patch_size = patch_size
+        self.word_size = word_size
         self.embed_dim = embed_dim
 
-        # Define the convolutional layer
-        self.proj = nn.Conv2d(in_chans, embed_dim, kernel_size=patch_size, stride=patch_size)
+        # Use a pre-trained ResNet model and modify the last layer to match embed_dim
+        os.environ['TORCH_HOME'] ='./experiments'
+        self.resnet = resnet18(pretrained=True)
+        self.resnet.fc = nn.Linear(512, embed_dim)
+        nn.init.trunc_normal_(self.resnet.fc.weight, std=.02)
+        
 
     def forward(self, x):
-        # x shape is expected to be [batch_size, 3, patch_height, word_size * patch_width]
-        B, C, H, W = x.shape
-        assert H == self.img_size and W % self.patch_size == 0, \
-            f"Input image size ({H}*{W}) doesn't match model."
-
-        # Apply convolutional projection and reshape
-        x = self.proj(x)  # [B, embed_dim, H', W']
-        x = x.flatten(2).transpose(1, 2)  # [B, num_patches, embed_dim]
-
-        return x
-    
+        # x shape is expected to be [batch_size, 3, patch_size, word_size * patch_size]
+        B,word, C, H, W = x.shape
+        # Split the image by width into individual patches
+        # Process each patch separately
+        if word>self.word_size:
+            x=x[:,:self.word_size,:,:,:]
+        x=x.reshape(-1,C,H,W)
+        x=self.resnet(x)
+        return x.reshape(B,self.word_size,self.embed_dim)
 class Mlp(nn.Module):
     def __init__(self, in_features, hidden_features=None, out_features=None, act_layer=nn.GELU, drop=0.):
         super().__init__()

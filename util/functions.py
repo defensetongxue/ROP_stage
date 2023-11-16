@@ -72,8 +72,8 @@ def val_epoch(model, val_loader, loss_function, device):
         auc = roc_auc_score(all_targets, probs[:, 1])  # Assuming the second column is the probability of class 1
     else:  # Multi-class classification
         auc = roc_auc_score(all_targets, probs, multi_class='ovr')
-
-    return running_loss / len(val_loader), accuracy, auc
+    recall=calculate_recall(all_targets,all_predictions)
+    return running_loss / len(val_loader), accuracy, auc,recall
 
 def get_instance(module, class_name, *args, **kwargs):
     cls = getattr(module, class_name)
@@ -127,3 +127,27 @@ class lr_sche():
             else:
                 param_group["lr"] = lr
         return lr
+    
+def calculate_recall(labels, preds):
+    """
+    Calculate recall for class 1 in a binary classification task.
+    
+    Args:
+    labels (np.array): Array of true labels.
+    preds (np.array): Array of predicted labels.
+    
+    Returns:
+    float: Recall for class 1.
+    """
+    # Ensure labels and predictions are numpy arrays
+    labels = np.array(labels)
+    preds = np.array(preds)
+    labels[labels>0]=1
+    preds[preds>0]=1
+    # Calculate True Positives and False Negatives
+    true_positives = np.sum((labels == 1) & (preds == 1))
+    false_negatives = np.sum((labels == 1) & (preds == 0))
+
+    # Calculate recall
+    recall = true_positives / (true_positives + false_negatives) if (true_positives + false_negatives) > 0 else 0
+    return recall

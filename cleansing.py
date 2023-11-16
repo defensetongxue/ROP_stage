@@ -9,15 +9,13 @@ if __name__ == '__main__':
     for image_name in data_dict:
         data=data_dict[image_name]
         if 'ridge_seg'in data:
-            save_path=os.path.join(args.data_path,'stage_sentence',image_name)
+            save_path=os.path.join(args.data_path,'stage_sentence',image_name[:-4])
+            os.makedirs(save_path,exist_ok=True)
             crop_patches(
                 image_path=data['image_path'],
-                ori_h=data['ridge_seg']["orignal_height"],
-                ori_w=data['ridge_seg']["orignal_weight"],
                 point_list=data['ridge_seg']['point_list'],
-                resize_height=224,
                 word_number=5,
-                patch_size=16,
+                patch_size=112,
                 save_path=save_path
             )
             data_dict[image_name]['stage_sentence_path']=save_path
