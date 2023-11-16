@@ -12,6 +12,8 @@ if __name__ == '__main__':
             save_path=os.path.join(args.data_path,'stage_sentence',image_name)
             crop_patches(
                 image_path=data['image_path'],
+                ori_h=data['ridge_seg']["orignal_height"],
+                ori_w=data['ridge_seg']["orignal_weight"],
                 point_list=data['ridge_seg']['point_list'],
                 resize_height=224,
                 word_number=5,
@@ -19,5 +21,5 @@ if __name__ == '__main__':
                 save_path=save_path
             )
             data_dict[image_name]['stage_sentence_path']=save_path
-    with open(os.path.join(args.data_path,'annotations.json'),'r') as f:
+    with open(os.path.join(args.data_path,'annotations.json'),'w') as f:
         json.dump(data_dict,f)

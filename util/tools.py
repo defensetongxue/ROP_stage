@@ -1,6 +1,6 @@
-from PIL import Image,ImageOps
+from PIL import Image, ImageOps
 
-def crop_patches(image_path, point_list, resize_height=224, word_number=5, patch_size=16, save_path=None):
+def crop_patches(image_path, ori_w, ori_h, point_list, resize_height=224, word_number=5, patch_size=16, save_path=None):
     # Load image
     img = Image.open(image_path)
     orig_width, orig_height = img.size
@@ -12,10 +12,16 @@ def crop_patches(image_path, point_list, resize_height=224, word_number=5, patch
     # Resize image
     img = img.resize((resize_width, resize_height))
 
+    # Scale factor for coordinates
+    scale_x = resize_width / ori_w
+    scale_y = resize_height / ori_h
+
     # Prepare patches
     patches = []
     for point in point_list[:word_number]:  # Use only first 'word_number' points
-        x, y = point
+        # Scale points according to resized image
+        y, x = int(point[0] * scale_x), int(point[1] * scale_y)
+        
         left = x - patch_size // 2
         upper = y - patch_size // 2
         right = x + patch_size // 2
@@ -42,3 +48,6 @@ def crop_patches(image_path, point_list, resize_height=224, word_number=5, patch
         concatenated_image.save(save_path)
     
     return concatenated_image
+
+# Example usage
+# crop_patches("path_to_image.jpg", original_width, original_height, [(50, 50), (100, 100)], save_path="output.jpg")
