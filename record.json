@@ -1,0 +1,51 @@
+{
+    "msg": "concat the val list before the head",
+    "4": {
+        "Last_epoch": {
+            "Auc": 0.9674,
+            "Acc": 0.9399,
+            "Recall": 1.0
+        },
+        "Best_epoch": {
+            "Auc": 0.9767,
+            "Acc": 0.9449,
+            "Recall": 1.0
+        }
+    },
+    "1": {
+        "Last_epoch": {
+            "Auc": 0.9788,
+            "Acc": 0.9581,
+            "Recall": 1.0
+        },
+        "Best_epoch": {
+            "Auc": 0.9788,
+            "Acc": 0.9581,
+            "Recall": 1.0
+        }
+    },
+    "2": {
+        "Last_epoch": {
+            "Auc": 0.9742,
+            "Acc": 0.9475,
+            "Recall": 1.0
+        },
+        "Best_epoch": {
+            "Auc": 0.9787,
+            "Acc": 0.9452,
+            "Recall": 1.0
+        }
+    },
+    "3": {
+        "Last_epoch": {
+            "Auc": 0.9261,
+            "Acc": 0.9518,
+            "Recall": 1.0
+        },
+        "Best_epoch": {
+            "Auc": 0.9153,
+            "Acc": 0.9535,
+            "Recall": 1.0
+        }
+    }
+}

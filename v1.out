@@ -1,0 +1,574 @@
+using config file ./config_file/hrnet_small.json
+the mid-result and the pytorch model will be stored in experiments
+=> loading pretrained model ./pretrained/hrnet.pth
+There is  patch size
+Train: 84, Val: 91
+using cuda for training
+Epoch 1/50, Train Loss: 0.586879, Val acc: 0.261894, auc: 0.483147 Recall 0.838235 Lr: 0.000099, Time: 0.02 hours
+Model saved as ./checkpoints/1_hrnet.pth
+Model saved as ./checkpoints/1_recall_hrnet.pth
+Epoch 2/50, Train Loss: 0.307356, Val acc: 0.819861, auc: 0.592627 Recall 0.227941 Lr: 0.000199, Time: 0.02 hours
+Model saved as ./checkpoints/1_hrnet.pth
+Epoch 3/50, Train Loss: 0.117205, Val acc: 0.819861, auc: 0.533350 Recall 0.073529 Lr: 0.000299, Time: 0.02 hours
+Epoch 4/50, Train Loss: 0.051645, Val acc: 0.866975, auc: 0.683754 Recall 0.389706 Lr: 0.000399, Time: 0.02 hours
+Model saved as ./checkpoints/1_hrnet.pth
+Epoch 5/50, Train Loss: 0.031054, Val acc: 0.835566, auc: 0.607948 Recall 0.242647 Lr: 0.000499, Time: 0.02 hours
+Epoch 6/50, Train Loss: 0.022722, Val acc: 0.889607, auc: 0.820958 Recall 0.710784 Lr: 0.000599, Time: 0.02 hours
+Model saved as ./checkpoints/1_hrnet.pth
+Epoch 7/50, Train Loss: 0.018896, Val acc: 0.860046, auc: 0.719945 Recall 0.495098 Lr: 0.000699, Time: 0.02 hours
+Epoch 8/50, Train Loss: 0.016758, Val acc: 0.878060, auc: 0.854303 Recall 0.816176 Lr: 0.000799, Time: 0.02 hours
+Model saved as ./checkpoints/1_hrnet.pth
+Epoch 9/50, Train Loss: 0.015258, Val acc: 0.906236, auc: 0.790744 Recall 0.605392 Lr: 0.000899, Time: 0.02 hours
+Epoch 10/50, Train Loss: 0.014635, Val acc: 0.899769, auc: 0.767001 Recall 0.553922 Lr: 0.000999, Time: 0.02 hours
+Epoch 11/50, Train Loss: 0.013851, Val acc: 0.868822, auc: 0.816621 Recall 0.732843 Lr: 0.000998, Time: 0.02 hours
+Epoch 12/50, Train Loss: 0.013325, Val acc: 0.837413, auc: 0.841493 Recall 0.848039 Lr: 0.000994, Time: 0.02 hours
+Model saved as ./checkpoints/1_recall_hrnet.pth
+Epoch 13/50, Train Loss: 0.012893, Val acc: 0.889145, auc: 0.888420 Recall 0.887255 Lr: 0.000986, Time: 0.02 hours
+Model saved as ./checkpoints/1_hrnet.pth
+Model saved as ./checkpoints/1_recall_hrnet.pth
+Epoch 14/50, Train Loss: 0.012792, Val acc: 0.896998, auc: 0.901726 Recall 0.909314 Lr: 0.000976, Time: 0.02 hours
+Model saved as ./checkpoints/1_hrnet.pth
+Model saved as ./checkpoints/1_recall_hrnet.pth
+Epoch 15/50, Train Loss: 0.012462, Val acc: 0.867436, auc: 0.881631 Recall 0.904412 Lr: 0.000962, Time: 0.02 hours
+Epoch 16/50, Train Loss: 0.012256, Val acc: 0.885912, auc: 0.880782 Recall 0.872549 Lr: 0.000946, Time: 0.02 hours
+Epoch 17/50, Train Loss: 0.011969, Val acc: 0.857275, auc: 0.875370 Recall 0.904412 Lr: 0.000927, Time: 0.02 hours
+Epoch 18/50, Train Loss: 0.011609, Val acc: 0.848499, auc: 0.867141 Recall 0.897059 Lr: 0.000905, Time: 0.02 hours
+Epoch 19/50, Train Loss: 0.011492, Val acc: 0.690531, auc: 0.808393 Recall 0.997549 Lr: 0.000881, Time: 0.02 hours
+Model saved as ./checkpoints/1_recall_hrnet.pth
+Epoch 20/50, Train Loss: 0.011436, Val acc: 0.657737, auc: 0.788188 Recall 0.997549 Lr: 0.000854, Time: 0.02 hours
+Epoch 21/50, Train Loss: 0.011664, Val acc: 0.827252, auc: 0.879455 Recall 0.963235 Lr: 0.000825, Time: 0.02 hours
+Epoch 22/50, Train Loss: 0.010950, Val acc: 0.820785, auc: 0.875471 Recall 0.963235 Lr: 0.000794, Time: 0.02 hours
+Epoch 23/50, Train Loss: 0.010539, Val acc: 0.860970, auc: 0.887056 Recall 0.928922 Lr: 0.000762, Time: 0.02 hours
+Epoch 24/50, Train Loss: 0.010564, Val acc: 0.763048, auc: 0.854013 Recall 1.000000 Lr: 0.000728, Time: 0.02 hours
+Model saved as ./checkpoints/1_recall_hrnet.pth
+Epoch 25/50, Train Loss: 0.010448, Val acc: 0.890069, auc: 0.900280 Recall 0.916667 Lr: 0.000692, Time: 0.02 hours
+Epoch 26/50, Train Loss: 0.010245, Val acc: 0.837413, auc: 0.897947 Recall 0.995098 Lr: 0.000655, Time: 0.02 hours
+Epoch 27/50, Train Loss: 0.009906, Val acc: 0.881293, auc: 0.909928 Recall 0.955882 Lr: 0.000618, Time: 0.02 hours
+Model saved as ./checkpoints/1_hrnet.pth
+Epoch 28/50, Train Loss: 0.009834, Val acc: 0.768129, auc: 0.851497 Recall 0.985294 Lr: 0.000579, Time: 0.02 hours
+Epoch 29/50, Train Loss: 0.009748, Val acc: 0.872517, auc: 0.911107 Recall 0.973039 Lr: 0.000540, Time: 0.02 hours
+Model saved as ./checkpoints/1_hrnet.pth
+Epoch 30/50, Train Loss: 0.009492, Val acc: 0.850808, auc: 0.903377 Recall 0.987745 Lr: 0.000501, Time: 0.02 hours
+Epoch 31/50, Train Loss: 0.009256, Val acc: 0.882679, auc: 0.915486 Recall 0.968137 Lr: 0.000462, Time: 0.02 hours
+Model saved as ./checkpoints/1_hrnet.pth
+Epoch 32/50, Train Loss: 0.009056, Val acc: 0.853580, auc: 0.892853 Recall 0.955882 Lr: 0.000423, Time: 0.02 hours
+Epoch 33/50, Train Loss: 0.008879, Val acc: 0.879446, auc: 0.916317 Recall 0.975490 Lr: 0.000384, Time: 0.02 hours
+Model saved as ./checkpoints/1_hrnet.pth
+Epoch 34/50, Train Loss: 0.008721, Val acc: 0.883603, auc: 0.913232 Recall 0.960784 Lr: 0.000347, Time: 0.02 hours
+Epoch 35/50, Train Loss: 0.008464, Val acc: 0.783834, auc: 0.863996 Recall 0.992647 Lr: 0.000310, Time: 0.02 hours
+Epoch 36/50, Train Loss: 0.008394, Val acc: 0.762587, auc: 0.852787 Recall 0.997549 Lr: 0.000274, Time: 0.02 hours
+Epoch 37/50, Train Loss: 0.008256, Val acc: 0.827252, auc: 0.890746 Recall 0.992647 Lr: 0.000240, Time: 0.02 hours
+Epoch 38/50, Train Loss: 0.008062, Val acc: 0.854503, auc: 0.904713 Recall 0.985294 Lr: 0.000207, Time: 0.02 hours
+Epoch 39/50, Train Loss: 0.007875, Val acc: 0.830947, auc: 0.890200 Recall 0.985294 Lr: 0.000176, Time: 0.02 hours
+Epoch 40/50, Train Loss: 0.007800, Val acc: 0.828637, auc: 0.890659 Recall 0.990196 Lr: 0.000148, Time: 0.02 hours
+Epoch 41/50, Train Loss: 0.007595, Val acc: 0.793072, auc: 0.870628 Recall 0.995098 Lr: 0.000121, Time: 0.02 hours
+Epoch 42/50, Train Loss: 0.007371, Val acc: 0.831871, auc: 0.891710 Recall 0.987745 Lr: 0.000097, Time: 0.02 hours
+Epoch 43/50, Train Loss: 0.007305, Val acc: 0.812471, auc: 0.879758 Recall 0.987745 Lr: 0.000075, Time: 0.02 hours
+Epoch 44/50, Train Loss: 0.007301, Val acc: 0.804157, auc: 0.876517 Recall 0.992647 Lr: 0.000056, Time: 0.02 hours
+Epoch 45/50, Train Loss: 0.007223, Val acc: 0.830023, auc: 0.889631 Recall 0.985294 Lr: 0.000039, Time: 0.02 hours
+Epoch 46/50, Train Loss: 0.007100, Val acc: 0.823095, auc: 0.887244 Recall 0.990196 Lr: 0.000026, Time: 0.02 hours
+Epoch 47/50, Train Loss: 0.007083, Val acc: 0.818938, auc: 0.884683 Recall 0.990196 Lr: 0.000015, Time: 0.02 hours
+Epoch 48/50, Train Loss: 0.007065, Val acc: 0.815704, auc: 0.882691 Recall 0.990196 Lr: 0.000007, Time: 0.02 hours
+Epoch 49/50, Train Loss: 0.007087, Val acc: 0.812933, auc: 0.880983 Recall 0.990196 Lr: 0.000003, Time: 0.02 hours
+Epoch 50/50, Train Loss: 0.007032, Val acc: 0.813857, auc: 0.881552 Recall 0.990196 Lr: 0.000001, Time: 0.02 hours
+Model saved as ./checkpoints/1_hrnet.pth
+the mid-result and the pytorch model will be stored in experiments
+=> loading pretrained model ./pretrained/hrnet.pth
+load the checkpoint in ./checkpoints/1_hrnet.pth
+Saveing the model in ./checkpoints
+Skipping loading parameter: mask_token
+Skipping loading parameter: patch_embed.proj.weight
+Skipping loading parameter: patch_embed.proj.bias
+using cuda for training
+There is 64 batch size
+Train: 60, Val: 34
+Epoch 1/50,Train Loss: 0.757626, Val Loss: 0.706830, Acc: 0.812009, Auc: 0.854027, Recall: 0.362745 Lr: 0.000049
+Model saved as ./checkpoints/1nlp.pth
+Epoch 2/50,Train Loss: 0.584851, Val Loss: 0.633847, Acc: 0.852656, Auc: 0.911591, Recall: 0.580882 Lr: 0.000099
+Model saved as ./checkpoints/1nlp.pth
+Epoch 3/50,Train Loss: 0.545838, Val Loss: 0.604118, Acc: 0.864203, Auc: 0.937932, Recall: 0.688725 Lr: 0.000149
+Model saved as ./checkpoints/1nlp.pth
+Epoch 4/50,Train Loss: 0.516382, Val Loss: 0.603057, Acc: 0.854965, Auc: 0.951603, Recall: 0.901961 Lr: 0.000199
+Model saved as ./checkpoints/1nlp.pth
+Epoch 5/50,Train Loss: 0.492469, Val Loss: 0.535427, Acc: 0.902540, Auc: 0.969460, Recall: 0.686275 Lr: 0.000249
+Model saved as ./checkpoints/1nlp.pth
+Epoch 6/50,Train Loss: 0.470810, Val Loss: 0.569417, Acc: 0.916397, Auc: 0.855663, Recall: 0.926471 Lr: 0.000299
+Epoch 7/50,Train Loss: 0.462094, Val Loss: 0.487924, Acc: 0.933025, Auc: 0.974627, Recall: 0.906863 Lr: 0.000349
+Model saved as ./checkpoints/1nlp.pth
+Epoch 8/50,Train Loss: 0.444450, Val Loss: 0.497930, Acc: 0.941339, Auc: 0.961889, Recall: 0.946078 Lr: 0.000399
+Epoch 9/50,Train Loss: 0.442178, Val Loss: 0.487190, Acc: 0.943649, Auc: 0.968430, Recall: 1.000000 Lr: 0.000449
+Model saved as ./checkpoints/1nlp.pth
+Epoch 10/50,Train Loss: 0.435486, Val Loss: 0.487193, Acc: 0.942725, Auc: 0.964458, Recall: 1.000000 Lr: 0.000499
+Epoch 11/50,Train Loss: 0.427386, Val Loss: 0.471116, Acc: 0.951039, Auc: 0.971162, Recall: 1.000000 Lr: 0.000499
+Model saved as ./checkpoints/1nlp.pth
+Epoch 12/50,Train Loss: 0.422236, Val Loss: 0.477855, Acc: 0.941339, Auc: 0.964808, Recall: 1.000000 Lr: 0.000497
+Epoch 13/50,Train Loss: 0.424132, Val Loss: 0.458901, Acc: 0.948730, Auc: 0.974051, Recall: 1.000000 Lr: 0.000493
+Model saved as ./checkpoints/1nlp.pth
+Epoch 14/50,Train Loss: 0.421742, Val Loss: 0.467445, Acc: 0.950577, Auc: 0.958316, Recall: 1.000000 Lr: 0.000488
+Epoch 15/50,Train Loss: 0.416923, Val Loss: 0.445876, Acc: 0.954273, Auc: 0.978569, Recall: 1.000000 Lr: 0.000481
+Model saved as ./checkpoints/1nlp.pth
+Epoch 16/50,Train Loss: 0.415930, Val Loss: 0.471965, Acc: 0.943187, Auc: 0.957774, Recall: 1.000000 Lr: 0.000473
+Epoch 17/50,Train Loss: 0.416166, Val Loss: 0.451172, Acc: 0.953349, Auc: 0.973797, Recall: 1.000000 Lr: 0.000463
+Epoch 18/50,Train Loss: 0.406879, Val Loss: 0.491858, Acc: 0.929792, Auc: 0.963551, Recall: 1.000000 Lr: 0.000453
+Epoch 19/50,Train Loss: 0.407940, Val Loss: 0.460580, Acc: 0.944111, Auc: 0.974547, Recall: 1.000000 Lr: 0.000440
+Epoch 20/50,Train Loss: 0.405416, Val Loss: 0.474363, Acc: 0.950115, Auc: 0.945539, Recall: 1.000000 Lr: 0.000427
+Epoch 21/50,Train Loss: 0.407563, Val Loss: 0.473884, Acc: 0.939492, Auc: 0.966062, Recall: 1.000000 Lr: 0.000413
+Epoch 22/50,Train Loss: 0.400790, Val Loss: 0.469182, Acc: 0.946882, Auc: 0.935472, Recall: 1.000000 Lr: 0.000397
+Epoch 23/50,Train Loss: 0.408175, Val Loss: 0.480050, Acc: 0.949192, Auc: 0.915435, Recall: 1.000000 Lr: 0.000381
+Epoch 24/50,Train Loss: 0.405652, Val Loss: 0.451796, Acc: 0.952887, Auc: 0.975441, Recall: 1.000000 Lr: 0.000364
+Epoch 25/50,Train Loss: 0.398743, Val Loss: 0.475659, Acc: 0.947344, Auc: 0.909736, Recall: 1.000000 Lr: 0.000346
+Epoch 26/50,Train Loss: 0.399584, Val Loss: 0.487698, Acc: 0.946882, Auc: 0.933486, Recall: 1.000000 Lr: 0.000328
+Epoch 27/50,Train Loss: 0.391777, Val Loss: 0.450265, Acc: 0.951963, Auc: 0.976972, Recall: 1.000000 Lr: 0.000309
+Epoch 28/50,Train Loss: 0.390350, Val Loss: 0.482266, Acc: 0.942263, Auc: 0.954230, Recall: 1.000000 Lr: 0.000290
+Epoch 29/50,Train Loss: 0.392816, Val Loss: 0.461039, Acc: 0.955196, Auc: 0.939855, Recall: 1.000000 Lr: 0.000270
+Epoch 30/50,Train Loss: 0.385212, Val Loss: 0.480524, Acc: 0.944573, Auc: 0.913870, Recall: 1.000000 Lr: 0.000251
+Epoch 31/50,Train Loss: 0.387929, Val Loss: 0.475160, Acc: 0.952425, Auc: 0.914724, Recall: 1.000000 Lr: 0.000231
+Epoch 32/50,Train Loss: 0.390048, Val Loss: 0.466046, Acc: 0.948730, Auc: 0.973020, Recall: 1.000000 Lr: 0.000212
+Epoch 33/50,Train Loss: 0.383871, Val Loss: 0.462727, Acc: 0.952425, Auc: 0.958489, Recall: 1.000000 Lr: 0.000193
+Epoch 34/50,Train Loss: 0.380493, Val Loss: 0.472632, Acc: 0.946420, Auc: 0.955609, Recall: 1.000000 Lr: 0.000174
+Epoch 35/50,Train Loss: 0.375641, Val Loss: 0.475353, Acc: 0.947344, Auc: 0.939710, Recall: 1.000000 Lr: 0.000155
+Epoch 36/50,Train Loss: 0.372355, Val Loss: 0.478673, Acc: 0.943649, Auc: 0.935196, Recall: 1.000000 Lr: 0.000138
+Epoch 37/50,Train Loss: 0.373376, Val Loss: 0.484032, Acc: 0.946882, Auc: 0.951373, Recall: 1.000000 Lr: 0.000120
+Epoch 38/50,Train Loss: 0.368793, Val Loss: 0.482615, Acc: 0.943187, Auc: 0.953438, Recall: 1.000000 Lr: 0.000104
+Epoch 39/50,Train Loss: 0.364409, Val Loss: 0.482085, Acc: 0.949654, Auc: 0.914328, Recall: 1.000000 Lr: 0.000089
+Epoch 40/50,Train Loss: 0.364039, Val Loss: 0.488190, Acc: 0.944111, Auc: 0.938572, Recall: 1.000000 Lr: 0.000074
+Epoch 41/50,Train Loss: 0.363190, Val Loss: 0.487691, Acc: 0.946420, Auc: 0.934429, Recall: 1.000000 Lr: 0.000061
+Epoch 42/50,Train Loss: 0.359594, Val Loss: 0.486167, Acc: 0.949192, Auc: 0.922287, Recall: 1.000000 Lr: 0.000049
+Epoch 43/50,Train Loss: 0.359509, Val Loss: 0.489372, Acc: 0.948268, Auc: 0.920492, Recall: 1.000000 Lr: 0.000038
+Epoch 44/50,Train Loss: 0.358346, Val Loss: 0.488567, Acc: 0.947806, Auc: 0.919719, Recall: 1.000000 Lr: 0.000028
+Epoch 45/50,Train Loss: 0.354972, Val Loss: 0.488623, Acc: 0.949192, Auc: 0.911307, Recall: 1.000000 Lr: 0.000020
+Early stopping triggered
+last epoch model: Acc: 0.9533 | Auc: 0.9211 | REcall: 1.0000
+best epoch model: Acc: 0.9572 | Auc: 0.9726 | REcall: 1.0000
+using config file ./config_file/hrnet_small.json
+the mid-result and the pytorch model will be stored in experiments
+=> loading pretrained model ./pretrained/hrnet.pth
+There is  patch size
+Train: 85, Val: 77
+using cuda for training
+Epoch 1/50, Train Loss: 0.586389, Val acc: 0.291735, auc: 0.543557 Recall 0.935780 Lr: 0.000099, Time: 0.02 hours
+Model saved as ./checkpoints/2_hrnet.pth
+Model saved as ./checkpoints/2_recall_hrnet.pth
+Epoch 2/50, Train Loss: 0.306089, Val acc: 0.840722, auc: 0.558633 Recall 0.119266 Lr: 0.000199, Time: 0.02 hours
+Model saved as ./checkpoints/2_hrnet.pth
+Epoch 3/50, Train Loss: 0.116086, Val acc: 0.899288, auc: 0.725829 Recall 0.455657 Lr: 0.000299, Time: 0.02 hours
+Model saved as ./checkpoints/2_hrnet.pth
+Epoch 4/50, Train Loss: 0.051447, Val acc: 0.881226, auc: 0.672979 Recall 0.348624 Lr: 0.000399, Time: 0.02 hours
+Epoch 5/50, Train Loss: 0.031085, Val acc: 0.881226, auc: 0.678957 Recall 0.363914 Lr: 0.000499, Time: 0.02 hours
+Epoch 6/50, Train Loss: 0.023028, Val acc: 0.845101, auc: 0.567278 Recall 0.134557 Lr: 0.000599, Time: 0.02 hours
+Epoch 7/50, Train Loss: 0.018935, Val acc: 0.887247, auc: 0.699364 Recall 0.406728 Lr: 0.000699, Time: 0.02 hours
+Epoch 8/50, Train Loss: 0.016850, Val acc: 0.906951, auc: 0.753214 Recall 0.513761 Lr: 0.000799, Time: 0.02 hours
+Model saved as ./checkpoints/2_hrnet.pth
+Epoch 9/50, Train Loss: 0.015891, Val acc: 0.759168, auc: 0.833006 Recall 0.948012 Lr: 0.000899, Time: 0.02 hours
+Model saved as ./checkpoints/2_hrnet.pth
+Model saved as ./checkpoints/2_recall_hrnet.pth
+Epoch 10/50, Train Loss: 0.014864, Val acc: 0.878489, auc: 0.900890 Recall 0.935780 Lr: 0.000999, Time: 0.02 hours
+Model saved as ./checkpoints/2_hrnet.pth
+Epoch 11/50, Train Loss: 0.013909, Val acc: 0.939792, auc: 0.922679 Recall 0.896024 Lr: 0.000998, Time: 0.02 hours
+Model saved as ./checkpoints/2_hrnet.pth
+Epoch 12/50, Train Loss: 0.013710, Val acc: 0.935961, auc: 0.892844 Recall 0.825688 Lr: 0.000994, Time: 0.02 hours
+Epoch 13/50, Train Loss: 0.013195, Val acc: 0.912972, auc: 0.923086 Recall 0.938838 Lr: 0.000986, Time: 0.02 hours
+Model saved as ./checkpoints/2_hrnet.pth
+Epoch 14/50, Train Loss: 0.012854, Val acc: 0.916256, auc: 0.917911 Recall 0.920489 Lr: 0.000976, Time: 0.02 hours
+Epoch 15/50, Train Loss: 0.012543, Val acc: 0.839080, auc: 0.878086 Recall 0.938838 Lr: 0.000962, Time: 0.02 hours
+Epoch 16/50, Train Loss: 0.012270, Val acc: 0.915709, auc: 0.919969 Recall 0.926606 Lr: 0.000946, Time: 0.02 hours
+Epoch 17/50, Train Loss: 0.012069, Val acc: 0.868090, auc: 0.824009 Recall 0.755352 Lr: 0.000927, Time: 0.02 hours
+Epoch 18/50, Train Loss: 0.011917, Val acc: 0.879584, auc: 0.915905 Recall 0.972477 Lr: 0.000905, Time: 0.02 hours
+Model saved as ./checkpoints/2_recall_hrnet.pth
+Epoch 19/50, Train Loss: 0.011661, Val acc: 0.911877, auc: 0.917636 Recall 0.926606 Lr: 0.000881, Time: 0.02 hours
+Epoch 20/50, Train Loss: 0.011288, Val acc: 0.886152, auc: 0.923492 Recall 0.981651 Lr: 0.000854, Time: 0.02 hours
+Model saved as ./checkpoints/2_hrnet.pth
+Model saved as ./checkpoints/2_recall_hrnet.pth
+Epoch 21/50, Train Loss: 0.011234, Val acc: 0.791461, auc: 0.870609 Recall 0.993884 Lr: 0.000825, Time: 0.02 hours
+Model saved as ./checkpoints/2_recall_hrnet.pth
+Epoch 22/50, Train Loss: 0.011081, Val acc: 0.885605, auc: 0.919572 Recall 0.972477 Lr: 0.000794, Time: 0.02 hours
+Epoch 23/50, Train Loss: 0.011176, Val acc: 0.896004, auc: 0.921122 Recall 0.960245 Lr: 0.000762, Time: 0.02 hours
+Epoch 24/50, Train Loss: 0.010773, Val acc: 0.876300, auc: 0.895969 Recall 0.926606 Lr: 0.000728, Time: 0.02 hours
+Epoch 25/50, Train Loss: 0.010531, Val acc: 0.916804, auc: 0.938572 Recall 0.972477 Lr: 0.000692, Time: 0.02 hours
+Model saved as ./checkpoints/2_hrnet.pth
+Epoch 26/50, Train Loss: 0.010329, Val acc: 0.909141, auc: 0.927927 Recall 0.957187 Lr: 0.000655, Time: 0.02 hours
+Epoch 27/50, Train Loss: 0.010200, Val acc: 0.862069, auc: 0.910021 Recall 0.984709 Lr: 0.000618, Time: 0.02 hours
+Epoch 28/50, Train Loss: 0.009882, Val acc: 0.923919, auc: 0.941709 Recall 0.969419 Lr: 0.000579, Time: 0.02 hours
+Model saved as ./checkpoints/2_hrnet.pth
+Epoch 29/50, Train Loss: 0.009616, Val acc: 0.828134, auc: 0.888159 Recall 0.981651 Lr: 0.000540, Time: 0.02 hours
+Epoch 30/50, Train Loss: 0.009595, Val acc: 0.921182, auc: 0.940043 Recall 0.969419 Lr: 0.000501, Time: 0.02 hours
+Epoch 31/50, Train Loss: 0.009433, Val acc: 0.908046, auc: 0.940413 Recall 0.990826 Lr: 0.000462, Time: 0.02 hours
+Epoch 32/50, Train Loss: 0.009081, Val acc: 0.916804, auc: 0.943355 Recall 0.984709 Lr: 0.000423, Time: 0.02 hours
+Model saved as ./checkpoints/2_hrnet.pth
+Epoch 33/50, Train Loss: 0.009056, Val acc: 0.876847, auc: 0.917826 Recall 0.981651 Lr: 0.000384, Time: 0.02 hours
+Epoch 34/50, Train Loss: 0.008851, Val acc: 0.934866, auc: 0.949572 Recall 0.972477 Lr: 0.000347, Time: 0.02 hours
+Model saved as ./checkpoints/2_hrnet.pth
+Epoch 35/50, Train Loss: 0.008650, Val acc: 0.888342, auc: 0.926021 Recall 0.984709 Lr: 0.000310, Time: 0.02 hours
+Epoch 36/50, Train Loss: 0.008499, Val acc: 0.921182, auc: 0.941239 Recall 0.972477 Lr: 0.000274, Time: 0.02 hours
+Epoch 37/50, Train Loss: 0.008374, Val acc: 0.860974, auc: 0.911746 Recall 0.990826 Lr: 0.000240, Time: 0.02 hours
+Epoch 38/50, Train Loss: 0.008167, Val acc: 0.898194, auc: 0.932021 Recall 0.984709 Lr: 0.000207, Time: 0.02 hours
+Epoch 39/50, Train Loss: 0.007970, Val acc: 0.853859, auc: 0.906217 Recall 0.987768 Lr: 0.000176, Time: 0.02 hours
+Epoch 40/50, Train Loss: 0.007874, Val acc: 0.889984, auc: 0.925826 Recall 0.981651 Lr: 0.000148, Time: 0.02 hours
+Epoch 41/50, Train Loss: 0.007692, Val acc: 0.890531, auc: 0.926159 Recall 0.981651 Lr: 0.000121, Time: 0.02 hours
+Epoch 42/50, Train Loss: 0.007668, Val acc: 0.888889, auc: 0.926355 Recall 0.984709 Lr: 0.000097, Time: 0.02 hours
+Epoch 43/50, Train Loss: 0.007475, Val acc: 0.881773, auc: 0.924413 Recall 0.990826 Lr: 0.000075, Time: 0.02 hours
+Epoch 44/50, Train Loss: 0.007370, Val acc: 0.879584, auc: 0.921884 Recall 0.987768 Lr: 0.000056, Time: 0.02 hours
+Epoch 45/50, Train Loss: 0.007371, Val acc: 0.888342, auc: 0.926021 Recall 0.984709 Lr: 0.000039, Time: 0.02 hours
+Epoch 46/50, Train Loss: 0.007261, Val acc: 0.893268, auc: 0.927826 Recall 0.981651 Lr: 0.000026, Time: 0.02 hours
+Epoch 47/50, Train Loss: 0.007269, Val acc: 0.887794, auc: 0.926884 Recall 0.987768 Lr: 0.000015, Time: 0.02 hours
+Epoch 48/50, Train Loss: 0.007230, Val acc: 0.887247, auc: 0.926550 Recall 0.987768 Lr: 0.000007, Time: 0.02 hours
+Epoch 49/50, Train Loss: 0.007187, Val acc: 0.885605, auc: 0.925550 Recall 0.987768 Lr: 0.000003, Time: 0.02 hours
+Epoch 50/50, Train Loss: 0.007171, Val acc: 0.885605, auc: 0.925550 Recall 0.987768 Lr: 0.000001, Time: 0.02 hours
+Model saved as ./checkpoints/2_hrnet.pth
+the mid-result and the pytorch model will be stored in experiments
+=> loading pretrained model ./pretrained/hrnet.pth
+load the checkpoint in ./checkpoints/2_hrnet.pth
+Saveing the model in ./checkpoints
+Skipping loading parameter: mask_token
+Skipping loading parameter: patch_embed.proj.weight
+Skipping loading parameter: patch_embed.proj.bias
+using cuda for training
+There is 64 batch size
+Train: 63, Val: 29
+Epoch 1/50,Train Loss: 0.753784, Val Loss: 0.632755, Acc: 0.855501, Auc: 0.918425, Recall: 0.504587 Lr: 0.000049
+Model saved as ./checkpoints/2nlp.pth
+Epoch 2/50,Train Loss: 0.580584, Val Loss: 0.644429, Acc: 0.834154, Auc: 0.940452, Recall: 0.183486 Lr: 0.000099
+Epoch 3/50,Train Loss: 0.541058, Val Loss: 0.564311, Acc: 0.897646, Auc: 0.935940, Recall: 0.795107 Lr: 0.000149
+Model saved as ./checkpoints/2nlp.pth
+Epoch 4/50,Train Loss: 0.500196, Val Loss: 0.548496, Acc: 0.909141, Auc: 0.901605, Recall: 0.782875 Lr: 0.000199
+Model saved as ./checkpoints/2nlp.pth
+Epoch 5/50,Train Loss: 0.496972, Val Loss: 0.531987, Acc: 0.910235, Auc: 0.959713, Recall: 0.892966 Lr: 0.000249
+Model saved as ./checkpoints/2nlp.pth
+Epoch 6/50,Train Loss: 0.475496, Val Loss: 0.494172, Acc: 0.938150, Auc: 0.961053, Recall: 0.932722 Lr: 0.000299
+Model saved as ./checkpoints/2nlp.pth
+Epoch 7/50,Train Loss: 0.451981, Val Loss: 0.474756, Acc: 0.944718, Auc: 0.971897, Recall: 0.978593 Lr: 0.000349
+Model saved as ./checkpoints/2nlp.pth
+Epoch 8/50,Train Loss: 0.437067, Val Loss: 0.450713, Acc: 0.956760, Auc: 0.981197, Recall: 1.000000 Lr: 0.000399
+Model saved as ./checkpoints/2nlp.pth
+Epoch 9/50,Train Loss: 0.437248, Val Loss: 0.469920, Acc: 0.951286, Auc: 0.968757, Recall: 1.000000 Lr: 0.000449
+Epoch 10/50,Train Loss: 0.426405, Val Loss: 0.452055, Acc: 0.960044, Auc: 0.968248, Recall: 1.000000 Lr: 0.000499
+Epoch 11/50,Train Loss: 0.426962, Val Loss: 0.473218, Acc: 0.955665, Auc: 0.944114, Recall: 1.000000 Lr: 0.000499
+Epoch 12/50,Train Loss: 0.423253, Val Loss: 0.462711, Acc: 0.954023, Auc: 0.963797, Recall: 1.000000 Lr: 0.000497
+Epoch 13/50,Train Loss: 0.421624, Val Loss: 0.460465, Acc: 0.954570, Auc: 0.958749, Recall: 1.000000 Lr: 0.000493
+Epoch 14/50,Train Loss: 0.412434, Val Loss: 0.447104, Acc: 0.953476, Auc: 0.969470, Recall: 1.000000 Lr: 0.000488
+Model saved as ./checkpoints/2nlp.pth
+Epoch 15/50,Train Loss: 0.412758, Val Loss: 0.470034, Acc: 0.955118, Auc: 0.895613, Recall: 1.000000 Lr: 0.000481
+Epoch 16/50,Train Loss: 0.406463, Val Loss: 0.467830, Acc: 0.945265, Auc: 0.959781, Recall: 1.000000 Lr: 0.000473
+Epoch 17/50,Train Loss: 0.416262, Val Loss: 0.459525, Acc: 0.951286, Auc: 0.948082, Recall: 1.000000 Lr: 0.000463
+Epoch 18/50,Train Loss: 0.414222, Val Loss: 0.446329, Acc: 0.961138, Auc: 0.966053, Recall: 1.000000 Lr: 0.000453
+Model saved as ./checkpoints/2nlp.pth
+Epoch 19/50,Train Loss: 0.404116, Val Loss: 0.431602, Acc: 0.963328, Auc: 0.984157, Recall: 1.000000 Lr: 0.000440
+Model saved as ./checkpoints/2nlp.pth
+Epoch 20/50,Train Loss: 0.403575, Val Loss: 0.451937, Acc: 0.941981, Auc: 0.976510, Recall: 1.000000 Lr: 0.000427
+Epoch 21/50,Train Loss: 0.403449, Val Loss: 0.473517, Acc: 0.954023, Auc: 0.931611, Recall: 1.000000 Lr: 0.000413
+Epoch 22/50,Train Loss: 0.407312, Val Loss: 0.466812, Acc: 0.933224, Auc: 0.973348, Recall: 1.000000 Lr: 0.000397
+Epoch 23/50,Train Loss: 0.397715, Val Loss: 0.447773, Acc: 0.951834, Auc: 0.969220, Recall: 1.000000 Lr: 0.000381
+Epoch 24/50,Train Loss: 0.399739, Val Loss: 0.438342, Acc: 0.955118, Auc: 0.976451, Recall: 1.000000 Lr: 0.000364
+Epoch 25/50,Train Loss: 0.393310, Val Loss: 0.443633, Acc: 0.954023, Auc: 0.979653, Recall: 1.000000 Lr: 0.000346
+Epoch 26/50,Train Loss: 0.397024, Val Loss: 0.450806, Acc: 0.949097, Auc: 0.977539, Recall: 1.000000 Lr: 0.000328
+Epoch 27/50,Train Loss: 0.390808, Val Loss: 0.456586, Acc: 0.950739, Auc: 0.968711, Recall: 1.000000 Lr: 0.000309
+Epoch 28/50,Train Loss: 0.387652, Val Loss: 0.442024, Acc: 0.960591, Auc: 0.978222, Recall: 1.000000 Lr: 0.000290
+Epoch 29/50,Train Loss: 0.395016, Val Loss: 0.449525, Acc: 0.955118, Auc: 0.969829, Recall: 1.000000 Lr: 0.000270
+Epoch 30/50,Train Loss: 0.383025, Val Loss: 0.444887, Acc: 0.956212, Auc: 0.973376, Recall: 1.000000 Lr: 0.000251
+Epoch 31/50,Train Loss: 0.386174, Val Loss: 0.451877, Acc: 0.951286, Auc: 0.971533, Recall: 1.000000 Lr: 0.000231
+Epoch 32/50,Train Loss: 0.380154, Val Loss: 0.450505, Acc: 0.953476, Auc: 0.969967, Recall: 1.000000 Lr: 0.000212
+Epoch 33/50,Train Loss: 0.373679, Val Loss: 0.454203, Acc: 0.956760, Auc: 0.962992, Recall: 1.000000 Lr: 0.000193
+Epoch 34/50,Train Loss: 0.375648, Val Loss: 0.472418, Acc: 0.949097, Auc: 0.953353, Recall: 1.000000 Lr: 0.000174
+Epoch 35/50,Train Loss: 0.372479, Val Loss: 0.470866, Acc: 0.943623, Auc: 0.957825, Recall: 1.000000 Lr: 0.000155
+Epoch 36/50,Train Loss: 0.370108, Val Loss: 0.477577, Acc: 0.948550, Auc: 0.924446, Recall: 1.000000 Lr: 0.000138
+Epoch 37/50,Train Loss: 0.368377, Val Loss: 0.463091, Acc: 0.948550, Auc: 0.953911, Recall: 1.000000 Lr: 0.000120
+Epoch 38/50,Train Loss: 0.366944, Val Loss: 0.463230, Acc: 0.951834, Auc: 0.944171, Recall: 1.000000 Lr: 0.000104
+Epoch 39/50,Train Loss: 0.364430, Val Loss: 0.453170, Acc: 0.960044, Auc: 0.926751, Recall: 1.000000 Lr: 0.000089
+Epoch 40/50,Train Loss: 0.361066, Val Loss: 0.458710, Acc: 0.957307, Auc: 0.938217, Recall: 1.000000 Lr: 0.000074
+Epoch 41/50,Train Loss: 0.359741, Val Loss: 0.451608, Acc: 0.960591, Auc: 0.900215, Recall: 1.000000 Lr: 0.000061
+Epoch 42/50,Train Loss: 0.359016, Val Loss: 0.465663, Acc: 0.955665, Auc: 0.909843, Recall: 1.000000 Lr: 0.000049
+Epoch 43/50,Train Loss: 0.357976, Val Loss: 0.457549, Acc: 0.959496, Auc: 0.906938, Recall: 1.000000 Lr: 0.000038
+Epoch 44/50,Train Loss: 0.356835, Val Loss: 0.452433, Acc: 0.957854, Auc: 0.944428, Recall: 1.000000 Lr: 0.000028
+Epoch 45/50,Train Loss: 0.356041, Val Loss: 0.455459, Acc: 0.958949, Auc: 0.934317, Recall: 1.000000 Lr: 0.000020
+Epoch 46/50,Train Loss: 0.356477, Val Loss: 0.457360, Acc: 0.957854, Auc: 0.933588, Recall: 1.000000 Lr: 0.000013
+Epoch 47/50,Train Loss: 0.354516, Val Loss: 0.457358, Acc: 0.957854, Auc: 0.933055, Recall: 1.000000 Lr: 0.000008
+Epoch 48/50,Train Loss: 0.355152, Val Loss: 0.458128, Acc: 0.958402, Auc: 0.930672, Recall: 1.000000 Lr: 0.000004
+Epoch 49/50,Train Loss: 0.354203, Val Loss: 0.457481, Acc: 0.958949, Auc: 0.927445, Recall: 1.000000 Lr: 0.000002
+Early stopping triggered
+last epoch model: Acc: 0.9484 | Auc: 0.9393 | REcall: 1.0000
+best epoch model: Acc: 0.9448 | Auc: 0.9693 | REcall: 1.0000
+using config file ./config_file/hrnet_small.json
+the mid-result and the pytorch model will be stored in experiments
+=> loading pretrained model ./pretrained/hrnet.pth
+There is  patch size
+Train: 95, Val: 84
+using cuda for training
+Epoch 1/50, Train Loss: 0.579027, Val acc: 0.248262, auc: 0.530600 Recall 0.951807 Lr: 0.000099, Time: 0.02 hours
+Model saved as ./checkpoints/3_hrnet.pth
+Model saved as ./checkpoints/3_recall_hrnet.pth
+Epoch 2/50, Train Loss: 0.285587, Val acc: 0.849057, auc: 0.556674 Recall 0.120482 Lr: 0.000199, Time: 0.02 hours
+Model saved as ./checkpoints/3_hrnet.pth
+Epoch 3/50, Train Loss: 0.103890, Val acc: 0.875869, auc: 0.631955 Recall 0.268072 Lr: 0.000299, Time: 0.02 hours
+Model saved as ./checkpoints/3_hrnet.pth
+Epoch 4/50, Train Loss: 0.046734, Val acc: 0.896723, auc: 0.725427 Recall 0.469880 Lr: 0.000399, Time: 0.02 hours
+Model saved as ./checkpoints/3_hrnet.pth
+Epoch 5/50, Train Loss: 0.028734, Val acc: 0.908143, auc: 0.743143 Recall 0.496988 Lr: 0.000499, Time: 0.02 hours
+Model saved as ./checkpoints/3_hrnet.pth
+Epoch 6/50, Train Loss: 0.021787, Val acc: 0.908640, auc: 0.739814 Recall 0.487952 Lr: 0.000599, Time: 0.02 hours
+Epoch 7/50, Train Loss: 0.018052, Val acc: 0.900199, auc: 0.860472 Recall 0.801205 Lr: 0.000699, Time: 0.02 hours
+Model saved as ./checkpoints/3_hrnet.pth
+Epoch 8/50, Train Loss: 0.016299, Val acc: 0.904171, auc: 0.740765 Recall 0.496988 Lr: 0.000799, Time: 0.02 hours
+Epoch 9/50, Train Loss: 0.014887, Val acc: 0.894737, auc: 0.872916 Recall 0.840361 Lr: 0.000899, Time: 0.02 hours
+Model saved as ./checkpoints/3_hrnet.pth
+Epoch 10/50, Train Loss: 0.014043, Val acc: 0.913108, auc: 0.842817 Recall 0.737952 Lr: 0.000999, Time: 0.02 hours
+Epoch 11/50, Train Loss: 0.013340, Val acc: 0.926514, auc: 0.848425 Recall 0.731928 Lr: 0.000998, Time: 0.02 hours
+Epoch 12/50, Train Loss: 0.013005, Val acc: 0.913605, auc: 0.828609 Recall 0.701807 Lr: 0.000994, Time: 0.02 hours
+Epoch 13/50, Train Loss: 0.012412, Val acc: 0.893744, auc: 0.867486 Recall 0.828313 Lr: 0.000986, Time: 0.02 hours
+Epoch 14/50, Train Loss: 0.012481, Val acc: 0.861966, auc: 0.888350 Recall 0.927711 Lr: 0.000976, Time: 0.02 hours
+Model saved as ./checkpoints/3_hrnet.pth
+Epoch 15/50, Train Loss: 0.011879, Val acc: 0.889275, auc: 0.909535 Recall 0.939759 Lr: 0.000962, Time: 0.02 hours
+Model saved as ./checkpoints/3_hrnet.pth
+Epoch 16/50, Train Loss: 0.011500, Val acc: 0.907150, auc: 0.928698 Recall 0.960843 Lr: 0.000946, Time: 0.02 hours
+Model saved as ./checkpoints/3_hrnet.pth
+Model saved as ./checkpoints/3_recall_hrnet.pth
+Epoch 17/50, Train Loss: 0.011304, Val acc: 0.898709, auc: 0.917600 Recall 0.945783 Lr: 0.000927, Time: 0.02 hours
+Epoch 18/50, Train Loss: 0.011081, Val acc: 0.930983, auc: 0.907912 Recall 0.873494 Lr: 0.000905, Time: 0.02 hours
+Epoch 19/50, Train Loss: 0.010985, Val acc: 0.938928, auc: 0.890911 Recall 0.819277 Lr: 0.000881, Time: 0.02 hours
+Epoch 20/50, Train Loss: 0.010910, Val acc: 0.852036, auc: 0.883614 Recall 0.930723 Lr: 0.000854, Time: 0.02 hours
+Epoch 21/50, Train Loss: 0.010574, Val acc: 0.943396, auc: 0.903256 Recall 0.843373 Lr: 0.000825, Time: 0.02 hours
+Epoch 22/50, Train Loss: 0.010349, Val acc: 0.930487, auc: 0.935416 Recall 0.942771 Lr: 0.000794, Time: 0.02 hours
+Model saved as ./checkpoints/3_hrnet.pth
+Epoch 23/50, Train Loss: 0.010164, Val acc: 0.922046, auc: 0.920693 Recall 0.918675 Lr: 0.000762, Time: 0.02 hours
+Epoch 24/50, Train Loss: 0.009921, Val acc: 0.922046, auc: 0.942451 Recall 0.972892 Lr: 0.000728, Time: 0.02 hours
+Model saved as ./checkpoints/3_hrnet.pth
+Model saved as ./checkpoints/3_recall_hrnet.pth
+Epoch 25/50, Train Loss: 0.009826, Val acc: 0.924528, auc: 0.929432 Recall 0.936747 Lr: 0.000692, Time: 0.02 hours
+Epoch 26/50, Train Loss: 0.009631, Val acc: 0.890765, auc: 0.893504 Recall 0.897590 Lr: 0.000655, Time: 0.02 hours
+Epoch 27/50, Train Loss: 0.009498, Val acc: 0.899206, auc: 0.927568 Recall 0.969880 Lr: 0.000618, Time: 0.02 hours
+Epoch 28/50, Train Loss: 0.009366, Val acc: 0.942900, auc: 0.935596 Recall 0.924699 Lr: 0.000579, Time: 0.02 hours
+Epoch 29/50, Train Loss: 0.009182, Val acc: 0.908640, auc: 0.922337 Recall 0.942771 Lr: 0.000540, Time: 0.02 hours
+Epoch 30/50, Train Loss: 0.008941, Val acc: 0.876862, auc: 0.915399 Recall 0.972892 Lr: 0.000501, Time: 0.02 hours
+Epoch 31/50, Train Loss: 0.008757, Val acc: 0.911122, auc: 0.925032 Recall 0.945783 Lr: 0.000462, Time: 0.02 hours
+Epoch 32/50, Train Loss: 0.008507, Val acc: 0.890268, auc: 0.925843 Recall 0.978916 Lr: 0.000423, Time: 0.02 hours
+Model saved as ./checkpoints/3_recall_hrnet.pth
+Epoch 33/50, Train Loss: 0.008455, Val acc: 0.914101, auc: 0.935277 Recall 0.966867 Lr: 0.000384, Time: 0.02 hours
+Epoch 34/50, Train Loss: 0.008237, Val acc: 0.890765, auc: 0.922514 Recall 0.969880 Lr: 0.000347, Time: 0.02 hours
+Epoch 35/50, Train Loss: 0.008060, Val acc: 0.896723, auc: 0.926081 Recall 0.969880 Lr: 0.000310, Time: 0.02 hours
+Epoch 36/50, Train Loss: 0.007937, Val acc: 0.912612, auc: 0.934385 Recall 0.966867 Lr: 0.000274, Time: 0.02 hours
+Epoch 37/50, Train Loss: 0.007713, Val acc: 0.904667, auc: 0.928420 Recall 0.963855 Lr: 0.000240, Time: 0.02 hours
+Epoch 38/50, Train Loss: 0.007615, Val acc: 0.908143, auc: 0.928083 Recall 0.957831 Lr: 0.000207, Time: 0.02 hours
+Epoch 39/50, Train Loss: 0.007435, Val acc: 0.904171, auc: 0.931749 Recall 0.972892 Lr: 0.000176, Time: 0.02 hours
+Epoch 40/50, Train Loss: 0.007331, Val acc: 0.900199, auc: 0.926953 Recall 0.966867 Lr: 0.000148, Time: 0.02 hours
+Epoch 41/50, Train Loss: 0.007143, Val acc: 0.903178, auc: 0.925111 Recall 0.957831 Lr: 0.000121, Time: 0.02 hours
+Epoch 42/50, Train Loss: 0.007066, Val acc: 0.896226, auc: 0.928202 Recall 0.975904 Lr: 0.000097, Time: 0.02 hours
+Epoch 43/50, Train Loss: 0.006968, Val acc: 0.910129, auc: 0.929272 Recall 0.957831 Lr: 0.000075, Time: 0.02 hours
+Epoch 44/50, Train Loss: 0.006872, Val acc: 0.901688, auc: 0.925428 Recall 0.960843 Lr: 0.000056, Time: 0.02 hours
+Epoch 45/50, Train Loss: 0.006807, Val acc: 0.904667, auc: 0.928420 Recall 0.963855 Lr: 0.000039, Time: 0.02 hours
+Epoch 46/50, Train Loss: 0.006710, Val acc: 0.905660, auc: 0.927806 Recall 0.960843 Lr: 0.000026, Time: 0.02 hours
+Epoch 47/50, Train Loss: 0.006696, Val acc: 0.904667, auc: 0.928420 Recall 0.963855 Lr: 0.000015, Time: 0.02 hours
+Epoch 48/50, Train Loss: 0.006688, Val acc: 0.900199, auc: 0.925745 Recall 0.963855 Lr: 0.000007, Time: 0.02 hours
+Epoch 49/50, Train Loss: 0.006676, Val acc: 0.900199, auc: 0.925745 Recall 0.963855 Lr: 0.000003, Time: 0.02 hours
+Epoch 50/50, Train Loss: 0.006645, Val acc: 0.901192, auc: 0.926339 Recall 0.963855 Lr: 0.000001, Time: 0.02 hours
+Model saved as ./checkpoints/3_hrnet.pth
+the mid-result and the pytorch model will be stored in experiments
+=> loading pretrained model ./pretrained/hrnet.pth
+load the checkpoint in ./checkpoints/3_hrnet.pth
+Saveing the model in ./checkpoints
+Skipping loading parameter: mask_token
+Skipping loading parameter: patch_embed.proj.weight
+Skipping loading parameter: patch_embed.proj.bias
+using cuda for training
+There is 64 batch size
+Train: 66, Val: 32
+Epoch 1/50,Train Loss: 0.759627, Val Loss: 0.613031, Acc: 0.859484, Auc: 0.911414, Recall: 0.445783 Lr: 0.000049
+Model saved as ./checkpoints/3nlp.pth
+Epoch 2/50,Train Loss: 0.592660, Val Loss: 0.561991, Acc: 0.881331, Auc: 0.952579, Recall: 0.774096 Lr: 0.000099
+Model saved as ./checkpoints/3nlp.pth
+Epoch 3/50,Train Loss: 0.548025, Val Loss: 0.566567, Acc: 0.901688, Auc: 0.943128, Recall: 0.834337 Lr: 0.000149
+Epoch 4/50,Train Loss: 0.511414, Val Loss: 0.531022, Acc: 0.912115, Auc: 0.957546, Recall: 0.915663 Lr: 0.000199
+Model saved as ./checkpoints/3nlp.pth
+Epoch 5/50,Train Loss: 0.486173, Val Loss: 0.522323, Acc: 0.928004, Auc: 0.958289, Recall: 0.948795 Lr: 0.000249
+Model saved as ./checkpoints/3nlp.pth
+Epoch 6/50,Train Loss: 0.464761, Val Loss: 0.488435, Acc: 0.933466, Auc: 0.972634, Recall: 0.972892 Lr: 0.000299
+Model saved as ./checkpoints/3nlp.pth
+Epoch 7/50,Train Loss: 0.458102, Val Loss: 0.476765, Acc: 0.950844, Auc: 0.975813, Recall: 0.990964 Lr: 0.000349
+Model saved as ./checkpoints/3nlp.pth
+Epoch 8/50,Train Loss: 0.440850, Val Loss: 0.474106, Acc: 0.940417, Auc: 0.968813, Recall: 0.993976 Lr: 0.000399
+Model saved as ./checkpoints/3nlp.pth
+Epoch 9/50,Train Loss: 0.434603, Val Loss: 0.476958, Acc: 0.948361, Auc: 0.969117, Recall: 1.000000 Lr: 0.000449
+Epoch 10/50,Train Loss: 0.423445, Val Loss: 0.490698, Acc: 0.945879, Auc: 0.924463, Recall: 1.000000 Lr: 0.000499
+Epoch 11/50,Train Loss: 0.426084, Val Loss: 0.474508, Acc: 0.945879, Auc: 0.966263, Recall: 1.000000 Lr: 0.000499
+Epoch 12/50,Train Loss: 0.418100, Val Loss: 0.468912, Acc: 0.945382, Auc: 0.970448, Recall: 1.000000 Lr: 0.000497
+Model saved as ./checkpoints/3nlp.pth
+Epoch 13/50,Train Loss: 0.418241, Val Loss: 0.449852, Acc: 0.950844, Auc: 0.974051, Recall: 1.000000 Lr: 0.000493
+Model saved as ./checkpoints/3nlp.pth
+Epoch 14/50,Train Loss: 0.417417, Val Loss: 0.480888, Acc: 0.939424, Auc: 0.970655, Recall: 1.000000 Lr: 0.000488
+Epoch 15/50,Train Loss: 0.411937, Val Loss: 0.491698, Acc: 0.943396, Auc: 0.930181, Recall: 1.000000 Lr: 0.000481
+Epoch 16/50,Train Loss: 0.413902, Val Loss: 0.517471, Acc: 0.940914, Auc: 0.942789, Recall: 1.000000 Lr: 0.000473
+Epoch 17/50,Train Loss: 0.407900, Val Loss: 0.489030, Acc: 0.939921, Auc: 0.962712, Recall: 1.000000 Lr: 0.000463
+Epoch 18/50,Train Loss: 0.410316, Val Loss: 0.497398, Acc: 0.940417, Auc: 0.951296, Recall: 1.000000 Lr: 0.000453
+Epoch 19/50,Train Loss: 0.403730, Val Loss: 0.469066, Acc: 0.947368, Auc: 0.972731, Recall: 1.000000 Lr: 0.000440
+Epoch 20/50,Train Loss: 0.400366, Val Loss: 0.480838, Acc: 0.947865, Auc: 0.941106, Recall: 1.000000 Lr: 0.000427
+Epoch 21/50,Train Loss: 0.402991, Val Loss: 0.473951, Acc: 0.942403, Auc: 0.962240, Recall: 1.000000 Lr: 0.000413
+Epoch 22/50,Train Loss: 0.401174, Val Loss: 0.496010, Acc: 0.940914, Auc: 0.954880, Recall: 1.000000 Lr: 0.000397
+Epoch 23/50,Train Loss: 0.396265, Val Loss: 0.515540, Acc: 0.940417, Auc: 0.898673, Recall: 1.000000 Lr: 0.000381
+Epoch 24/50,Train Loss: 0.393924, Val Loss: 0.467887, Acc: 0.939424, Auc: 0.971581, Recall: 1.000000 Lr: 0.000364
+Epoch 25/50,Train Loss: 0.398455, Val Loss: 0.474796, Acc: 0.941410, Auc: 0.963129, Recall: 1.000000 Lr: 0.000346
+Epoch 26/50,Train Loss: 0.392551, Val Loss: 0.492656, Acc: 0.942403, Auc: 0.936046, Recall: 1.000000 Lr: 0.000328
+Epoch 27/50,Train Loss: 0.389061, Val Loss: 0.475390, Acc: 0.947368, Auc: 0.951775, Recall: 1.000000 Lr: 0.000309
+Epoch 28/50,Train Loss: 0.391051, Val Loss: 0.492862, Acc: 0.946375, Auc: 0.920710, Recall: 1.000000 Lr: 0.000290
+Epoch 29/50,Train Loss: 0.391042, Val Loss: 0.467805, Acc: 0.946375, Auc: 0.946855, Recall: 1.000000 Lr: 0.000270
+Epoch 30/50,Train Loss: 0.388987, Val Loss: 0.488182, Acc: 0.941410, Auc: 0.911668, Recall: 1.000000 Lr: 0.000251
+Epoch 31/50,Train Loss: 0.382137, Val Loss: 0.493084, Acc: 0.943893, Auc: 0.918600, Recall: 1.000000 Lr: 0.000231
+Epoch 32/50,Train Loss: 0.379535, Val Loss: 0.472602, Acc: 0.945879, Auc: 0.957012, Recall: 1.000000 Lr: 0.000212
+Epoch 33/50,Train Loss: 0.377939, Val Loss: 0.477169, Acc: 0.946872, Auc: 0.953630, Recall: 1.000000 Lr: 0.000193
+Epoch 34/50,Train Loss: 0.376559, Val Loss: 0.492613, Acc: 0.943893, Auc: 0.892667, Recall: 1.000000 Lr: 0.000174
+Epoch 35/50,Train Loss: 0.379913, Val Loss: 0.502824, Acc: 0.940417, Auc: 0.958560, Recall: 1.000000 Lr: 0.000155
+Epoch 36/50,Train Loss: 0.374838, Val Loss: 0.482261, Acc: 0.947368, Auc: 0.928541, Recall: 1.000000 Lr: 0.000137
+Epoch 37/50,Train Loss: 0.370259, Val Loss: 0.480267, Acc: 0.947865, Auc: 0.936238, Recall: 1.000000 Lr: 0.000120
+Epoch 38/50,Train Loss: 0.372349, Val Loss: 0.463403, Acc: 0.950348, Auc: 0.969225, Recall: 1.000000 Lr: 0.000104
+Epoch 39/50,Train Loss: 0.363259, Val Loss: 0.483557, Acc: 0.948361, Auc: 0.909359, Recall: 1.000000 Lr: 0.000089
+Epoch 40/50,Train Loss: 0.361332, Val Loss: 0.492685, Acc: 0.946375, Auc: 0.916990, Recall: 1.000000 Lr: 0.000074
+Epoch 41/50,Train Loss: 0.361534, Val Loss: 0.480300, Acc: 0.949851, Auc: 0.921805, Recall: 1.000000 Lr: 0.000061
+Epoch 42/50,Train Loss: 0.360253, Val Loss: 0.489483, Acc: 0.948858, Auc: 0.922372, Recall: 1.000000 Lr: 0.000049
+Epoch 43/50,Train Loss: 0.359562, Val Loss: 0.484655, Acc: 0.950844, Auc: 0.914487, Recall: 1.000000 Lr: 0.000038
+Early stopping triggered
+last epoch model: Acc: 0.9513 | Auc: 0.8692 | REcall: 1.0000
+best epoch model: Acc: 0.9513 | Auc: 0.9497 | REcall: 1.0000
+using config file ./config_file/hrnet_small.json
+the mid-result and the pytorch model will be stored in experiments
+=> loading pretrained model ./pretrained/hrnet.pth
+There is  patch size
+Train: 84, Val: 91
+using cuda for training
+Epoch 1/50, Train Loss: 0.587364, Val acc: 0.331031, auc: 0.499088 Recall 0.771084 Lr: 0.000099, Time: 0.02 hours
+Model saved as ./checkpoints/4_hrnet.pth
+Model saved as ./checkpoints/4_recall_hrnet.pth
+Epoch 2/50, Train Loss: 0.307056, Val acc: 0.818140, auc: 0.541581 Recall 0.093976 Lr: 0.000199, Time: 0.02 hours
+Model saved as ./checkpoints/4_hrnet.pth
+Epoch 3/50, Train Loss: 0.117227, Val acc: 0.837937, auc: 0.596149 Recall 0.204819 Lr: 0.000299, Time: 0.02 hours
+Model saved as ./checkpoints/4_hrnet.pth
+Epoch 4/50, Train Loss: 0.051837, Val acc: 0.839319, auc: 0.586880 Recall 0.178313 Lr: 0.000399, Time: 0.02 hours
+Epoch 5/50, Train Loss: 0.030788, Val acc: 0.869705, auc: 0.718852 Recall 0.474699 Lr: 0.000499, Time: 0.02 hours
+Model saved as ./checkpoints/4_hrnet.pth
+Epoch 6/50, Train Loss: 0.022566, Val acc: 0.867403, auc: 0.696263 Recall 0.419277 Lr: 0.000599, Time: 0.02 hours
+Epoch 7/50, Train Loss: 0.018401, Val acc: 0.832873, auc: 0.568172 Recall 0.139759 Lr: 0.000699, Time: 0.02 hours
+Epoch 8/50, Train Loss: 0.016624, Val acc: 0.908840, auc: 0.822182 Recall 0.681928 Lr: 0.000799, Time: 0.02 hours
+Model saved as ./checkpoints/4_hrnet.pth
+Epoch 9/50, Train Loss: 0.014932, Val acc: 0.832873, auc: 0.866331 Recall 0.920482 Lr: 0.000899, Time: 0.02 hours
+Model saved as ./checkpoints/4_hrnet.pth
+Model saved as ./checkpoints/4_recall_hrnet.pth
+Epoch 10/50, Train Loss: 0.014602, Val acc: 0.782228, auc: 0.839629 Recall 0.932530 Lr: 0.000999, Time: 0.02 hours
+Model saved as ./checkpoints/4_recall_hrnet.pth
+Epoch 11/50, Train Loss: 0.013565, Val acc: 0.878453, auc: 0.872418 Recall 0.862651 Lr: 0.000998, Time: 0.02 hours
+Model saved as ./checkpoints/4_hrnet.pth
+Epoch 12/50, Train Loss: 0.012937, Val acc: 0.897330, auc: 0.864761 Recall 0.812048 Lr: 0.000994, Time: 0.02 hours
+Epoch 13/50, Train Loss: 0.012353, Val acc: 0.883978, auc: 0.861109 Recall 0.824096 Lr: 0.000986, Time: 0.02 hours
+Epoch 14/50, Train Loss: 0.012026, Val acc: 0.781308, auc: 0.840900 Recall 0.937349 Lr: 0.000976, Time: 0.02 hours
+Model saved as ./checkpoints/4_recall_hrnet.pth
+Epoch 15/50, Train Loss: 0.011822, Val acc: 0.848066, auc: 0.847194 Recall 0.845783 Lr: 0.000962, Time: 0.02 hours
+Epoch 16/50, Train Loss: 0.011699, Val acc: 0.889042, auc: 0.773135 Recall 0.585542 Lr: 0.000946, Time: 0.02 hours
+Epoch 17/50, Train Loss: 0.011704, Val acc: 0.808471, auc: 0.870573 Recall 0.971084 Lr: 0.000927, Time: 0.02 hours
+Model saved as ./checkpoints/4_recall_hrnet.pth
+Epoch 18/50, Train Loss: 0.011297, Val acc: 0.883517, auc: 0.893033 Recall 0.908434 Lr: 0.000905, Time: 0.02 hours
+Model saved as ./checkpoints/4_hrnet.pth
+Epoch 19/50, Train Loss: 0.011087, Val acc: 0.877993, auc: 0.879495 Recall 0.881928 Lr: 0.000881, Time: 0.02 hours
+Epoch 20/50, Train Loss: 0.010715, Val acc: 0.857735, auc: 0.881698 Recall 0.920482 Lr: 0.000854, Time: 0.02 hours
+Epoch 21/50, Train Loss: 0.010561, Val acc: 0.896409, auc: 0.807136 Recall 0.662651 Lr: 0.000825, Time: 0.02 hours
+Epoch 22/50, Train Loss: 0.010377, Val acc: 0.854512, auc: 0.895350 Recall 0.961446 Lr: 0.000794, Time: 0.02 hours
+Model saved as ./checkpoints/4_hrnet.pth
+Epoch 23/50, Train Loss: 0.010123, Val acc: 0.872928, auc: 0.898451 Recall 0.939759 Lr: 0.000762, Time: 0.02 hours
+Model saved as ./checkpoints/4_hrnet.pth
+Epoch 24/50, Train Loss: 0.010135, Val acc: 0.813536, auc: 0.871863 Recall 0.966265 Lr: 0.000728, Time: 0.02 hours
+Epoch 25/50, Train Loss: 0.009861, Val acc: 0.855893, auc: 0.878719 Recall 0.915663 Lr: 0.000692, Time: 0.02 hours
+Epoch 26/50, Train Loss: 0.009773, Val acc: 0.877532, auc: 0.897616 Recall 0.930120 Lr: 0.000655, Time: 0.02 hours
+Epoch 27/50, Train Loss: 0.009526, Val acc: 0.897330, auc: 0.911693 Recall 0.934940 Lr: 0.000618, Time: 0.02 hours
+Model saved as ./checkpoints/4_hrnet.pth
+Epoch 28/50, Train Loss: 0.009219, Val acc: 0.843462, auc: 0.886680 Recall 0.956627 Lr: 0.000579, Time: 0.02 hours
+Epoch 29/50, Train Loss: 0.009213, Val acc: 0.850368, auc: 0.891869 Recall 0.959036 Lr: 0.000540, Time: 0.02 hours
+Epoch 30/50, Train Loss: 0.009033, Val acc: 0.855893, auc: 0.899885 Recall 0.971084 Lr: 0.000501, Time: 0.02 hours
+Epoch 31/50, Train Loss: 0.008916, Val acc: 0.882136, auc: 0.903222 Recall 0.937349 Lr: 0.000462, Time: 0.02 hours
+Epoch 32/50, Train Loss: 0.008601, Val acc: 0.847606, auc: 0.888321 Recall 0.954217 Lr: 0.000423, Time: 0.02 hours
+Epoch 33/50, Train Loss: 0.008554, Val acc: 0.890884, auc: 0.906789 Recall 0.932530 Lr: 0.000384, Time: 0.02 hours
+Epoch 34/50, Train Loss: 0.008341, Val acc: 0.822744, auc: 0.881236 Recall 0.975904 Lr: 0.000347, Time: 0.02 hours
+Model saved as ./checkpoints/4_recall_hrnet.pth
+Epoch 35/50, Train Loss: 0.008059, Val acc: 0.878453, auc: 0.900025 Recall 0.934940 Lr: 0.000310, Time: 0.02 hours
+Epoch 36/50, Train Loss: 0.007928, Val acc: 0.872928, auc: 0.904893 Recall 0.956627 Lr: 0.000274, Time: 0.02 hours
+Epoch 37/50, Train Loss: 0.007809, Val acc: 0.854512, auc: 0.897191 Recall 0.966265 Lr: 0.000240, Time: 0.02 hours
+Epoch 38/50, Train Loss: 0.007647, Val acc: 0.868324, auc: 0.905728 Recall 0.966265 Lr: 0.000207, Time: 0.02 hours
+Epoch 39/50, Train Loss: 0.007479, Val acc: 0.831492, auc: 0.882042 Recall 0.963855 Lr: 0.000176, Time: 0.02 hours
+Epoch 40/50, Train Loss: 0.007325, Val acc: 0.844383, auc: 0.892770 Recall 0.971084 Lr: 0.000148, Time: 0.02 hours
+Epoch 41/50, Train Loss: 0.007204, Val acc: 0.839779, auc: 0.889925 Recall 0.971084 Lr: 0.000121, Time: 0.02 hours
+Epoch 42/50, Train Loss: 0.007051, Val acc: 0.857735, auc: 0.899183 Recall 0.966265 Lr: 0.000097, Time: 0.02 hours
+Epoch 43/50, Train Loss: 0.006958, Val acc: 0.863260, auc: 0.900757 Recall 0.961446 Lr: 0.000075, Time: 0.02 hours
+Epoch 44/50, Train Loss: 0.006858, Val acc: 0.845764, auc: 0.895465 Recall 0.975904 Lr: 0.000056, Time: 0.02 hours
+Epoch 45/50, Train Loss: 0.006759, Val acc: 0.846685, auc: 0.892353 Recall 0.966265 Lr: 0.000039, Time: 0.02 hours
+Epoch 46/50, Train Loss: 0.006755, Val acc: 0.863720, auc: 0.901042 Recall 0.961446 Lr: 0.000026, Time: 0.02 hours
+Epoch 47/50, Train Loss: 0.006700, Val acc: 0.845304, auc: 0.892419 Recall 0.968675 Lr: 0.000015, Time: 0.02 hours
+Epoch 48/50, Train Loss: 0.006599, Val acc: 0.846685, auc: 0.893273 Recall 0.968675 Lr: 0.000007, Time: 0.02 hours
+Epoch 49/50, Train Loss: 0.006629, Val acc: 0.847606, auc: 0.894762 Recall 0.971084 Lr: 0.000003, Time: 0.02 hours
+Epoch 50/50, Train Loss: 0.006636, Val acc: 0.846685, auc: 0.894193 Recall 0.971084 Lr: 0.000001, Time: 0.02 hours
+Model saved as ./checkpoints/4_hrnet.pth
+the mid-result and the pytorch model will be stored in experiments
+=> loading pretrained model ./pretrained/hrnet.pth
+load the checkpoint in ./checkpoints/4_hrnet.pth
+Saveing the model in ./checkpoints
+Skipping loading parameter: mask_token
+Skipping loading parameter: patch_embed.proj.weight
+Skipping loading parameter: patch_embed.proj.bias
+using cuda for training
+There is 64 batch size
+Train: 60, Val: 34
+Epoch 1/50,Train Loss: 0.739620, Val Loss: 0.653106, Acc: 0.843002, Auc: 0.891398, Recall: 0.515663 Lr: 0.000049
+Model saved as ./checkpoints/4nlp.pth
+Epoch 2/50,Train Loss: 0.564401, Val Loss: 0.620376, Acc: 0.854972, Auc: 0.921380, Recall: 0.703614 Lr: 0.000099
+Model saved as ./checkpoints/4nlp.pth
+Epoch 3/50,Train Loss: 0.525090, Val Loss: 0.563397, Acc: 0.892726, Auc: 0.953493, Recall: 0.742169 Lr: 0.000149
+Model saved as ./checkpoints/4nlp.pth
+Epoch 4/50,Train Loss: 0.506789, Val Loss: 0.579946, Acc: 0.888122, Auc: 0.950104, Recall: 0.730120 Lr: 0.000199
+Epoch 5/50,Train Loss: 0.480102, Val Loss: 0.549842, Acc: 0.900552, Auc: 0.942114, Recall: 0.804819 Lr: 0.000249
+Model saved as ./checkpoints/4nlp.pth
+Epoch 6/50,Train Loss: 0.460755, Val Loss: 0.521697, Acc: 0.926796, Auc: 0.958341, Recall: 0.891566 Lr: 0.000299
+Model saved as ./checkpoints/4nlp.pth
+Epoch 7/50,Train Loss: 0.452065, Val Loss: 0.495173, Acc: 0.935083, Auc: 0.968085, Recall: 0.934940 Lr: 0.000349
+Model saved as ./checkpoints/4nlp.pth
+Epoch 8/50,Train Loss: 0.445299, Val Loss: 0.474665, Acc: 0.943831, Auc: 0.977434, Recall: 0.975904 Lr: 0.000399
+Model saved as ./checkpoints/4nlp.pth
+Epoch 9/50,Train Loss: 0.440836, Val Loss: 0.483745, Acc: 0.942910, Auc: 0.971528, Recall: 0.995181 Lr: 0.000449
+Epoch 10/50,Train Loss: 0.435818, Val Loss: 0.477632, Acc: 0.946133, Auc: 0.971541, Recall: 1.000000 Lr: 0.000499
+Epoch 11/50,Train Loss: 0.435767, Val Loss: 0.476193, Acc: 0.941529, Auc: 0.964593, Recall: 1.000000 Lr: 0.000499
+Epoch 12/50,Train Loss: 0.425631, Val Loss: 0.501582, Acc: 0.935543, Auc: 0.949226, Recall: 1.000000 Lr: 0.000497
+Epoch 13/50,Train Loss: 0.415604, Val Loss: 0.483595, Acc: 0.939227, Auc: 0.968583, Recall: 1.000000 Lr: 0.000493
+Epoch 14/50,Train Loss: 0.419055, Val Loss: 0.461933, Acc: 0.946593, Auc: 0.976305, Recall: 1.000000 Lr: 0.000488
+Model saved as ./checkpoints/4nlp.pth
+Epoch 15/50,Train Loss: 0.418364, Val Loss: 0.468399, Acc: 0.945212, Auc: 0.973916, Recall: 1.000000 Lr: 0.000481
+Epoch 16/50,Train Loss: 0.414983, Val Loss: 0.458629, Acc: 0.946133, Auc: 0.969011, Recall: 1.000000 Lr: 0.000473
+Model saved as ./checkpoints/4nlp.pth
+Epoch 17/50,Train Loss: 0.411427, Val Loss: 0.467310, Acc: 0.944751, Auc: 0.955342, Recall: 1.000000 Lr: 0.000463
+Epoch 18/50,Train Loss: 0.411077, Val Loss: 0.456505, Acc: 0.947974, Auc: 0.970301, Recall: 1.000000 Lr: 0.000453
+Model saved as ./checkpoints/4nlp.pth
+Epoch 19/50,Train Loss: 0.405177, Val Loss: 0.452311, Acc: 0.953499, Auc: 0.973412, Recall: 1.000000 Lr: 0.000440
+Model saved as ./checkpoints/4nlp.pth
+Epoch 20/50,Train Loss: 0.409182, Val Loss: 0.469966, Acc: 0.942449, Auc: 0.939775, Recall: 1.000000 Lr: 0.000427
+Epoch 21/50,Train Loss: 0.405701, Val Loss: 0.468897, Acc: 0.936004, Auc: 0.964959, Recall: 1.000000 Lr: 0.000413
+Epoch 22/50,Train Loss: 0.403025, Val Loss: 0.459865, Acc: 0.943831, Auc: 0.973305, Recall: 1.000000 Lr: 0.000397
+Epoch 23/50,Train Loss: 0.403145, Val Loss: 0.474373, Acc: 0.943370, Auc: 0.950984, Recall: 1.000000 Lr: 0.000381
+Epoch 24/50,Train Loss: 0.400233, Val Loss: 0.473636, Acc: 0.943370, Auc: 0.965504, Recall: 1.000000 Lr: 0.000364
+Epoch 25/50,Train Loss: 0.392922, Val Loss: 0.473340, Acc: 0.944751, Auc: 0.964468, Recall: 1.000000 Lr: 0.000346
+Epoch 26/50,Train Loss: 0.398420, Val Loss: 0.483663, Acc: 0.939227, Auc: 0.964837, Recall: 1.000000 Lr: 0.000328
+Epoch 27/50,Train Loss: 0.396866, Val Loss: 0.457419, Acc: 0.952578, Auc: 0.977848, Recall: 1.000000 Lr: 0.000309
+Epoch 28/50,Train Loss: 0.395309, Val Loss: 0.464009, Acc: 0.950276, Auc: 0.956806, Recall: 1.000000 Lr: 0.000290
+Epoch 29/50,Train Loss: 0.390645, Val Loss: 0.500544, Acc: 0.930018, Auc: 0.956933, Recall: 1.000000 Lr: 0.000270
+Epoch 30/50,Train Loss: 0.387060, Val Loss: 0.478183, Acc: 0.945672, Auc: 0.966283, Recall: 1.000000 Lr: 0.000251
+Epoch 31/50,Train Loss: 0.385446, Val Loss: 0.476223, Acc: 0.941529, Auc: 0.963681, Recall: 1.000000 Lr: 0.000231
+Epoch 32/50,Train Loss: 0.382892, Val Loss: 0.508688, Acc: 0.936924, Auc: 0.950453, Recall: 1.000000 Lr: 0.000212
+Epoch 33/50,Train Loss: 0.392796, Val Loss: 0.477853, Acc: 0.943831, Auc: 0.964766, Recall: 1.000000 Lr: 0.000193
+Epoch 34/50,Train Loss: 0.383889, Val Loss: 0.479361, Acc: 0.944291, Auc: 0.947230, Recall: 1.000000 Lr: 0.000174
+Epoch 35/50,Train Loss: 0.380491, Val Loss: 0.489307, Acc: 0.942910, Auc: 0.949393, Recall: 1.000000 Lr: 0.000155
+Epoch 36/50,Train Loss: 0.378475, Val Loss: 0.488507, Acc: 0.941068, Auc: 0.943748, Recall: 1.000000 Lr: 0.000138
+Epoch 37/50,Train Loss: 0.375492, Val Loss: 0.476523, Acc: 0.943370, Auc: 0.957369, Recall: 1.000000 Lr: 0.000120
+Epoch 38/50,Train Loss: 0.376977, Val Loss: 0.480634, Acc: 0.944751, Auc: 0.956484, Recall: 1.000000 Lr: 0.000104
+Epoch 39/50,Train Loss: 0.371215, Val Loss: 0.491703, Acc: 0.942910, Auc: 0.945896, Recall: 1.000000 Lr: 0.000089
+Epoch 40/50,Train Loss: 0.365970, Val Loss: 0.485384, Acc: 0.947053, Auc: 0.919432, Recall: 1.000000 Lr: 0.000074
+Epoch 41/50,Train Loss: 0.369223, Val Loss: 0.484320, Acc: 0.943831, Auc: 0.935254, Recall: 1.000000 Lr: 0.000061
+Epoch 42/50,Train Loss: 0.363733, Val Loss: 0.483972, Acc: 0.943370, Auc: 0.924007, Recall: 1.000000 Lr: 0.000049
+Epoch 43/50,Train Loss: 0.362943, Val Loss: 0.493227, Acc: 0.945672, Auc: 0.932008, Recall: 1.000000 Lr: 0.000038
+Epoch 44/50,Train Loss: 0.360159, Val Loss: 0.493938, Acc: 0.946593, Auc: 0.913388, Recall: 1.000000 Lr: 0.000028
+Epoch 45/50,Train Loss: 0.359375, Val Loss: 0.495293, Acc: 0.944291, Auc: 0.918227, Recall: 1.000000 Lr: 0.000020
+Epoch 46/50,Train Loss: 0.360478, Val Loss: 0.495180, Acc: 0.944751, Auc: 0.913187, Recall: 1.000000 Lr: 0.000013
+Epoch 47/50,Train Loss: 0.359576, Val Loss: 0.495219, Acc: 0.946593, Auc: 0.906973, Recall: 1.000000 Lr: 0.000008
+Epoch 48/50,Train Loss: 0.358601, Val Loss: 0.492996, Acc: 0.945212, Auc: 0.906307, Recall: 1.000000 Lr: 0.000004
+Epoch 49/50,Train Loss: 0.357586, Val Loss: 0.493893, Acc: 0.945672, Auc: 0.903714, Recall: 1.000000 Lr: 0.000002
+Early stopping triggered
+last epoch model: Acc: 0.9567 | Auc: 0.9487 | REcall: 1.0000
+best epoch model: Acc: 0.9498 | Auc: 0.9811 | REcall: 1.0000
