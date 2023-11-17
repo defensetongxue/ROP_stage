@@ -4,12 +4,14 @@ from util.dataset import CustomDataset
 from  models import build_model
 from util.losses import LabelSmoothingCrossEntropy
 import os,json
+import numpy as np
 from util.functions import train_epoch,val_epoch,get_optimizer,lr_sche
 from configs import get_config
 # Initialize the folder
 os.makedirs("checkpoints",exist_ok=True)
 os.makedirs("experiments",exist_ok=True)
-
+torch.manual_seed(0)
+np.random.seed(0)
 # Parse arguments
 args = get_config()
 
