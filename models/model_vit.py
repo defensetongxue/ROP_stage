@@ -63,7 +63,40 @@ class SentenceModel(nn.Module):
 
         x = self.norm(x)
         return x[:, 0]
-
+    
+    def _visual(self, x_val):
+        x, val = x_val
+        B = x.shape[0]
+        x = self.patch_embed(x)
+    
+        cls_tokens = self.cls_token.expand(B, -1, -1)
+        x = torch.cat((cls_tokens, x), dim=1)
+        x = x + self.pos_embed
+        x = self.pos_drop(x)
+    
+        # Process through all blocks except the last
+        for blk in self.blocks[:-1]:
+            x = blk(x)
+    
+        # Process through the last block and capture attention scores
+        last_block = self.blocks[-1]
+        x, att_scores = last_block(x, return_attention_scores=True)
+    
+        x = self.norm(x)
+        final_output = x[:, 0]
+    
+        # Average attention scores across heads and extract scores for the class token
+        avg_att_scores = att_scores.mean(dim=1)  # Averaging across the num_heads dimension
+        cls_token_att_scores = avg_att_scores[:, 0, 1:]  # Scores of class token attending to patches
+    
+        # Calculate order of contribution
+        att_order = cls_token_att_scores.argsort(dim=-1, descending=True)
+    
+        # Forward the class token to the head
+        final_output = torch.cat([final_output, val], dim=1)
+        final_output = self.head(final_output)
+    
+        return final_output, att_order
     def forward(self, x_val):
         x,val=x_val
         x = self.forward_features(x)

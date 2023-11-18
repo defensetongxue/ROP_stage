@@ -37,32 +37,38 @@ metrics = ['Accuracy', 'AUC', 'Recall']
 baseline_means = [baseline_acc_mean, baseline_auc_mean, baseline_recall_mean]
 ours_means = [ours_acc_mean, ours_auc_mean, ours_recall_mean]
 
-# Colors
-ours_colors = [(58/255, 27/255, 25/255), (199/255, 160/255, 133/255), (201/255, 71/255, 55/255)]
-baseline_colors = [(194/255, 207/255, 162/255), (164/255, 121/255, 158/255), (122/255, 102/255, 114/255)]
 
-# Plotting
-x_ours = np.arange(len(metrics))  # Positions for the 'ours' metrics
-x_baseline = np.arange(len(metrics)) + len(metrics) + 1  # Positions for the 'baseline' metrics
+# Colors (using ours_colors for all metrics)
+ours_colors = [(58/255, 27/255, 25/255), (199/255, 160/255, 133/255), (201/255, 71/255, 55/255)]
 
 # Plotting
 fig, ax = plt.subplots()
+
+# Bar positions and width
+bar_width = 0.9  # Adjust bar width for closer grouping within each method
+
+# Calculate positions for each metric in a group
+x_ours = np.arange(len(metrics))  # Positions for the 'ours' metrics
+x_baseline = x_ours + len(metrics) + 0.5  # Positions for the 'baseline' metrics, with space between groups
+
+# Plot bars for 'ours' and 'baseline' using the same colors
 for i in range(len(metrics)):
-    ax.bar(x_ours[i], ours_means[i],1, label='Ours' if i == 0 else "", color=ours_colors[i])
-    ax.bar(x_baseline[i], baseline_means[i],1, label='Baseline' if i == 0 else "", color=baseline_colors[i])
+    ax.bar(x_ours[i], ours_means[i], bar_width, color=ours_colors[i])
+    ax.bar(x_baseline[i], baseline_means[i], bar_width, color=ours_colors[i])
 
 # Add some text for labels, title and custom x-axis tick labels, etc.
 ax.set_ylabel('Scores')
 ax.set_title('Comparison of Metrics')
-ax.set_xticks(np.concatenate([x_ours, x_baseline]))
-ax.set_xticklabels(metrics * 2)  # Repeat the labels for both methods
+ax.set_xticks([np.mean(x_ours), np.mean(x_baseline)])
+ax.set_xticklabels(['Ours', 'Nature'])
 
-# Place legend outside the plot
-ax.legend(loc='upper left', bbox_to_anchor=(1, 1))
+# Creating a custom legend for the colors
+from matplotlib.patches import Patch
+legend_elements = [Patch(facecolor=ours_colors[i], label=metrics[i]) for i in range(len(metrics))]
+ax.legend(handles=legend_elements, title="Metric", loc='upper left', bbox_to_anchor=(1, 1))
 
-# Attach a text label above each bar in *rects*, displaying its height (as before)
+# Attach a text label above each bar in *rects*, displaying its height
 def autolabel(x, heights, colors):
-    """Attach a text label above each bar in *rects*, displaying its height."""
     for i, height in enumerate(heights):
         ax.annotate(f'{height:.4f}',
                     xy=(x[i], height),
@@ -71,9 +77,9 @@ def autolabel(x, heights, colors):
                     ha='center', va='bottom', color=colors[i])
 
 autolabel(x_ours, ours_means, ours_colors)
-autolabel(x_baseline, baseline_means, baseline_colors)
+autolabel(x_baseline, baseline_means, ours_colors)
 
 fig.tight_layout()
 
-plt.savefig('./comparison_chart_colored.png', bbox_inches='tight')
+plt.savefig('./res_two_groups.png', bbox_inches='tight')
 plt.show()

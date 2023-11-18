@@ -34,8 +34,8 @@ class CustomDataset(Dataset):
         data=self.data_dict[image_name]
         word_list=os.listdir(data['stage_sentence_path'])
         image_list=[]
-        for image_name in word_list:
-            img = Image.open(os.path.join(data['stage_sentence_path'],image_name)).convert('RGB')
+        for image_cnt in word_list:
+            img = Image.open(os.path.join(data['stage_sentence_path'],image_cnt)).convert('RGB')
             if self.split=='train':
                 img=self.enhance_transforms(img)
             img = self.img_transforms(img)
