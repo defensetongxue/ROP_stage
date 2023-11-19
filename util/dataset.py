@@ -45,6 +45,7 @@ class CustomDataset(Dataset):
         # Convert mask and pos_embed to tensor
         stage_label=data['stage']-1
         return( patches,val_tensor),data['stage'],image_name
+        # return( patches,val_tensor),stage_label,image_name
 
 
     def __len__(self):

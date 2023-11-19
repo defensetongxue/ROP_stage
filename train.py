@@ -68,10 +68,13 @@ save_model_name=args.split_name+args.configs['save_name']
 for epoch in range(last_epoch,total_epoches):
 
     train_loss = train_epoch(model, optimizer, train_loader, criterion, device,lr_scheduler,epoch)
-    val_loss, accuracy, auc ,recall= val_epoch(model, val_loader, criterion, device)
-    print(f"Epoch {epoch + 1}/{total_epoches}," 
-          f"Train Loss: {train_loss:.6f}, Val Loss: {val_loss:.6f}, Acc: {accuracy:.6f}, Auc: {auc:.6f}, Recall: {recall:.6f}" 
-            f" Lr: {optimizer.state_dict()['param_groups'][0]['lr']:.6f}" )
+    val_loss, accuracy, auc , recall_pos, recall_1, recall_2, recall_3= val_epoch(model, val_loader, criterion, device)
+    print(f"Epoch {epoch + 1}/{total_epoches}, "
+      f"Train Loss: {train_loss:.6f}, Val Loss: {val_loss:.6f}, "
+      f"Acc: {accuracy:.6f}, Auc: {auc:.6f}, "
+      f"Recall (Pos): {recall_pos:.6f}, Recall (Class 1): {recall_1:.6f}, "
+      f"Recall (Class 2): {recall_2:.6f}, Recall (Class 3): {recall_3:.6f}, "
+      f"Lr: {optimizer.state_dict()['param_groups'][0]['lr']:.6f}")
     # Update the learning rate if using ReduceLROnPlateau or CosineAnnealingLR
     # Early stopping
     if val_loss < best_val_loss:
