@@ -38,6 +38,7 @@ class Metrics:
         self.recall_1 = 0
         self.recall_2 = 0
         self.recall_3 = 0
+        self.recall_pos=0
         self.average_recall = 0
     def calculate_class_weights(self, dataset):
         # Calculate the distribution of classes 1, 2, and 3 in the dataset
@@ -62,7 +63,7 @@ class Metrics:
         self.recall_1 = calculate_recall(targets, predictions, class_id=1)
         self.recall_2 = calculate_recall(targets, predictions, class_id=2)
         self.recall_3 = calculate_recall(targets, predictions, class_id=3)
-
+        self.recall_pos=calculate_recall(targets,predictions)
         # Compute weighted average recall
         self.average_recall = sum(self.class_weights[i] * recall for i, recall in zip([1, 2, 3], [self.recall_1, self.recall_2, self.recall_3]))
 
@@ -70,4 +71,5 @@ class Metrics:
         return (f"[{self.header}] "
                 f"Acc: {self.accuracy:.4f}, Auc: {self.auc:.4f}, "
                 f"Recall1: {self.recall_1:.4f}, Recall2: {self.recall_2:.4f}, "
-                f"Recall3: {self.recall_3:.4f}, Average Recall: {self.average_recall:.4f}")
+                f"Recall3: {self.recall_3:.4f}, RecallAvg: {self.average_recall:.4f}, RecallPos: {self.recall_pos:.4f} ")
+    
