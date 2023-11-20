@@ -44,7 +44,8 @@ class CustomDataset(Dataset):
         val_tensor=torch.tensor(data['ridge_seg']["value_list"])
         # Convert mask and pos_embed to tensor
         stage_label=data['stage']-1
-        return( patches,val_tensor),data['stage'],image_name
+        stage_list=torch.tensor(data['stage_sentence_stagelist']).long()
+        return( patches,val_tensor),(data['stage'],stage_list),image_name
         # return( patches,val_tensor),stage_label,image_name
 
 

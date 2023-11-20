@@ -8,8 +8,8 @@ host_server = 'smtp.pku.edu.cn'  #smtp服务器
 sender = '1900013009@pku.edu.cn' #发件人邮箱
 pwd = 'EHVOcdzi4162'
 receiver = '1900013009@pku.edu.cn'#收件人邮箱
-mail_title = 'Hope' #邮件标题
-mail_content = "Hope" #邮件正文内容
+mail_title = 'new version' #邮件标题
+mail_content = "new version" #邮件正文内容
 # 初始化一个邮件主体
 msg = MIMEMultipart()
 msg["Subject"] = Header(mail_title,'utf-8')

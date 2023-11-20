@@ -1,8 +1,11 @@
 import torch,math
 from torch import optim
 import numpy as np
-from sklearn.metrics import accuracy_score, roc_auc_score
+from .metric import Metrics
 from torch import nn
+from collections import Counter
+
+
 def to_device(x, device):
     if isinstance(x, tuple):
         return tuple(to_device(xi, device) for xi in x)
@@ -36,65 +39,57 @@ def train_epoch(model, optimizer, train_loader, loss_function, device,lr_schedul
     
     return running_loss / len(train_loader)
 
-def calculate_recall(labels, preds, class_id=None):
-    """
-    Calculate recall for a specified class or for the positive label in a multi-class task.
-    
-    Args:
-    labels (np.array): Array of true labels.
-    preds (np.array): Array of predicted labels.
-    class_id (int or None): Class ID for which to calculate recall. If None, calculate recall for the positive label.
-    
-    Returns:
-    float: Recall for the specified class or for the positive label.
-    """
-    if class_id is not None:
-        true_class = labels == class_id
-        predicted_class = preds == class_id
-    else:
-        true_class = labels > 0
-        predicted_class = preds > 0
 
-    true_positives = np.sum(true_class & predicted_class)
-    false_negatives = np.sum(true_class & ~predicted_class)
-
-    recall = true_positives / (true_positives + false_negatives) if (true_positives + false_negatives) > 0 else 0
-    return recall
-
-def val_epoch(model, val_loader, loss_function, device):
+def val_epoch(model, val_loader, loss_function, device,metirc:Metrics,metirc_aux:Metrics):
     loss_function=nn.CrossEntropyLoss()
     model.eval()
     running_loss = 0.0
     all_predictions = []
+    all_predicction_aux=[]
     all_targets = []
+    all_probs_aux = []
     all_probs = []
     with torch.no_grad():
         for inputs, targets, _ in val_loader:
             inputs = to_device(inputs,device)
-            targets = to_device(targets,device)
+            targets = to_device(targets[0],device)
             outputs = model(inputs)
-            loss = loss_function(outputs, targets)
+            loss = loss_function(outputs[0], targets)
             running_loss += loss.item()
-
-            probs = torch.softmax(outputs.cpu(), dim=1).numpy()
+            probs = torch.softmax(outputs[0].cpu(), dim=1).numpy()
             predictions = np.argmax(probs, axis=1)
+            probs_aux=torch.softmax(outputs[1].cpu(), dim=-1).numpy()
+            predictions_aux_word = np.argmax(probs_aux, axis=2)
+            predictions_aux=np.max(predictions_aux_word ,axis=1)
+            for i in range(len(targets)):
+                # Identify words contributing to image-level prediction
+                contributing_words = (predictions_aux_word[i] == int(predictions_aux[i]))
+
+                # Select probabilities for contributing words
+                selected_probs = probs_aux[i][contributing_words]
+
+                # Calculate the average probability for the contributing words
+                if len(selected_probs) > 0:
+                    avg_probs = np.mean(selected_probs, axis=0)
+                else:
+                    avg_probs = np.zeros(probs_aux.shape[-1])
+
+                all_probs_aux.append(avg_probs)
 
             all_predictions.extend(predictions)
+            all_predicction_aux.extend(predictions_aux)
             all_targets.extend(targets.cpu().numpy())
             all_probs.extend(probs)
+            
+    all_predicction_aux=np.array(all_predicction_aux)
     all_predictions = np.array(all_predictions)
     all_targets = np.array(all_targets)
     all_probs = np.vstack(all_probs)
-    accuracy = accuracy_score(all_targets, all_predictions)
-    auc = roc_auc_score(all_targets,all_probs, multi_class='ovr')
-
-    recall_pos = calculate_recall(all_targets, all_predictions)
-    recall_1 = calculate_recall(all_targets, all_predictions, class_id=1)
-    recall_2 = calculate_recall(all_targets, all_predictions, class_id=2)
-    recall_3 = calculate_recall(all_targets, all_predictions, class_id=3)
-
-    return running_loss / len(val_loader), accuracy, auc, recall_pos, recall_1, recall_2, recall_3
-
+    all_probs_aux = np.array(all_probs_aux)
+    # print(all_predictions.shape,all_probs.shape,)
+    metirc.update(all_predictions,all_probs,all_targets)
+    metirc_aux.update(all_predicction_aux,all_probs_aux,all_targets)
+    return running_loss / len(val_loader), metirc,metirc_aux
 def get_instance(module, class_name, *args, **kwargs):
     cls = getattr(module, class_name)
     instance = cls(*args, **kwargs)

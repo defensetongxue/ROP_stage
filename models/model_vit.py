@@ -7,10 +7,11 @@ class SentenceModel(nn.Module):
                  num_heads=16, mlp_ratio=4., qkv_bias=True, qk_scale=None, drop_rate=0., attn_drop_rate=0.,
                  drop_path_rate=0., num_patches=5, norm_layer=partial(nn.LayerNorm, eps=1e-6)):
         super().__init__()
-        self.patch_embed = CustomPatchEmbed(patch_size=patch_size,embed_dim=embed_dim)
+        self.patch_embed = CustomPatchEmbed(patch_size=patch_size,word_size=num_patches)
         self.cls_token = nn.Parameter(torch.zeros(1, 1, embed_dim))
         self.pos_embed = nn.Parameter(torch.zeros(1, num_patches + 1, embed_dim))
         self.pos_drop = nn.Dropout(p=drop_rate)
+        self.word_size=num_patches
         dpr = [x.item() for x in torch.linspace(0, drop_path_rate, depth)]  # stochastic depth decay rule
         self.blocks = nn.ModuleList([
             Block(
@@ -19,6 +20,7 @@ class SentenceModel(nn.Module):
             for i in range(depth)])
         self.head=nn.Linear(embed_dim+num_patches,num_classes)
         self.norm = norm_layer(embed_dim)
+        self.seghead=nn.Linear(1024,4)
     def load_pretrained(self, pretrained_path):
         # Load the state dict from the pretrained model
         checkpoint = torch.load(pretrained_path, map_location='cpu')
@@ -52,7 +54,7 @@ class SentenceModel(nn.Module):
     def forward_features(self, x):
         B = x.shape[0]
         x = self.patch_embed(x)
-
+        aux_pout=self.seghead(x)
         cls_tokens = self.cls_token.expand(B, -1, -1)  # stole cls_tokens impl from Phil Wang, thanks
         x = torch.cat((cls_tokens, x), dim=1)
         x = x + self.pos_embed
@@ -62,7 +64,7 @@ class SentenceModel(nn.Module):
             x = blk(x)
 
         x = self.norm(x)
-        return x[:, 0]
+        return x,aux_pout
     
     def _visual(self, x_val):
         x, val = x_val
@@ -99,7 +101,9 @@ class SentenceModel(nn.Module):
         return final_output, att_order
     def forward(self, x_val):
         x,val=x_val
-        x = self.forward_features(x)
-        x=torch.cat([x,val],dim=1)
+        x,patch_label = self.forward_features(x)
+        class_token=x[:,0,:]
+        head_embed=x[:,1:,:]
+        x=torch.cat([class_token,val[:,:self.word_size]],dim=1)
         x = self.head(x)
-        return x
+        return x,patch_label

@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 import os
-from torchvision.models.resnet import resnet18
+from .hybirdEmbed import build_model
 def drop_path(x, drop_prob: float = 0., training: bool = False):
     """Drop paths (Stochastic Depth) per sample (when applied in main path of residual blocks).
 
@@ -33,18 +33,23 @@ class DropPath(nn.Module):
 
 class CustomPatchEmbed(nn.Module):
     """ Custom Patch Embedding using ResNet blocks for larger patches """
-    def __init__(self, patch_size=112, in_chans=3, embed_dim=768, word_size=5):
+    def __init__(self, patch_size=112, hybird_method='resnet50', word_size=5):
         super().__init__()
+        '''
+        emnum(hybird_method)=
+        
+        mobilenetv3_small,
+        mobilenetv3_large
+        resnet50
+        resnet18
+        vgg16
+        '''
         self.patch_size = patch_size
         self.word_size = word_size
-        self.embed_dim = embed_dim
 
         # Use a pre-trained ResNet model and modify the last layer to match embed_dim
         os.environ['TORCH_HOME'] ='./experiments'
-        self.resnet = resnet18(pretrained=True)
-        self.resnet.fc = nn.Linear(512, embed_dim)
-        nn.init.trunc_normal_(self.resnet.fc.weight, std=.02)
-        
+        self.hybird=build_model(hybird_method)
 
     def forward(self, x):
         # x shape is expected to be [batch_size, 3, patch_size, word_size * patch_size]
@@ -54,8 +59,9 @@ class CustomPatchEmbed(nn.Module):
         if word>self.word_size:
             x=x[:,:self.word_size,:,:,:]
         x=x.reshape(-1,C,H,W)
-        x=self.resnet(x)
-        return x.reshape(B,self.word_size,self.embed_dim)
+        x=self.hybird(x)
+        return x.reshape(B,self.word_size,-1)
+    
 class Mlp(nn.Module):
     def __init__(self, in_features, hidden_features=None, out_features=None, act_layer=nn.GELU, drop=0.):
         super().__init__()
