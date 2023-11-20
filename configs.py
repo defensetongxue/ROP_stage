@@ -10,8 +10,13 @@ def get_config():
                         help='which split to use.')
     parser.add_argument('--word_size', type=int, default=5,
                         help='which split to use.')
+    parser.add_argument('--aux_r', type=float, default=1.,
+                        help='which split to use.')
     parser.add_argument('--patch_size', type=int, default=112,
                         help='which split to use.')
+    parser.add_argument('--hybird', type=str, default='resnet50',
+                        help='which split to use.')
+    
     # Model
     parser.add_argument('--ridge_seg_number', type=int, default=5,
                         help='Name of the model architecture to be used for training.')

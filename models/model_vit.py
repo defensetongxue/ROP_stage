@@ -3,22 +3,24 @@ from .layers import *
 from functools import partial
 
 class SentenceModel(nn.Module):
-    def __init__(self, patch_size=16, num_classes=1000,embed_dim=1024, depth=24,
+    def __init__(self, num_classes=1000,hybird_method='resnet50', word_size=5,
+                 # above is the pretrained attention loaded param
+                 patch_size=16,embed_dim=1024, depth=24,
                  num_heads=16, mlp_ratio=4., qkv_bias=True, qk_scale=None, drop_rate=0., attn_drop_rate=0.,
-                 drop_path_rate=0., num_patches=5, norm_layer=partial(nn.LayerNorm, eps=1e-6)):
+                 drop_path_rate=0., norm_layer=partial(nn.LayerNorm, eps=1e-6)):
         super().__init__()
-        self.patch_embed = CustomPatchEmbed(patch_size=patch_size,word_size=num_patches)
+        self.patch_embed = CustomPatchEmbed(patch_size=patch_size,word_size=word_size,hybird_method=hybird_method)
         self.cls_token = nn.Parameter(torch.zeros(1, 1, embed_dim))
-        self.pos_embed = nn.Parameter(torch.zeros(1, num_patches + 1, embed_dim))
+        self.pos_embed = nn.Parameter(torch.zeros(1, word_size + 1, embed_dim))
         self.pos_drop = nn.Dropout(p=drop_rate)
-        self.word_size=num_patches
+        self.word_size=word_size
         dpr = [x.item() for x in torch.linspace(0, drop_path_rate, depth)]  # stochastic depth decay rule
         self.blocks = nn.ModuleList([
             Block(
                 dim=embed_dim, num_heads=num_heads, mlp_ratio=mlp_ratio, qkv_bias=qkv_bias, qk_scale=qk_scale,
                 drop=drop_rate, attn_drop=attn_drop_rate, drop_path=dpr[i], norm_layer=norm_layer)
             for i in range(depth)])
-        self.head=nn.Linear(embed_dim+num_patches,num_classes)
+        self.head=nn.Linear(embed_dim+word_size,num_classes)
         self.norm = norm_layer(embed_dim)
         self.seghead=nn.Linear(1024,4)
     def load_pretrained(self, pretrained_path):
