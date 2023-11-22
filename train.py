@@ -103,6 +103,7 @@ for epoch in range(last_epoch,total_epoches):
 
 
 # Load the best model and evaluate
+print(f"word_size: {str(args.word_size)} patch_size: {str(args.patch_size)}")
 metirc=Metrics(test_dataset,"Main")
 metirc_aux=Metrics(test_dataset,"Aux")
 model.load_state_dict(
