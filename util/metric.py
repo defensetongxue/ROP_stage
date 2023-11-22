@@ -1,4 +1,5 @@
 import numpy as np
+import os,json
 from sklearn.metrics import accuracy_score, roc_auc_score
 from collections import Counter
 def calculate_recall(labels, preds, class_id=None):
@@ -72,4 +73,30 @@ class Metrics:
                 f"Acc: {self.accuracy:.4f}, Auc: {self.auc:.4f}, "
                 f"Recall1: {self.recall_1:.4f}, Recall2: {self.recall_2:.4f}, "
                 f"Recall3: {self.recall_3:.4f}, RecallAvg: {self.average_recall:.4f}, RecallPos: {self.recall_pos:.4f} ")
-    
+    def _restore(self,key,save_epoch,save_path):
+        res = {
+        "accuracy": round(self.accuracy, 4),
+        "auc": round(self.auc, 4),
+        "recall_1": round(self.recall_1, 4),
+        "recall_2": round(self.recall_2, 4),
+        "recall_3": round(self.recall_3, 4),
+        "recall_pos": round(self.recall_pos, 4),
+        "average_recall": round(self.average_recall, 4),
+        "save_epoch": save_epoch
+    }
+        if os.path.exists(save_path):
+            with open(save_path, 'r') as file:
+                existing_data = json.load(file)
+        else:
+            existing_data = {}
+
+        # Append the new data
+        if key not in existing_data:
+            existing_data[key]={
+                self.header: res
+            }
+        else:
+            existing_data[key][self.header]=res
+        # Save the updated data back to the file
+        with open(save_path, 'w') as file:
+            json.dump(existing_data, file, indent=4)

@@ -15,6 +15,9 @@ np.random.seed(0)
 # Parse arguments
 args = get_config()
 
+args.configs['train']['wd']=args.wd
+args.configs["lr_strategy"]['lr']=args.lr
+
 os.makedirs(args.save_dir,exist_ok=True)
 print("Saveing the model in {}".format(args.save_dir))
 # Create the model and criterion
@@ -58,9 +61,8 @@ test_loader=  DataLoader(test_dataset,
                         shuffle=False, num_workers=args.configs['num_works'])
 args.configs["smoothing"]=0
 if args.configs["smoothing"]> 0.:
-    from models.losses import LabelSmoothingCrossEntropy
-    assert "haven't implement successfully"
-    criterion = LabelSmoothingCrossEntropy(train_dataset+val_dataset,smoothing=args.configs["smoothing"])
+    from timm.loss import LabelSmoothingCrossEntropy
+    criterion = LabelSmoothingCrossEntropy(smoothing=args.configs["smoothing"])
 else:
     from models.losses import AdaptiveCrossEntropyLoss
     criterion = AdaptiveCrossEntropyLoss(train_dataset+val_dataset,device,aux_r=args.aux_r*args.word_size)
@@ -77,6 +79,7 @@ best_auc=0
 best_avgrecall=0
 total_epoches=args.configs['train']['end_epoch']
 save_model_name=args.split_name+args.configs['save_name']
+save_epoch=0
 # Training and validation loop
 for epoch in range(last_epoch,total_epoches):
 
@@ -89,8 +92,11 @@ for epoch in range(last_epoch,total_epoches):
     print(metirc)
     print(metirc_aux)
     # Early stopping
-    if metirc.average_recall >best_avgrecall:
-        best_avgrecall= metirc.average_recall
+    # if metirc.average_recall >best_avgrecall:
+    #     best_avgrecall= metirc.average_recall
+    if metirc.auc >best_auc:
+        save_epoch=save_epoch
+        best_auc= metirc.auc
         early_stop_counter = 0
         torch.save(model.state_dict(),
                    os.path.join(args.save_dir,save_model_name))
@@ -100,7 +106,7 @@ for epoch in range(last_epoch,total_epoches):
         if early_stop_counter >= args.configs['train']['early_stop']:
             print("Early stopping triggered")
             break
-
+    metirc.reset()       
 
 # Load the best model and evaluate
 print(f"word_size: {str(args.word_size)} patch_size: {str(args.patch_size)}")
@@ -112,3 +118,6 @@ val_loss, metirc,metirc_aux=val_epoch(model, test_loader, criterion, device,meti
 print(f"Best Epoch ")
 print(metirc)
 print(metirc_aux)
+key=f"{str(args.lr)}_{str(args.wd)}"
+metirc._restore(key,save_epoch,'./record.json')
+metirc_aux._restore(key,save_epoch,'./record.json')

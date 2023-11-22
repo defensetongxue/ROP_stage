@@ -109,3 +109,6 @@ class SentenceModel(nn.Module):
         x=torch.cat([class_token,val[:,:self.word_size]],dim=1)
         x = self.head(x)
         return x,patch_label
+    
+    def no_weight_decay(self):
+        return {'pos_embed', 'cls_token'}

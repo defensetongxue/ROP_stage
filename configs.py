@@ -17,15 +17,15 @@ def get_config():
     parser.add_argument('--hybird', type=str, default='resnet50',
                         help='which split to use.')
     
-    # Model
-    parser.add_argument('--ridge_seg_number', type=int, default=5,
-                        help='Name of the model architecture to be used for training.')
     # train and test
     parser.add_argument('--save_dir', type=str, default="./checkpoints",
                         help='Name of the file to save the best model during training.')
     parser.add_argument('--result_path', type=str, default="experiments",
                         help='Path to the visualize result or the pytorch model will be saved.')
-    
+    parser.add_argument('--wd', type=float, default=5e-4,
+                        help='which split to use.')
+    parser.add_argument('--lr', type=float, default=5e-4,
+                        help='which split to use.')
     # config file 
     parser.add_argument('--cfg', help='experiment configuration filename',
                         default="./configs/defalut.json", type=str)

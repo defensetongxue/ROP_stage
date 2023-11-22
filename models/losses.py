@@ -48,7 +48,7 @@ class LabelSmoothingCrossEntropy(nn.Module):
     
 
 class AdaptiveCrossEntropyLoss(nn.Module):
-    def __init__(self, dataset, device='cpu', ignore_index=-100):
+    def __init__(self, dataset, device='cpu',aux_r=5., ignore_index=-100):
         """
         Constructor for AdaptiveCrossEntropyLoss.
         :param dataset: Dataset instance to calculate class weights.
@@ -56,6 +56,7 @@ class AdaptiveCrossEntropyLoss(nn.Module):
         :param ignore_index: Specifies a target value that is ignored and does not contribute to the input gradient.
         """
         super(AdaptiveCrossEntropyLoss, self).__init__()
+        self.aux_r=aux_r
         self.device = device
         self.class_weights = self.calculate_class_weights(dataset).to(device)
         self.cross_entropy_loss = nn.CrossEntropyLoss(weight=self.class_weights, ignore_index=ignore_index)
@@ -89,4 +90,4 @@ class AdaptiveCrossEntropyLoss(nn.Module):
         bc,word_size,num_classes=patch_pred.shape
         patch_tar=patch_tar.reshape(-1)
         patch_pred=patch_pred.reshape(-1,num_classes)
-        return self.cross_entropy_loss(class_pred,class_tar)+self.cross_entropy_loss(patch_pred,patch_tar)*5
+        return self.cross_entropy_loss(class_pred,class_tar)+self.cross_entropy_loss(patch_pred,patch_tar)*self.aux_r
