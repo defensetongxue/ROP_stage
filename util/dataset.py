@@ -7,6 +7,8 @@ from torchvision.transforms import functional as F
 from PIL import Image
 import json
 import torch
+IMAGENET_DEFAULT_MEAN = (0.485, 0.456, 0.406)
+IMAGENET_DEFAULT_STD = (0.229, 0.224, 0.225)
 class CustomDataset(Dataset):
     def __init__(self, split,data_path,split_name):
         with open(os.path.join(data_path,'split',f'{split_name}.json'), 'r') as f:
@@ -27,8 +29,8 @@ class CustomDataset(Dataset):
         self.img_transforms=transforms.Compose([
             transforms.ToTensor(),
             transforms.Normalize(
-                mean=[0.4623, 0.3856, 0.2822],
-                std=[0.2527, 0.1889, 0.1334])])
+                mean=IMAGENET_DEFAULT_MEAN,std=IMAGENET_DEFAULT_STD)])
+                # mean=[0.4623, 0.3856, 0.2822],std=[0.2527, 0.1889, 0.1334])])
     def __getitem__(self, idx):
         image_name = self.split_list[idx]
         data=self.data_dict[image_name]
