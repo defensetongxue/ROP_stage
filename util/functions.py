@@ -128,8 +128,6 @@ class lr_sche():
             else:
                 param_group["lr"] = lr
         return lr
-    
-
 def param_groups_lrd(model, weight_decay=0.05, no_weight_decay_list=[], layer_decay=.75):
     """
     Parameter groups for layer-wise lr decay
@@ -139,7 +137,7 @@ def param_groups_lrd(model, weight_decay=0.05, no_weight_decay_list=[], layer_de
     param_groups = {}
 
     num_layers = len(model.blocks) + 1
-
+    
     layer_scales = list(layer_decay ** (num_layers - i) for i in range(num_layers + 1))
 
     for n, p in model.named_parameters():
@@ -159,8 +157,7 @@ def param_groups_lrd(model, weight_decay=0.05, no_weight_decay_list=[], layer_de
 
         if group_name not in param_group_names:
             if n.startswith('patch_embed'):
-                print(n)
-                this_scale=1.
+                this_scale =1.
             else:
                 this_scale = layer_scales[layer_id]
 
@@ -177,9 +174,9 @@ def param_groups_lrd(model, weight_decay=0.05, no_weight_decay_list=[], layer_de
 
         param_group_names[group_name]["params"].append(n)
         param_groups[group_name]["params"].append(p)
-
+    # import json
     # print("parameter groups: \n%s" % json.dumps(param_group_names, indent=2))
-
+    # raise
     return list(param_groups.values())
 
 

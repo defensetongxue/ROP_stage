@@ -1,13 +1,11 @@
-# python -u train.py 
-# python -u cleansing.py --word_size 4 --patch_size 112
-# python -u train.py --word_size 4 --patch_size 112
-# python -u cleansing.py --word_size 3 --patch_size 112
-# python -u train.py 
-# python -u cleansing.py --word_size 2 --patch_size 112
-# python -u train.py 
-# python -u cleansing.py --word_size 5 --patch_size 128
-python -u train.py --word_size 5 --patch_size 128
-# python -u cleansing.py --word_size 5 --patch_size 224
-# python -u train.py 
-# python ring.py
-# shutdown
+python -u train.py --lr 5e-4 --wd 5e-4
+# python -u train.py --lr 1e-4 --wd 5e-4
+python -u train.py --lr 1e-3 --wd 5e-4
+
+python -u train.py --lr 5e-4 --wd 5e-3
+# python -u train.py --lr 1e-4 --wd 5e-3
+# python -u train.py --lr 1e-3 --wd 5e-3
+
+python -u train.py --lr 5e-4 --wd 5e-2
+# python -u train.py --lr 1e-4 --wd 5e-2
+# python -u train.py --lr 1e-3 --wd 5e-2

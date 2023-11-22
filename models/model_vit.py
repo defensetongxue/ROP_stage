@@ -22,7 +22,7 @@ class SentenceModel(nn.Module):
             for i in range(depth)])
         self.head=nn.Linear(embed_dim+word_size,num_classes)
         self.norm = norm_layer(embed_dim)
-        self.seghead=nn.Linear(1024,4)
+        self.seghead=nn.Linear(embed_dim,num_classes)
     def load_pretrained(self, pretrained_path):
         # Load the state dict from the pretrained model
         checkpoint = torch.load(pretrained_path, map_location='cpu')
