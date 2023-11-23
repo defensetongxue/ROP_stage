@@ -95,7 +95,7 @@ for epoch in range(last_epoch,total_epoches):
     # if metirc.average_recall >best_avgrecall:
     #     best_avgrecall= metirc.average_recall
     if metirc.auc >best_auc:
-        save_epoch=save_epoch
+        save_epoch=epoch
         best_auc= metirc.auc
         early_stop_counter = 0
         torch.save(model.state_dict(),

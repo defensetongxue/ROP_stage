@@ -6,7 +6,7 @@ def get_config():
     parser.add_argument('--data_path', type=str, default='../autodl-tmp/dataset_ROP',
                         help='Path to the target folder to store the processed datasets.')
     # split
-    parser.add_argument('--split_name', type=str, default='2',
+    parser.add_argument('--split_name', type=str, default='1',
                         help='which split to use.')
     parser.add_argument('--word_size', type=int, default=5,
                         help='which split to use.')
