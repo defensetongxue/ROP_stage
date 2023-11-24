@@ -59,10 +59,9 @@ val_loader = DataLoader(val_dataset,
 test_loader=  DataLoader(test_dataset,
                         batch_size=args.configs['train']['batch_size'],
                         shuffle=False, num_workers=args.configs['num_works'])
-args.configs["smoothing"]=0
 if args.configs["smoothing"]> 0.:
-    from timm.loss import LabelSmoothingCrossEntropy
-    criterion = LabelSmoothingCrossEntropy(smoothing=args.configs["smoothing"])
+    from models.losses import CustomLabelSmoothing
+    criterion = CustomLabelSmoothing(smoothing=args.configs["smoothing"],aux_r=args.aux_r*args.word_size)
 else:
     from models.losses import AdaptiveCrossEntropyLoss
     criterion = AdaptiveCrossEntropyLoss(train_dataset+val_dataset,device,aux_r=args.aux_r*args.word_size)
@@ -91,9 +90,6 @@ for epoch in range(last_epoch,total_epoches):
       )
     print(metirc)
     print(metirc_aux)
-    # Early stopping
-    # if metirc.average_recall >best_avgrecall:
-    #     best_avgrecall= metirc.average_recall
     if metirc.auc >best_auc:
         save_epoch=epoch
         best_auc= metirc.auc

@@ -1,50 +1,29 @@
 import torch
-from torch.utils.data import Dataset
+from timm.loss import LabelSmoothingCrossEntropy
 import numpy as np
 from torch import nn
 import torch.nn.functional as F
 from collections import Counter
 
-class LabelSmoothingCrossEntropy(nn.Module):
-    def __init__(self, dataset, smoothing=0.1):
+class CustomLabelSmoothing(nn.Module):
+    def __init__(self,  smoothing=0.1,aux_r=5):
         """
         Constructor for the LabelSmoothingCrossEntropy module.
         :param dataset: Dataset instance to calculate class weights.
         :param smoothing: label smoothing factor
         """
-        super(LabelSmoothingCrossEntropy, self).__init__()
+        super(CustomLabelSmoothing, self).__init__()
         assert smoothing < 1.0
-        self.smoothing = smoothing
-        self.confidence = 1. - smoothing
-        self.class_weights = self.calculate_class_weights(dataset)
-        print()
-    def calculate_class_weights(self, dataset):
-        # Count the number of occurrences for each class
-        class_counts = np.zeros(4, dtype=np.int)
-        for _, label,_ in dataset:
-            class_counts[label] += 1
-
-        # Calculate weights for classes 1, 2, 3
-        # Avoid division by zero
-        class_counts[1:] = np.maximum(class_counts[1:], 1)
-        weights = class_counts[1] / class_counts[1:]
-        weights = np.array([1.0, 1.0] + list(weights))
-
-        return torch.tensor(weights, dtype=torch.float32)
-    def forward(self, x, target):
-        logprobs = F.log_softmax(x, dim=-1)
-
-        # Apply class weights
-        if self.class_weights is not None:
-            weights = self.class_weights.to(x.device).view(-1, 1, 1)
-            logprobs = logprobs * weights
-
-        nll_loss = -logprobs.gather(dim=-1, index=target.unsqueeze(1))
-        nll_loss = nll_loss.squeeze(1)
-        smooth_loss = -logprobs.mean(dim=-1)
-        loss = self.confidence * nll_loss + self.smoothing * smooth_loss
-
-        return loss.mean()
+        self.aux_r=aux_r
+        self.loss_func=LabelSmoothingCrossEntropy(smoothing)
+    
+    def forward(self, input, target):
+        class_tar,patch_tar=target
+        class_pred,patch_pred=input
+        bc,word_size,num_classes=patch_pred.shape
+        patch_tar=patch_tar.reshape(-1)
+        patch_pred=patch_pred.reshape(-1,num_classes)
+        return self.loss_func(class_pred,class_tar)+self.loss_func(patch_pred,patch_tar)*self.aux_r
     
 
 class AdaptiveCrossEntropyLoss(nn.Module):
