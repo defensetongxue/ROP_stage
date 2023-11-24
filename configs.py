@@ -24,7 +24,7 @@ def get_config():
                         help='Path to the visualize result or the pytorch model will be saved.')
     parser.add_argument('--wd', type=float, default=5e-4,
                         help='which split to use.')
-    parser.add_argument('--lr', type=float, default=5e-4,
+    parser.add_argument('--lr', type=float, default=1e-3,
                         help='which split to use.')
     # config file 
     parser.add_argument('--cfg', help='experiment configuration filename',
