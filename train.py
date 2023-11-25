@@ -114,6 +114,6 @@ val_loss, metirc,metirc_aux=val_epoch(model, test_loader, criterion, device,meti
 print(f"Best Epoch ")
 print(metirc)
 print(metirc_aux)
-key=f"{str(args.lr)}_{str(args.wd)}"
+key=f"{str(args.lr)}_{str(args.wd)}_{str(args.aux_r)}"
 metirc._restore(key,save_epoch,'./record.json')
 metirc_aux._restore(key,save_epoch,'./record.json')
