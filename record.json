@@ -1,1 +1,24 @@
-{}
+{
+    "0.001_0.0005": {
+        "Main": {
+            "accuracy": 0.9606,
+            "auc": 0.9819,
+            "recall_1": 0.9051,
+            "recall_2": 0.3919,
+            "recall_3": 0.2,
+            "recall_pos": 1.0,
+            "average_recall": 0.7632,
+            "save_epoch": 18
+        },
+        "Aux": {
+            "accuracy": 0.8647,
+            "auc": 0.9284,
+            "recall_1": 0.6126,
+            "recall_2": 0.2027,
+            "recall_3": 0.1333,
+            "recall_pos": 0.7076,
+            "average_recall": 0.5029,
+            "save_epoch": 18
+        }
+    }
+}
