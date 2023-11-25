@@ -97,9 +97,7 @@ def crop_patches(image_path,
             continue
         stage_list.append(stage)
     return stage_list
-def visual_sentence(image_path, x, y, patch_size, label=1, text=None, save_path=None, font_size=20):
-    assert label in [1, 2, 3], label
-
+def visual_sentence(image_path, x, y, patch_size, label=1, confidence=0.0, text=None, save_path=None, font_size=20):
     # Open the image and resize
     img = Image.open(image_path).resize((800, 600))
 
@@ -117,7 +115,11 @@ def visual_sentence(image_path, x, y, patch_size, label=1, text=None, save_path=
     draw = ImageDraw.Draw(img)
     draw.rectangle([top_left_x, top_left_y, bottom_right_x, bottom_right_y], outline=box_color, width=3)
 
-    # Draw the text if provided
+    # Draw the confidence value near the top left of the box
+    confidence_text = f"{confidence:.2f}"  # Format confidence to 2 decimal places
+    draw.text((top_left_x, top_left_y - font_size-2), confidence_text, fill=box_color, font=ImageFont.truetype("./arial.ttf", font_size))
+
+    # Draw the additional text if provided
     if text is not None:
         # Load the Arial font with the specified font size
         font = ImageFont.truetype("./arial.ttf", font_size)
