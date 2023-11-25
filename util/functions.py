@@ -95,7 +95,7 @@ def get_instance(module, class_name, *args, **kwargs):
     return instance
 
 def get_optimizer(cfg, model):
-    if  cfg['train']['layer_decay']<1:
+    if  cfg['train']['layer_decay']<=1:
         param_groups = param_groups_lrd(model, cfg['train']['wd'],
         no_weight_decay_list=model.no_weight_decay(),
         layer_decay=cfg['train']['layer_decay'],
