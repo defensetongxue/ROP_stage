@@ -12,7 +12,7 @@ def get_config():
                         help='which split to use.')
     parser.add_argument('--aux_r', type=float, default=1.,
                         help='which split to use.')
-    parser.add_argument('--patch_size', type=int, default=128,
+    parser.add_argument('--patch_size', type=int, default=160,
                         help='which split to use.')
     parser.add_argument('--hybird', type=str, default='resnet50',
                         help='which split to use.')

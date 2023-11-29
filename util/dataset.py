@@ -35,14 +35,7 @@ class CustomDataset(Dataset):
     def __getitem__(self, idx):
         image_name = self.split_list[idx]
         data=self.data_dict[image_name]
-        
-        # build entire image
-        image_entire=Image.open(data['image_path'])
-        image_entire= self.img_resize(image_entire)
-        if self.split=='train':
-            image_entire=self.enhance_transforms(image_entire)
-        image_entire=self.img_norm(image_entire)
-        
+             
         # buid patch image
         word_list=os.listdir(data['stage_sentence_path'])
         patch_list=[]
@@ -53,14 +46,13 @@ class CustomDataset(Dataset):
             patch= self.img_norm(patch)
             patch_list.append(patch)
         patches=torch.stack(patch_list,dim=0)
-        
-        # build val
-        val_tensor=torch.tensor(data['ridge_seg']["value_list"])
-        
+
         # build label
         stage_list=torch.tensor(data['stage_sentence_stagelist']).long()
-        
-        return(image_entire, patches,val_tensor),(data['stage'],stage_list),image_name
+        if self.split == 'train':
+            return patches,stage_list,image_name
+        else:
+            return  patches,data['stage'],image_name
 
 
     def __len__(self):

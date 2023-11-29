@@ -21,7 +21,7 @@ args.configs["lr_strategy"]['lr']=args.lr
 os.makedirs(args.save_dir,exist_ok=True)
 print("Saveing the model in {}".format(args.save_dir))
 # Create the model and criterion
-model= build_model(num_classes=args.configs["num_classes"],word_size=args.word_size)# as we are loading the exite
+model= build_model(num_classes=args.configs["num_classes"])# as we are loading the exite
 
 # Set up the device
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -64,7 +64,6 @@ else:
     
 # init metic
 metirc= Metrics(val_dataset,"Main")
-metirc_aux=Metrics(val_dataset,"Aux")
 print("There is {} batch size".format(args.configs["train"]['batch_size']))
 print(f"Train: {len(train_loader)}, Val: {len(val_loader)}")
 
@@ -79,13 +78,12 @@ save_epoch=0
 for epoch in range(last_epoch,total_epoches):
 
     train_loss = train_epoch(model, optimizer, train_loader, criterion, device,lr_scheduler,epoch)
-    val_loss,  metirc,metirc_aux= val_epoch(model, val_loader, criterion, device,metirc,metirc_aux)
+    metirc = val_epoch(model, val_loader, device,metirc)
     print(f"Epoch {epoch + 1}/{total_epoches}, "
-      f"Train Loss: {train_loss:.6f}, Val Loss: {val_loss:.6f}, "
+      f"Train Loss: {train_loss:.6f}, "
       f"Lr: {optimizer.state_dict()['param_groups'][0]['lr']:.6f}"
       )
     print(metirc)
-    print(metirc_aux)
     if metirc.auc >best_auc:
         save_epoch=epoch
         best_auc= metirc.auc
@@ -103,13 +101,10 @@ for epoch in range(last_epoch,total_epoches):
 # Load the best model and evaluate
 print(f"word_size: {str(args.word_size)} patch_size: {str(args.patch_size)}")
 metirc=Metrics(test_dataset,"Main")
-metirc_aux=Metrics(test_dataset,"Aux")
 model.load_state_dict(
         torch.load(os.path.join(args.save_dir, save_model_name)))
-val_loss, metirc,metirc_aux=val_epoch(model, test_loader, criterion, device,metirc,metirc_aux)
+metirc = val_epoch(model, val_loader, device,metirc)
 print(f"Best Epoch ")
 print(metirc)
-print(metirc_aux)
 key=f"{str(args.lr)}_{str(args.wd)}_{str(args.aux_r)}"
 metirc._restore(key,save_epoch,'./record.json')
-metirc_aux._restore(key,save_epoch,'./record.json')

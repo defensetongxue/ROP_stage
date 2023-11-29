@@ -17,13 +17,11 @@ class CustomLabelSmoothing(nn.Module):
         self.aux_r=aux_r
         self.loss_func=LabelSmoothingCrossEntropy(smoothing)
     
-    def forward(self, input, target):
-        class_tar,patch_tar=target
-        class_pred,patch_pred=input
-        bc,word_size,num_classes=patch_pred.shape
-        patch_tar=patch_tar.reshape(-1)
-        patch_pred=patch_pred.reshape(-1,num_classes)
-        return self.loss_func(class_pred,class_tar)+self.loss_func(patch_pred,patch_tar)*self.aux_r
+    def forward(self, pred, target):
+        bc,word_size,num_classes=pred.shape
+        target=target.reshape(-1)
+        pred=pred.reshape(-1,num_classes)
+        return self.loss_func(pred,target)
     
 
 class AdaptiveCrossEntropyLoss(nn.Module):

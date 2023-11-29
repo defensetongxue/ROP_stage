@@ -33,7 +33,7 @@ class DropPath(nn.Module):
 
 class CustomPatchEmbed(nn.Module):
     """ Custom Patch Embedding using ResNet blocks for larger patches """
-    def __init__(self,  hybird_method='resnet50', word_size=5,patch_embedding_dim=128):
+    def __init__(self,  hybird_method='resnet50',patch_embedding_dim=128):
         super().__init__()
         '''
         emnum(hybird_method)=

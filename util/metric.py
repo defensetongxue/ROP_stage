@@ -45,8 +45,8 @@ class Metrics:
         # Calculate the distribution of classes 1, 2, and 3 in the dataset
         class_counter = Counter()
         for _, label,_ in dataset:
-            if label[0] in [1, 2, 3]:
-                class_counter[label[0]] += 1
+            if label in [1, 2, 3]:
+                class_counter[label] += 1
 
         # Calculate the weights for each class
         total_count = sum(class_counter.values())
