@@ -32,7 +32,8 @@ def crop_patches(image_path,
                  stage,
                  point_list, # point list is parse from torch.tensor so in height,width format
                  value_list, 
-                 word_number=5, patch_size=16, save_path=None):
+                 word_number=5, patch_size=16, save_path=None,
+                 lower_bound=0.4):
     '''
     const resize_height=600
     const resize_weight=800
@@ -63,11 +64,13 @@ def crop_patches(image_path,
     # Prepare patches
     for( y, x),val in zip(point_list[:word_number],value_list[:word_number]):  # Use only first 'word_number' points
         # Scale points according to resized image
-        # if val<0.5:
-        #     # create a zero image in jpg format and save in 
-        #     patch = Image.new('RGB', (patch_size, patch_size), (0, 0, 0))
-        #     patch.save(os.path.join(save_path,f"{str(cnt)}.jpg"))
-        #     continue
+        if val < lower_bound:
+            # create a zero image in jpg format and save in 
+            patch = Image.new('RGB', (patch_size, patch_size), (0, 0, 0))
+            patch.save(os.path.join(save_path,f"{str(cnt)}.jpg"))
+            cnt+=1
+            stage_list.append(0)
+            continue
         left = x - patch_size // 2
         upper = y - patch_size // 2
         right = x + patch_size // 2
@@ -79,11 +82,23 @@ def crop_patches(image_path,
         upper=max(0,upper)
         right=min(800, right)
         lower= min(600, lower)
-        patch = img.crop((max(0, left), max(0, upper), min(800, right), min(600, lower)))
-        patch = ImageOps.expand(patch, tuple(padding), fill=255)  # Fill value 5 for padding
+        # Crop the patch
+        patch = img.crop((left, upper, right, lower))
+        patch = ImageOps.expand(patch, tuple(padding), fill=255) 
+        # Create a black image for the background
+        res = Image.new('RGB', (patch_size, patch_size), (0, 0, 0))
 
-        patch.save(os.path.join(save_path,f"{str(cnt)}.jpg"))
-        cnt+=1
+        # Create a circular mask for the inscribed circle
+        mask = Image.new('L', (patch_size, patch_size), 0)
+        draw = ImageDraw.Draw(mask)
+        radius = patch_size // 2
+        center = (radius, radius)
+        draw.ellipse((center[0] - radius, center[1] - radius, center[0] + radius, center[1] + radius), fill=255)
+        # print(mask.size,patch.size)
+        # Paste the patch onto the black background using the mask
+        res.paste(patch, (0, 0), mask=mask)
+        res.save(os.path.join(save_path, f"{cnt}.jpg"))
+        cnt += 1
         if ridge_mask is None or \
             not judge(ridge_mask,left,upper,right,lower,1):
             stage_list.append(0) # ridge in this patch

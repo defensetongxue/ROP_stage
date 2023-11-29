@@ -21,11 +21,7 @@ args.configs["lr_strategy"]['lr']=args.lr
 os.makedirs(args.save_dir,exist_ok=True)
 print("Saveing the model in {}".format(args.save_dir))
 # Create the model and criterion
-model= build_model(num_classes=args.configs["num_classes"],
-                   word_size=args.word_size,
-                   hybird_method=args.hybird)# as we are loading the exite
-model.load_pretrained(pretrained_path=args.configs["pretrained_path"])
-
+model= build_model(num_classes=args.configs["num_classes"],word_size=args.word_size)# as we are loading the exite
 
 # Set up the device
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')

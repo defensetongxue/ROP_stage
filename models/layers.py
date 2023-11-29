@@ -33,7 +33,7 @@ class DropPath(nn.Module):
 
 class CustomPatchEmbed(nn.Module):
     """ Custom Patch Embedding using ResNet blocks for larger patches """
-    def __init__(self, patch_size=112, hybird_method='resnet50', word_size=5):
+    def __init__(self,  hybird_method='resnet50', word_size=5,patch_embedding_dim=128):
         super().__init__()
         '''
         emnum(hybird_method)=
@@ -44,23 +44,19 @@ class CustomPatchEmbed(nn.Module):
         resnet18
         vgg16
         '''
-        self.patch_size = patch_size
-        self.word_size = word_size
 
         # Use a pre-trained ResNet model and modify the last layer to match embed_dim
         os.environ['TORCH_HOME'] ='./experiments'
-        self.hybird=build_model(hybird_method)
+        self.hybird=build_model(hybird_method,patch_embedding_dim)
 
     def forward(self, x):
         # x shape is expected to be [batch_size, 3, patch_size, word_size * patch_size]
         B,word, C, H, W = x.shape
         # Split the image by width into individual patches
         # Process each patch separately
-        if word>self.word_size:
-            x=x[:,:self.word_size,:,:,:]
         x=x.reshape(-1,C,H,W)
         x=self.hybird(x)
-        return x.reshape(B,self.word_size,-1)
+        return x.reshape(B,word,-1)
     
 class Mlp(nn.Module):
     def __init__(self, in_features, hidden_features=None, out_features=None, act_layer=nn.GELU, drop=0.):
