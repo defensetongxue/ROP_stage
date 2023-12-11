@@ -12,15 +12,18 @@ IMAGENET_DEFAULT_STD = (0.229, 0.224, 0.225)
 class CustomDataset(Dataset):
     def __init__(self, split,data_path,split_name,img_resize=299):
         with open(os.path.join(data_path,'split',f'{split_name}.json'), 'r') as f:
-            self.split_list=json.load(f)[split]
+            ori_split_list=json.load(f)[split]
         with open(os.path.join(data_path,'annotations.json'),'r') as f:
             self.data_dict=json.load(f)
-        self.img_resize=transforms.Resize((img_resize,img_resize))
-        self.enhance_transforms = transforms.Compose([
-            transforms.RandomHorizontalFlip(p=0.5),
-            transforms.RandomVerticalFlip(p=0.5),
-            Fix_RandomRotation(),
-        ])
+        self.split_list=[]
+        for image_name in ori_split_list:
+            data=self.data_dict[image_name]
+            # buid patch image
+            if self.data_dict[image_name]['stage']==0:
+                continue
+            word_list=os.listdir(data['stage_sentence_path'])
+            for image_cnt in word_list:
+                self.split_list.append((os.path.join(data['stage_sentence_path'],image_cnt),image_name))
         
         self.patch_enhance= transforms.Compose([
             transforms.RandomHorizontalFlip(p=0.5),
@@ -33,34 +36,14 @@ class CustomDataset(Dataset):
             transforms.Normalize(
                 mean=IMAGENET_DEFAULT_MEAN,std=IMAGENET_DEFAULT_STD)])
     def __getitem__(self, idx):
-        image_name = self.split_list[idx]
-        data=self.data_dict[image_name]
-        
-        # build entire image
-        image_entire=Image.open(data['image_path'])
-        image_entire= self.img_resize(image_entire)
+        image_path,image_name = self.split_list[idx]
+        img=Image.open(image_path).convert("RGB")
         if self.split=='train':
-            image_entire=self.enhance_transforms(image_entire)
-        image_entire=self.img_norm(image_entire)
-        
-        # buid patch image
-        word_list=os.listdir(data['stage_sentence_path'])
-        patch_list=[]
-        for image_cnt in word_list:
-            patch = Image.open(os.path.join(data['stage_sentence_path'],image_cnt)).convert('RGB')
-            if self.split=='train':
-                patch=self.patch_enhance(patch)
-            patch= self.img_norm(patch)
-            patch_list.append(patch)
-        patches=torch.stack(patch_list,dim=0)
-        
-        # build val
-        val_tensor=torch.tensor(data['ridge_seg']["value_list"])
-        
-        # build label
-        stage_list=torch.tensor(data['stage_sentence_stagelist']).long()
-        
-        return(image_entire, patches,val_tensor),(data['stage'],stage_list),image_name
+            img=self.patch_enhance(img)
+        img=self.img_norm(img)
+        label = int(os.path.basename(image_path[-5]))-1
+        assert label>=0
+        return img,label,image_name
 
 
     def __len__(self):

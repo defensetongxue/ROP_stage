@@ -16,7 +16,10 @@ def visual_stage3(image_path, point_list, stage_list, save_path, patch_size=112,
     font_path = './arial.ttf'
     font_size = 25  # Set your desired font size
     font = ImageFont.truetype(font_path, font_size)
+    none_zero_number=len(stage_list)
     for cnt, (y, x) in enumerate(point_list):  # x is for width, y is for height
+        if cnt >= none_zero_number:
+            break
         stage = stage_list[cnt]
         left, upper = x - patch_size // 2, y - patch_size // 2
         right, lower = x + patch_size // 2, y + patch_size // 2

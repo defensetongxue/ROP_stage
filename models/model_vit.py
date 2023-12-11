@@ -4,39 +4,12 @@ from functools import partial
 
 class SentenceModel(nn.Module):
     def __init__(self, 
-                 patch_embedding_method='resnet50', 
-                 image_embedding_method='resnet50',
-                 patch_embeddding_dim=128,
-                 image_embedding_dim=128,
-                 word_size=5, conbine_method='transformer',
                  num_classes=4):
         super().__init__()
-        self.patch_embed = CustomPatchEmbed(
-            word_size=word_size,hybird_method=patch_embedding_method,patch_embedding_dim=patch_embeddding_dim)
-        
-        self.image_embed= build_model(model_name=image_embedding_method, dim= image_embedding_dim)
-        if conbine_method =='add':
-            assert patch_embeddding_dim == image_embedding_dim
-            self.classifier=Add(image_embedding_dim,num_classes=num_classes)  
-        elif conbine_method == 'concat':
-            self.classifier=Concat(
-                embed_dim=patch_embeddding_dim,concat_dim=image_embedding_dim+word_size*patch_embeddding_dim,num_classes=num_classes)
-            print(image_embedding_dim+word_size*patch_embeddding_dim)
-        elif conbine_method == 'transformer':
-            assert patch_embeddding_dim == image_embedding_dim
-            self.classifier = Transformer(word_size=word_size+1,num_classes=num_classes,embed_dim=image_embedding_dim)
-        else:
-            raise
+        self.classifier=build_model('resnet50',num_classes)
     def forward(self, x):
-        img,patch,val=x
-        img= self.image_embed(img).unsqueeze(1)
-        patch=self.patch_embed(patch)
-        x=torch.cat([img,patch],dim=1)
         x = self.classifier(x)
-        return x # label,patch_label
-    
-    def no_weight_decay(self):
-        return {'pos_embed', 'cls_token'}
+        return x 
     
 class Transformer(nn.Module):
     def __init__(self, word_size,num_classes,embed_dim=1024, depth=12,

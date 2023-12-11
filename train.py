@@ -21,7 +21,7 @@ args.configs["lr_strategy"]['lr']=args.lr
 os.makedirs(args.save_dir,exist_ok=True)
 print("Saveing the model in {}".format(args.save_dir))
 # Create the model and criterion
-model= build_model(num_classes=args.configs["num_classes"],word_size=args.word_size)# as we are loading the exite
+model= build_model(num_classes=args.configs["num_classes"])# as we are loading the exite
 
 # Set up the device
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -56,15 +56,13 @@ test_loader=  DataLoader(test_dataset,
                         batch_size=args.configs['train']['batch_size'],
                         shuffle=False, num_workers=args.configs['num_works'])
 if args.configs["smoothing"]> 0.:
-    from models.losses import CustomLabelSmoothing
-    criterion = CustomLabelSmoothing(smoothing=args.configs["smoothing"],aux_r=args.aux_r*args.word_size)
+    from timm.loss import LabelSmoothingCrossEntropy
+    criterion = LabelSmoothingCrossEntropy()
 else:
-    from models.losses import AdaptiveCrossEntropyLoss
-    criterion = AdaptiveCrossEntropyLoss(train_dataset+val_dataset,device,aux_r=args.aux_r*args.word_size)
+    from torch.nn import CrossEntropyLoss
+    criterion = CrossEntropyLoss()
     
 # init metic
-metirc= Metrics(val_dataset,"Main")
-metirc_aux=Metrics(val_dataset,"Aux")
 print("There is {} batch size".format(args.configs["train"]['batch_size']))
 print(f"Train: {len(train_loader)}, Val: {len(val_loader)}")
 
@@ -76,19 +74,19 @@ total_epoches=args.configs['train']['end_epoch']
 save_model_name=args.split_name+args.configs['save_name']
 save_epoch=0
 # Training and validation loop
-for epoch in range(last_epoch,total_epoches):
 
+for epoch in range(last_epoch,total_epoches):
+    break
     train_loss = train_epoch(model, optimizer, train_loader, criterion, device,lr_scheduler,epoch)
-    val_loss,  metirc,metirc_aux= val_epoch(model, val_loader, criterion, device,metirc,metirc_aux)
+    val_loss,  acc,auc= val_epoch(model, val_loader, criterion, device)
     print(f"Epoch {epoch + 1}/{total_epoches}, "
       f"Train Loss: {train_loss:.6f}, Val Loss: {val_loss:.6f}, "
-      f"Lr: {optimizer.state_dict()['param_groups'][0]['lr']:.6f}"
+      f"Lr: {optimizer.state_dict()['param_groups'][0]['lr']:.6f}, "
+      f"Acc:{acc:.4f}, Auc: {auc:.4f}"
       )
-    print(metirc)
-    print(metirc_aux)
-    if metirc.auc >best_auc:
+    if auc >best_auc:
         save_epoch=epoch
-        best_auc= metirc.auc
+        best_auc= auc
         early_stop_counter = 0
         torch.save(model.state_dict(),
                    os.path.join(args.save_dir,save_model_name))
@@ -97,19 +95,54 @@ for epoch in range(last_epoch,total_epoches):
         early_stop_counter += 1
         if early_stop_counter >= args.configs['train']['early_stop']:
             print("Early stopping triggered")
-            break
-    metirc.reset()       
+            break 
 
-# Load the best model and evaluate
-print(f"word_size: {str(args.word_size)} patch_size: {str(args.patch_size)}")
-metirc=Metrics(test_dataset,"Main")
-metirc_aux=Metrics(test_dataset,"Aux")
+with open(os.path.join(args.data_path,'split',f'{args.split_name}.json'), 'r') as f:
+    ori_split_list=json.load(f)['test']
+with open(os.path.join(args.data_path,'annotations.json'),'r') as f:
+    data_dict=json.load(f)
+metric={}
+for image_name in ori_split_list:
+    metric[image_name]=0
+
 model.load_state_dict(
-        torch.load(os.path.join(args.save_dir, save_model_name)))
-val_loss, metirc,metirc_aux=val_epoch(model, test_loader, criterion, device,metirc,metirc_aux)
-print(f"Best Epoch ")
-print(metirc)
-print(metirc_aux)
-key=f"{str(args.lr)}_{str(args.wd)}_{str(args.aux_r)}"
-metirc._restore(key,save_epoch,'./record.json')
-metirc_aux._restore(key,save_epoch,'./record.json')
+    torch.load(os.path.join(args.save_dir,save_model_name))
+)   
+model.eval() 
+for imgs,labels,image_names in test_loader:
+    outputs = model(imgs.cuda())
+    probs= torch.softmax(outputs,dim=-1).detach().cpu().numpy()
+    predictions = np.argmax(probs, axis=1)
+    for image_name,preds in zip(image_names,predictions):
+        metric[image_name]= max(preds,metric[image_name])
+        
+confu_matrix=np.zeros((3,3))
+for image_name in metric:
+    if data_dict[image_name]['stage'] ==0:
+        continue
+    confu_matrix[metric[image_name],data_dict[image_name]['stage']-1]+=1
+print(confu_matrix)
+# Total number of predictions
+total_predictions = confu_matrix.sum()
+
+# Total correct predictions
+correct_predictions = np.trace(confu_matrix)
+
+# Accuracy
+accuracy = correct_predictions / total_predictions
+
+# Recall for each class
+recall_1 = confu_matrix[0, 0] / confu_matrix[0, :].sum()
+recall_2 = confu_matrix[1, 1] / confu_matrix[1, :].sum()
+recall_3 = confu_matrix[2, 2] / confu_matrix[2, :].sum()
+
+# Positive Recall (excluding class 0)
+# positive_correct = confu_matrix[1:, 1:].sum() # Correct predictions excluding class 0
+# positive_total = confu_matrix[1:, :].sum() # Total predictions excluding class 0
+# positive_recall = positive_correct / positive_total
+
+print(f"Accuracy: {accuracy:.2f}")
+print(f"Recall for Class 1: {recall_1:.2f}")
+print(f"Recall for Class 2: {recall_2:.2f}")
+print(f"Recall for Class 3: {recall_3:.2f}")
+# print(f"Positive Recall: {positive_recall:.2f}")

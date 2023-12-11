@@ -65,12 +65,13 @@ def crop_patches(image_path,
     for( y, x),val in zip(point_list[:word_number],value_list[:word_number]):  # Use only first 'word_number' points
         # Scale points according to resized image
         if val < lower_bound:
+            break
             # create a zero image in jpg format and save in 
             patch = Image.new('RGB', (patch_size, patch_size), (0, 0, 0))
-            patch.save(os.path.join(save_path,f"{str(cnt)}.jpg"))
+            patch.save(os.path.join(save_path,f"{str(cnt)}_0.jpg"))
             cnt+=1
             stage_list.append(0)
-            continue
+            break
         left = x - patch_size // 2
         upper = y - patch_size // 2
         right = x + patch_size // 2
@@ -97,20 +98,22 @@ def crop_patches(image_path,
         # print(mask.size,patch.size)
         # Paste the patch onto the black background using the mask
         res.paste(patch, (0, 0), mask=mask)
-        res.save(os.path.join(save_path, f"{cnt}.jpg"))
         cnt += 1
         if ridge_mask is None or \
             not judge(ridge_mask,left,upper,right,lower,1):
-            stage_list.append(0) # ridge in this patch
-            continue
-        if stage==3:
+            patch_stage=0
+        elif stage==3:
             assert abnormal_mask is not None
             if judge(abnormal_mask,left,upper,right,lower,1):
-                stage_list.append(3)
+                patch_stage=3
             else:
-                stage_list.append(2)
-            continue
-        stage_list.append(stage)
+                patch_stage=2
+        else:
+            patch_stage=stage
+        
+        stage_list.append(patch_stage)
+        if patch_stage>0:
+            res.save(os.path.join(save_path, f"{cnt}_{str(patch_stage)}.jpg"))
     return stage_list
 def visual_sentence(image_path, x, y, patch_size, label=1, confidence=0.0, text=None, save_path=None, font_size=20):
     # Open the image and resize
