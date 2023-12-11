@@ -1,7 +1,7 @@
 from PIL import Image, ImageOps, ImageDraw, ImageFont
 import os
 import numpy as np
-
+from random import shuffle
 def judge(mask, left_, upper_, right_, lower_, threshold):
     """
     Determine if the sum of values in a specified region of a mask exceeds a threshold.
@@ -28,17 +28,12 @@ def judge(mask, left_, upper_, right_, lower_, threshold):
 
 def crop_patches(img,patch_size,x,y,
                  abnormal_mask,  # abnormal means stage 3 abnormal
-                 stage,max_weight=1599,max_height=1199, check_padding=20,save_path=None):
+                 stage,max_weight=1599,max_height=1199, check_padding=20,save_dir=None,image_cnt='1'):
     '''
     const resize_height=600
     const resize_weight=800
     keep the size as conv ridge segmentation model
     '''
-    # Load image
-
-    # Resize image
-    img = img.resize((800,600))
-
     left = x - patch_size // 2
     upper = y - patch_size // 2
     right = x + patch_size // 2
@@ -60,16 +55,19 @@ def crop_patches(img,patch_size,x,y,
     center = (radius, radius)
     draw.ellipse((center[0] - radius, center[1] - radius, center[0] + radius, center[1] + radius), fill=255)
     res.paste(patch, (0, 0), mask=mask)
-    res.save(save_path)
     
     if stage==3:
         assert abnormal_mask is not None
         if judge(abnormal_mask,left+check_padding,upper+check_padding,right-check_padding,lower-check_padding,1):
-            return 3
+            patch_stage=3
         else:
-            return 2
+            patch_stage=2
     else:
-        return stage
+       patch_stage=stage
+    
+    save_path=os.path.join(save_dir,f"{str(patch_stage)}_{image_cnt}.jpg")
+    res.save(save_path)
+    return patch_stage
     
 def sample_patch(ridge_diffusion_path,sample_dense,max_sample_number):
     ridge_mask=Image.open(ridge_diffusion_path).convert('L')
@@ -78,22 +76,24 @@ def sample_patch(ridge_diffusion_path,sample_dense,max_sample_number):
     sample_list = []
     
     while True:
+        # this line will only return the first idx that equal to 1
         idx = np.unravel_index(np.argmax(ridge_mask, axis=None), ridge_mask.shape)
 
-        maxval = ridge_mask[idx]
-        if maxval<1:
+        if ridge_mask[idx]<1:
             break
-        maxvals_list.append(float(maxval))
 
         # Clear the square region around the point
         x, y = idx[0], idx[1]
-        sample_list.append([y,x])
+        sample_list.append([y,x]) # in format weight_coor, height_coor always
         xmin, ymin = max(0, x -sample_dense), max(0, y - sample_dense)
         xmax, ymax = min(ridge_mask.shape[0], x +sample_dense), min(ridge_mask.shape[1], y + sample_dense)
         ridge_mask[ xmin:xmax,ymin:ymax] = -9
-    maxvals_list=np.array(maxvals_list,dtype=np.float16)
-    preds_list=np.array(preds_list,dtype=np.float16)
-    return maxvals_list, preds_list
+    if len(sample_list)>max_sample_number:
+        shuffle(sample_list)
+        sample_list=sample_list[:max_sample_number]
+    sample_list=np.array(sample_list,dtype=np.float16)
+    
+    return sample_list
 
 def visual_sentence(image_path, x, y, patch_size, label=1, confidence=0.0, text=None, save_path=None, font_size=20):
     # Open the image and resize
