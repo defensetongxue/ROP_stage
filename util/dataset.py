@@ -12,9 +12,15 @@ IMAGENET_DEFAULT_STD = (0.229, 0.224, 0.225)
 class CustomDataset(Dataset):
     def __init__(self, split,data_path,split_name,img_resize=299):
         with open(os.path.join(data_path,'split',f'{split_name}.json'), 'r') as f:
-            self.split_list=json.load(f)[split]
+            split_list=json.load(f)[split]
+
         with open(os.path.join(data_path,'annotations.json'),'r') as f:
             self.data_dict=json.load(f)
+        
+        self.split_list=[]
+        for image_name in split_list:
+            if self.data_dict[image_name]['stage']>0:
+                self.split_list.append(image_name)
         self.img_resize=transforms.Resize((img_resize,img_resize))
         self.enhance_transforms = transforms.Compose([
             transforms.RandomHorizontalFlip(p=0.5),
@@ -60,7 +66,7 @@ class CustomDataset(Dataset):
         # build label
         stage_list=torch.tensor(data['stage_sentence_stagelist']).long()
         
-        return(image_entire, patches,val_tensor),(data['stage'],stage_list),image_name
+        return(image_entire, patches,val_tensor),data['stage']-1,image_name
 
 
     def __len__(self):

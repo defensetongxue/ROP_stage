@@ -39,18 +39,16 @@ class Metrics:
         self.recall_1 = 0
         self.recall_2 = 0
         self.recall_3 = 0
-        self.recall_pos=0
         self.average_recall = 0
     def calculate_class_weights(self, dataset):
         # Calculate the distribution of classes 1, 2, and 3 in the dataset
         class_counter = Counter()
         for _, label,_ in dataset:
-            if label[0] in [1, 2, 3]:
-                class_counter[label[0]] += 1
+            class_counter[label] += 1
 
         # Calculate the weights for each class
         total_count = sum(class_counter.values())
-        class_weights = {i: (class_counter[i]/total_count ) if class_counter[i] > 0 else 0 for i in [1, 2, 3]}
+        class_weights = {i: (class_counter[i]/total_count ) if class_counter[i] > 0 else 0 for i in [0, 1, 2]}
 
         # Normalize weights
         # min_weight = min(filter(lambda x: x > 0, class_weights.values()), default=1)
@@ -61,18 +59,17 @@ class Metrics:
     def update(self, predictions, probs, targets):
         self.accuracy = accuracy_score(targets, predictions)
         self.auc = roc_auc_score(targets, probs, multi_class='ovr')
-        self.recall_1 = calculate_recall(targets, predictions, class_id=1)
-        self.recall_2 = calculate_recall(targets, predictions, class_id=2)
-        self.recall_3 = calculate_recall(targets, predictions, class_id=3)
-        self.recall_pos=calculate_recall(targets,predictions)
+        self.recall_1 = calculate_recall(targets, predictions, class_id=0)
+        self.recall_2 = calculate_recall(targets, predictions, class_id=1)
+        self.recall_3 = calculate_recall(targets, predictions, class_id=2)
         # Compute weighted average recall
-        self.average_recall = sum(self.class_weights[i] * recall for i, recall in zip([1, 2, 3], [self.recall_1, self.recall_2, self.recall_3]))
+        self.average_recall = sum(self.class_weights[i] * recall for i, recall in zip([0, 1, 2], [self.recall_1, self.recall_2, self.recall_3]))
 
     def __str__(self):
         return (f"[{self.header}] "
                 f"Acc: {self.accuracy:.4f}, Auc: {self.auc:.4f}, "
                 f"Recall1: {self.recall_1:.4f}, Recall2: {self.recall_2:.4f}, "
-                f"Recall3: {self.recall_3:.4f}, RecallAvg: {self.average_recall:.4f}, RecallPos: {self.recall_pos:.4f} ")
+                f"Recall3: {self.recall_3:.4f}, RecallAvg: {self.average_recall:.4f} ")
     def _restore(self,key,save_epoch,save_path):
         res = {
         "accuracy": round(self.accuracy, 4),
@@ -80,7 +77,6 @@ class Metrics:
         "recall_1": round(self.recall_1, 4),
         "recall_2": round(self.recall_2, 4),
         "recall_3": round(self.recall_3, 4),
-        "recall_pos": round(self.recall_pos, 4),
         "average_recall": round(self.average_recall, 4),
         "save_epoch": save_epoch
     }

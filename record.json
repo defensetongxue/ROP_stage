@@ -45,14 +45,13 @@
     },
     "0.001_0.0005_1.0": {
         "Main": {
-            "accuracy": 0.9114,
-            "auc": 0.938,
-            "recall_1": 0.725,
-            "recall_2": 0.2973,
+            "accuracy": 0.7049,
+            "auc": 0.6407,
+            "recall_1": 0.9224,
+            "recall_2": 0.1831,
             "recall_3": 0.0,
-            "recall_pos": 0.8024,
-            "average_recall": 0.5957,
-            "save_epoch": 14
+            "average_recall": 0.7049,
+            "save_epoch": 34
         },
         "Aux": {
             "accuracy": 0.8856,

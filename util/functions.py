@@ -39,56 +39,34 @@ def train_epoch(model, optimizer, train_loader, loss_function, device,lr_schedul
     return running_loss / len(train_loader)
 
 
-def val_epoch(model, val_loader, loss_function, device,metirc:Metrics,metirc_aux:Metrics):
+def val_epoch(model, val_loader, loss_function, device,metirc:Metrics):
     loss_function=nn.CrossEntropyLoss()
     model.eval()
     running_loss = 0.0
     all_predictions = []
-    all_predicction_aux=[]
     all_targets = []
-    all_probs_aux = []
     all_probs = []
     with torch.no_grad():
         for inputs, targets, _ in val_loader:
             inputs = to_device(inputs,device)
-            targets = to_device(targets[0],device)
+            targets = to_device(targets,device)
             outputs = model(inputs)
-            loss = loss_function(outputs[0], targets)
+            loss = loss_function(outputs, targets)
             running_loss += loss.item()
-            probs = torch.softmax(outputs[0].cpu(), dim=1).numpy()
+            probs = torch.softmax(outputs.cpu(), dim=1).numpy()
             predictions = np.argmax(probs, axis=1)
-            probs_aux=torch.softmax(outputs[1].cpu(), dim=-1).numpy()
-            predictions_aux_word = np.argmax(probs_aux, axis=2)
-            predictions_aux=np.max(predictions_aux_word ,axis=1)
-            for i in range(len(targets)):
-                # Identify words contributing to image-level prediction
-                contributing_words = (predictions_aux_word[i] == int(predictions_aux[i]))
-
-                # Select probabilities for contributing words
-                selected_probs = probs_aux[i][contributing_words]
-
-                # Calculate the average probability for the contributing words
-                if len(selected_probs) > 0:
-                    avg_probs = np.mean(selected_probs, axis=0)
-                else:
-                    avg_probs = np.zeros(probs_aux.shape[-1])
-
-                all_probs_aux.append(avg_probs)
+            
 
             all_predictions.extend(predictions)
-            all_predicction_aux.extend(predictions_aux)
             all_targets.extend(targets.cpu().numpy())
             all_probs.extend(probs)
             
-    all_predicction_aux=np.array(all_predicction_aux)
     all_predictions = np.array(all_predictions)
     all_targets = np.array(all_targets)
     all_probs = np.vstack(all_probs)
-    all_probs_aux = np.array(all_probs_aux)
     # print(all_predictions.shape,all_probs.shape,)
     metirc.update(all_predictions,all_probs,all_targets)
-    metirc_aux.update(all_predicction_aux,all_probs_aux,all_targets)
-    return running_loss / len(val_loader), metirc,metirc_aux
+    return running_loss / len(val_loader), metirc
 def get_instance(module, class_name, *args, **kwargs):
     cls = getattr(module, class_name)
     instance = cls(*args, **kwargs)

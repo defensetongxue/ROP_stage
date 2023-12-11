@@ -43,8 +43,7 @@ class Transformer(nn.Module):
                  num_heads=8, mlp_ratio=4., qkv_bias=True, qk_scale=None, drop_rate=0., attn_drop_rate=0.,
                  drop_path_rate=0., norm_layer=partial(nn.LayerNorm, eps=1e-6)):
         super().__init__()
-        self.cls_token = nn.Parameter(torch.zeros(1, 1, embed_dim))
-        self.pos_embed = nn.Parameter(torch.zeros(1, word_size + 1, embed_dim))
+        self.pos_embed = nn.Parameter(torch.zeros(1, word_size, embed_dim))
         self.pos_drop = nn.Dropout(p=drop_rate)
         self.word_size=word_size
         dpr = [x.item() for x in torch.linspace(0, drop_path_rate, depth)]  # stochastic depth decay rule
@@ -58,8 +57,6 @@ class Transformer(nn.Module):
         self.seghead=nn.Linear(embed_dim,num_classes)
     def forward_features(self, x):
         B = x.shape[0]
-        cls_tokens = self.cls_token.expand(B, -1, -1)  # stole cls_tokens impl from Phil Wang, thanks
-        x = torch.cat((cls_tokens, x), dim=1)
         x = x + self.pos_embed
         x = self.pos_drop(x)
 
@@ -70,12 +67,10 @@ class Transformer(nn.Module):
         return x
     
     def forward(self, x):
-        head_embed=x[:,1:,:]
         x = self.forward_features(x)
         class_token=x[:,0,:]
         class_ouput = self.head(class_token)
-        patch_label=self.seghead(head_embed)
-        return class_ouput,patch_label
+        return class_ouput
     
     def no_weight_decay(self):
         return {'pos_embed', 'cls_token'}
@@ -114,14 +109,12 @@ class Concat(nn.Module):
     def __init__(self,embed_dim,concat_dim,num_classes):
         super().__init__()
         self.fc=nn.Linear(concat_dim,num_classes)
-        self.patch_head= nn.Linear(embed_dim,num_classes)
         
     def forward(self,x):
-        patch_label= self.patch_head(x[:,1:,:])
         
         x= x.flatten(1,-1)
         x= self.fc(x)
-        return x,patch_label
+        return x
 
 class Add(nn.Module):
     def __init__(self,embed_dim,num_classes):
@@ -130,9 +123,7 @@ class Add(nn.Module):
         self.b=nn.Linear(embed_dim,1)
         self.fc1=nn.Linear(embed_dim,num_classes)
         
-        self.patch_head= nn.Linear(embed_dim,num_classes)
     def forward(self,x):
-        patch_label= self.patch_head(x[:,1:,:])
         
         # bc, w, embed_dim
         w=self.w(x) # bc,w,1
@@ -140,5 +131,5 @@ class Add(nn.Module):
         x= x*w+b
         x= torch.sum(x,dim=1)
         x=self.fc1(x)
-        return x,patch_label
+        return x
         
