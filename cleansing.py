@@ -9,6 +9,8 @@ if __name__ == '__main__':
     os.system(f"rm -rf {os.path.join(args.data_path,'stage_sentence')}/*")
     for image_name in data_dict:
         data=data_dict[image_name]
+        if data['stage']<=0:
+            continue
         if 'ridge_seg'in data:
             save_path=os.path.join(args.data_path,'stage_sentence',image_name[:-4])
             os.makedirs(save_path,exist_ok=True)

@@ -94,8 +94,6 @@ def crop_patches(image_path,
         radius = patch_size // 2
         center = (radius, radius)
         draw.ellipse((center[0] - radius, center[1] - radius, center[0] + radius, center[1] + radius), fill=255)
-        # print(mask.size,patch.size)
-        # Paste the patch onto the black background using the mask
         res.paste(patch, (0, 0), mask=mask)
         res.save(os.path.join(save_path, f"{cnt}.jpg"))
         cnt += 1
