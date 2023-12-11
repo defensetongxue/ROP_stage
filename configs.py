@@ -5,14 +5,20 @@ def get_config():
     # cleansing
     parser.add_argument('--data_path', type=str, default='../autodl-tmp/dataset_ROP',
                         help='Path to the target folder to store the processed datasets.')
+    
+    # for cleansing
+    parser.add_argument('--patch_size', type=int, default=256,
+                        help='which split to use.')
+    parser.add_argument('--sample_dense', type=int, default=128,
+                        help='which split to use.')
+    parser.add_argument('--max_sample_number', type=int, default=6,
+                        help='which split to use.')
     # split
     parser.add_argument('--split_name', type=str, default='1',
                         help='which split to use.')
     parser.add_argument('--word_size', type=int, default=4,
                         help='which split to use.')
     parser.add_argument('--aux_r', type=float, default=1.,
-                        help='which split to use.')
-    parser.add_argument('--patch_size', type=int, default=128,
                         help='which split to use.')
     parser.add_argument('--hybird', type=str, default='resnet50',
                         help='which split to use.')

@@ -41,8 +41,9 @@ class CustomDataset(Dataset):
         if self.split=='train':
             img=self.patch_enhance(img)
         img=self.img_norm(img)
-        label = int(os.path.basename(image_path[-5]))-1
-        assert label>=0
+        
+        # save_path=os.path.join(save_dir,f"{str(patch_stage)}_{image_cnt}.jpg")
+        label = int(os.path.basename(image_path[0]))-1
         return img,label,image_name
 
 
