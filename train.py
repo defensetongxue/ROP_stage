@@ -76,7 +76,6 @@ save_epoch=0
 # Training and validation loop
 
 for epoch in range(last_epoch,total_epoches):
-    break
     train_loss = train_epoch(model, optimizer, train_loader, criterion, device,lr_scheduler,epoch)
     val_loss,  acc,auc= val_epoch(model, val_loader, criterion, device)
     print(f"Epoch {epoch + 1}/{total_epoches}, "
@@ -135,11 +134,6 @@ accuracy = correct_predictions / total_predictions
 recall_1 = confu_matrix[0, 0] / confu_matrix[0, :].sum()
 recall_2 = confu_matrix[1, 1] / confu_matrix[1, :].sum()
 recall_3 = confu_matrix[2, 2] / confu_matrix[2, :].sum()
-
-# Positive Recall (excluding class 0)
-# positive_correct = confu_matrix[1:, 1:].sum() # Correct predictions excluding class 0
-# positive_total = confu_matrix[1:, :].sum() # Total predictions excluding class 0
-# positive_recall = positive_correct / positive_total
 
 print(f"Accuracy: {accuracy:.2f}")
 print(f"Recall for Class 1: {recall_1:.2f}")

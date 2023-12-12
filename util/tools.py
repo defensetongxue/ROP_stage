@@ -65,10 +65,10 @@ def crop_patches(img,patch_size,x,y,
             patch_stage=2
     else:
        patch_stage=stage
-    
-    save_path=os.path.join(save_dir,f"{str(patch_stage)}_{image_cnt}.jpg")
-    res.save(save_path)
-    return patch_stage
+    if save_dir:
+        save_path=os.path.join(save_dir,f"{str(patch_stage)}_{image_cnt}.jpg")
+        res.save(save_path)
+    return patch_stage,res
     
 
 def sample_patch(ridge_diffusion_path, sample_dense, max_sample_number):
@@ -89,40 +89,43 @@ def sample_patch(ridge_diffusion_path, sample_dense, max_sample_number):
         y, x = y_indices[idx], x_indices[idx]
 
         # Add the point to the sample list
-        sample_list.append([x, y])  # format: width_coord, height_coord
+        sample_list.append([int(x), int(y)])  # format: width_coord, height_coord
 
         # Clear the square region around the point
         xmin, xmax = max(0, x - sample_dense), min(ridge_mask.shape[1], x + sample_dense + 1)
         ymin, ymax = max(0, y - sample_dense), min(ridge_mask.shape[0], y + sample_dense + 1)
         ridge_mask[ymin:ymax, xmin:xmax] = 0
 
-    sample_list = np.array(sample_list, dtype=np.float16)
+    # sample_list = np.array(sample_list, dtype=np.float16)
     return sample_list
 
 
-def visual_sentence(image_path, x, y, patch_size, label=1, confidence=0.0, text=None, save_path=None, font_size=20):
-    # Open the image and resize
-    img = Image.open(image_path).resize((800, 600))
-
-    # Set the box color based on the label
-    box_color = 'green' if label == 1 else 'yellow' if label == 2 else 'red'
-
-    # Calculate the top-left and bottom-right coordinates of the box
-    half_size = patch_size // 2
-    top_left_x = x - half_size
-    top_left_y = y - half_size
-    bottom_right_x = x + half_size
-    bottom_right_y = y + half_size
-
-    # Draw the box
+def visual_sentences(image_path, points, patch_size, label=None, confidences=None, text=None, save_path=None, font_size=20):
+    # Open the image
+    img = Image.open(image_path)
     draw = ImageDraw.Draw(img)
-    draw.rectangle([top_left_x, top_left_y, bottom_right_x, bottom_right_y], outline=box_color, width=3)
+    
+    box_color = 'green' if label == 1 else 'yellow' if label == 2 else 'red'
+    # Iterate over each point
+    for i, (x, y) in enumerate(points):
 
-    # Draw the confidence value near the top left of the box
-    confidence_text = f"{confidence:.2f}"  # Format confidence to 2 decimal places
-    draw.text((top_left_x, top_left_y - font_size-2), confidence_text, fill=box_color, font=ImageFont.truetype("./arial.ttf", font_size))
+        # Set the box color based on the label
 
-    # Draw the additional text if provided
+        # Calculate the top-left and bottom-right coordinates of the box
+        half_size = patch_size // 2
+        top_left_x = x - half_size
+        top_left_y = y - half_size
+        bottom_right_x = x + half_size
+        bottom_right_y = y + half_size
+
+        # Draw the box
+        draw.rectangle([top_left_x, top_left_y, bottom_right_x, bottom_right_y], outline=box_color, width=3)
+
+        # Draw the confidence value near the top left of the box
+        confidence_text = f"{confidences[i]:.2f}"  # Format confidence to 2 decimal places
+        draw.text((top_left_x, top_left_y - font_size - 2), confidence_text, fill=box_color, font=ImageFont.truetype("./arial.ttf", font_size))
+
+    # Draw additional text if provided
     if text is not None:
         # Load the Arial font with the specified font size
         font = ImageFont.truetype("./arial.ttf", font_size)

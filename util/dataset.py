@@ -21,6 +21,8 @@ class CustomDataset(Dataset):
             # buid patch image
             if self.data_dict[image_name]['stage']==0:
                 continue
+            if not 'stage_sentence_path' in data:
+                continue
             word_list=os.listdir(data['stage_sentence_path'])
             for image_cnt in word_list:
                 self.split_list.append((os.path.join(data['stage_sentence_path'],image_cnt),image_name))
@@ -43,7 +45,7 @@ class CustomDataset(Dataset):
         img=self.img_norm(img)
         
         # save_path=os.path.join(save_dir,f"{str(patch_stage)}_{image_cnt}.jpg")
-        label = int(os.path.basename(image_path[0]))-1
+        label = int(os.path.basename(image_path)[0])-1
         return img,label,image_name
 
 

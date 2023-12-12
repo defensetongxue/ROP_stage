@@ -32,6 +32,10 @@ def get_config():
                         help='which split to use.')
     parser.add_argument('--lr', type=float, default=1e-3,
                         help='which split to use.')
+    
+    # visual
+    parser.add_argument('--k', type=int, default=2,
+                        help='which split to use.')
     # config file 
     parser.add_argument('--cfg', help='experiment configuration filename',
                         default="./configs/defalut.json", type=str)

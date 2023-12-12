@@ -18,6 +18,8 @@ if __name__ == '__main__':
     
     for image_name in data_dict:
         data=data_dict[image_name]
+        if 'stage_sentence_path' in data:
+            del data_dict[image_name]['stage_sentence_path']
         if data['stage']<=0:
             continue
         if 'ridge_diffusion_path' in data:
@@ -39,14 +41,17 @@ if __name__ == '__main__':
             
             save_dir=os.path.join(args.data_path,'stage_sentence',image_name[:-4])
             os.makedirs(save_dir,exist_ok=True)
-            
+            stage_list=[]
             for cnt,(x,y) in enumerate(sample_list):
                 save_path= os.path.join(save_dir,str(cnt)+'.jpg')
                 # for convinient the stage is call by save_image name
                 # save_path=os.path.join(save_dir,f"{str(patch_stage)}_{image_cnt}.jpg")
                 patch_stage=crop_patches(img,args.patch_size,x,y,abnormal_mask,data['stage'],
                             save_dir=save_dir,image_cnt=str(cnt))
+                stage_list.append(patch_stage)
             data_dict[image_name]['stage_sentence_path']=save_dir
-            
+            data_dict[image_name]['stage_sample']=sample_list
+            data_dict[image_name]['stage_list']=stage_list
+
     with open(os.path.join(args.data_path,'annotations.json'),'w') as f:
         json.dump(data_dict,f)
