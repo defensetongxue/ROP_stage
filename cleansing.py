@@ -26,12 +26,14 @@ if __name__ == '__main__':
                 max_number=100 
                 # build abnormal_mask
                 abnormal_mask=np.zeros((1200,1600))
+                assert len(data['ridge']["vessel_abnormal_coordinate"])>0,image_name
                 for x,y in data['ridge']["vessel_abnormal_coordinate"]:
-                    abnormal_mask[y,x]=1
+                    # print(y,x)
+                    abnormal_mask[int(y),int(x)]=1
                 
             else:
                 max_number=args.max_sample_number
-            
+                abnormal_mask=None
             sample_list= sample_patch(data['ridge_diffusion_path'],sample_dense,max_number)
             img=Image.open(data['image_path']).convert("RGB")
             
