@@ -40,9 +40,9 @@ last_epoch = args.configs['train']['begin_epoch']
 
 # Load the datasets
 train_dataset=CustomDataset(
-    split='train',data_path=args.data_path,split_name=args.split_name)
-val_dataset=CustomDataset(split='val',data_path=args.data_path,split_name=args.split_name)
-test_dataset=CustomDataset(split='test',data_path=args.data_path,split_name=args.split_name)
+    split='train',data_path=args.data_path,split_name=args.split_name,img_resize=args.resize)
+val_dataset=CustomDataset(split='val',data_path=args.data_path,split_name=args.split_name,img_resize=args.resize)
+test_dataset=CustomDataset(split='test',data_path=args.data_path,split_name=args.split_name,img_resize=args.resize)
 # Create the data loaders
     
 train_loader = DataLoader(train_dataset, 

@@ -10,7 +10,7 @@ import torch
 IMAGENET_DEFAULT_MEAN = (0.485, 0.456, 0.406)
 IMAGENET_DEFAULT_STD = (0.229, 0.224, 0.225)
 class CustomDataset(Dataset):
-    def __init__(self, split,data_path,split_name,img_resize=299):
+    def __init__(self, split,data_path,split_name,img_resize=256):
         with open(os.path.join(data_path,'split',f'{split_name}.json'), 'r') as f:
             ori_split_list=json.load(f)[split]
         with open(os.path.join(data_path,'annotations.json'),'r') as f:
@@ -32,6 +32,7 @@ class CustomDataset(Dataset):
             transforms.RandomVerticalFlip(p=0.5),
             transforms.RandomRotation((0, 360)),
         ])
+        self.img_resize=transforms.Resize((img_resize,img_resize))
         self.split = split
         self.img_norm=transforms.Compose([
             transforms.ToTensor(),
@@ -40,6 +41,7 @@ class CustomDataset(Dataset):
     def __getitem__(self, idx):
         image_path,image_name = self.split_list[idx]
         img=Image.open(image_path).convert("RGB")
+        img=self.img_resize(img)
         if self.split=='train':
             img=self.patch_enhance(img)
         img=self.img_norm(img)

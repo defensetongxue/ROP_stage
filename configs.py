@@ -26,6 +26,8 @@ def get_config():
     # train and test
     parser.add_argument('--save_dir', type=str, default="./checkpoints",
                         help='Name of the file to save the best model during training.')
+    parser.add_argument('--resize', type=int, default=256,
+                        help='Name of the file to save the best model during training.')
     parser.add_argument('--result_path', type=str, default="experiments",
                         help='Path to the visualize result or the pytorch model will be saved.')
     parser.add_argument('--wd', type=float, default=5e-4,
