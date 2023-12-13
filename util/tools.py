@@ -28,7 +28,7 @@ def judge(mask, left_, upper_, right_, lower_, threshold):
 
 def crop_patches(img,patch_size,x,y,
                  abnormal_mask,  # abnormal means stage 3 abnormal
-                 stage,max_weight=1599,max_height=1199, check_padding=20,save_dir=None,image_cnt='1'):
+                 stage,max_weight=1599,max_height=1199, check_padding=50,save_dir=None,image_cnt='1'):
     '''
     const resize_height=600
     const resize_weight=800
@@ -100,7 +100,7 @@ def sample_patch(ridge_diffusion_path, sample_dense, max_sample_number):
     return sample_list
 
 
-def visual_sentences(image_path, points, patch_size, label=None, confidences=None, text=None, save_path=None, font_size=20):
+def visual_sentences(image_path, points, patch_size, label=None, confidences=None, text=None, save_path=None, font_size=20,sample_visual=[]):
     # Open the image
     img = Image.open(image_path)
     draw = ImageDraw.Draw(img)
@@ -131,7 +131,16 @@ def visual_sentences(image_path, points, patch_size, label=None, confidences=Non
         font = ImageFont.truetype("./arial.ttf", font_size)
         text_position = (10, 10)  # Top left corner
         draw.text(text_position, text, fill="white", font=font)
+    for x, y in sample_visual:
+        # Define the position for the star
+        star_position = (x, y)
 
+        # Define the star symbol and its color
+        star_symbol = "*"
+        star_color = "blue"  # You can choose any color you like
+
+        # Draw the star on the image
+        draw.text(star_position, star_symbol, fill=star_color, font=ImageFont.truetype("./arial.ttf", font_size))
     # Save or show the image
     if save_path:
         img.save(save_path)

@@ -66,7 +66,7 @@ with torch.no_grad():
         img=Image.open(data["image_path"]).convert("RGB")
         inputs=[]
         for x,y in data['ridge_seg']['point_list']:
-            _,patch=crop_patches(img,args.patch_size,x*4,y*4,
+            _,patch=crop_patches(img,args.patch_size,x,y,
                                  abnormal_mask=None,stage=0,save_dir=None)
             patch=img_norm(patch)
             inputs.append(patch.unsqueeze(0))
@@ -84,8 +84,9 @@ with torch.no_grad():
         selected_probs = probs[matching_indices]
         # mean these selectes patches probs as bc_porb
         bc_prob = torch.mean(selected_probs, dim=0)
+        bc_prob[-1]=1-torch.sum(bc_prob[:-1])
         
-        probs_list.append(bc_prob)
+        probs_list.extend(bc_prob.unsqueeze(0).numpy())
         labels_list.append(label)
         pred_list.append(bc_pred)
         if label!=bc_pred:
@@ -93,13 +94,13 @@ with torch.no_grad():
             top_k = min(args.k,matching_indices.shape[0])  # Assuming args.k is defined and valid
             class_probs = probs[:, bc_pred]  # Extract probabilities for bc_pred class
             top_k_values, top_k_indices = torch.topk(class_probs, k=top_k)
-            print(matching_indices.shape[0])
             visual_point=[]
             visual_confidence=[]
             for val,idx in zip(top_k_values,top_k_indices):
                 x,y=data['ridge_seg']['point_list'][idx]
-                visual_point.append([x*4,y*4])
+                visual_point.append([int(x),int(y)])
                 visual_confidence.append(round(float(val),2))
+            
             visual_sentences(
                 data_dict[image_name]['image_path'],
                 points=visual_point,
@@ -107,5 +108,29 @@ with torch.no_grad():
                 text=f"label: {label+1}",
                 confidences=visual_confidence,
                 label=bc_pred+1,
-                save_path=os.path.join('./experiments/visual/',str(label+1),image_name)
+                save_path=os.path.join('./experiments/visual/',str(label+1),image_name),
+                sample_visual=data['ridge_seg']['point_list']
             )
+probs_list=np.vstack(probs_list)
+pred_labels=np.array(pred_list)
+labels_list=np.array(labels_list)
+
+accuracy=accuracy_score(labels_list,pred_list)
+auc=roc_auc_score(labels_list,probs_list, multi_class='ovo')
+print(f"acc: {accuracy:.4f}, auc: {auc:.4f}")
+
+from sklearn.metrics import recall_score
+
+# Initialize an array to store recall for each class
+num_classes = probs_list.shape[1]  # Assuming probs_list has shape (num_samples, num_classes)
+recall_per_class = np.zeros(num_classes)
+
+# Calculate recall for each class
+for i in range(num_classes):
+    true_class = labels_list == i
+    predicted_class = pred_labels == i
+    recall_per_class[i] = recall_score(true_class, predicted_class)
+
+# Print recall for each class
+for i, recall in enumerate(recall_per_class):
+    print(f"Recall for class {i}: {recall:.4f}")

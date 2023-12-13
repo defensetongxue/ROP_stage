@@ -8,7 +8,7 @@ with open(os.path.join(data_path,'split','2.json'),'r') as f:
     split_list=json.load(f)['train']
 
 
-def visual_stage3(image_path, point_list, stage_list, save_path, patch_size=224,orignal_annotation=[]):
+def visual_stage3(image_path, point_list, stage_list, save_path, patch_size=256,orignal_annotation=[]):
     img = Image.open(image_path).convert('RGB')
     draw = ImageDraw.Draw(img)
     
