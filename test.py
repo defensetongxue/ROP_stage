@@ -3,12 +3,10 @@ from PIL import Image
 from  models import build_model
 import os,json
 import numpy as np
-from util.functions import to_device
-from  util.metric import calculate_recall
 from configs import get_config
+from models import build_model
 from sklearn.metrics import accuracy_score, roc_auc_score
 from util.tools import visual_sentences,crop_patches
-from shutil import copy
 from torchvision import transforms
 from util.dataset import IMAGENET_DEFAULT_MEAN,IMAGENET_DEFAULT_STD
 # Initialize the folder
@@ -22,7 +20,7 @@ args = get_config()
 os.makedirs(args.save_dir,exist_ok=True)
 print("Saveing the model in {}".format(args.save_dir))
 # Create the model and criterion
-model= build_model(num_classes=args.configs["num_classes"])# as we are loading the exite
+model= build_model(args.configs['model'])# as we are loading the exite
 # model.load_pretrained(pretrained_path=args.configs["pretrained_path"])
 
 # Set up the device

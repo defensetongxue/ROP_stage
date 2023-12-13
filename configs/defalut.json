@@ -4,6 +4,11 @@
     "smoothing":0.1,
     "save_name":"nlp.pth",
     "pretrained_path":"../ROP_diagnoise/pretrained/RETFound_cfp_weights.pth",
+    "model":{
+        "name":"efficientnet_b7",
+        "official_model_save":"./experiments",
+        "num_classes":3
+    },
     "lr_strategy":{
         "warmup_epochs":10,
         "lr":5e-4,

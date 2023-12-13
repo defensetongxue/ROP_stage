@@ -4,7 +4,6 @@ from util.dataset import CustomDataset
 from  models import build_model
 import os,json
 import numpy as np
-from util.metric import Metrics
 from util.functions import train_epoch,val_epoch,get_optimizer,lr_sche
 from configs import get_config
 # Initialize the folder
@@ -21,7 +20,7 @@ args.configs["lr_strategy"]['lr']=args.lr
 os.makedirs(args.save_dir,exist_ok=True)
 print("Saveing the model in {}".format(args.save_dir))
 # Create the model and criterion
-model= build_model(num_classes=args.configs["num_classes"])# as we are loading the exite
+model= build_model(args.configs["model"])# as we are loading the exite
 
 # Set up the device
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -95,48 +94,3 @@ for epoch in range(last_epoch,total_epoches):
         if early_stop_counter >= args.configs['train']['early_stop']:
             print("Early stopping triggered")
             break 
-
-with open(os.path.join(args.data_path,'split',f'{args.split_name}.json'), 'r') as f:
-    ori_split_list=json.load(f)['test']
-with open(os.path.join(args.data_path,'annotations.json'),'r') as f:
-    data_dict=json.load(f)
-metric={}
-for image_name in ori_split_list:
-    metric[image_name]=0
-
-model.load_state_dict(
-    torch.load(os.path.join(args.save_dir,save_model_name))
-)   
-model.eval() 
-for imgs,labels,image_names in test_loader:
-    outputs = model(imgs.cuda())
-    probs= torch.softmax(outputs,dim=-1).detach().cpu().numpy()
-    predictions = np.argmax(probs, axis=1)
-    for image_name,preds in zip(image_names,predictions):
-        metric[image_name]= max(preds,metric[image_name])
-        
-confu_matrix=np.zeros((3,3))
-for image_name in metric:
-    if data_dict[image_name]['stage'] ==0:
-        continue
-    confu_matrix[metric[image_name],data_dict[image_name]['stage']-1]+=1
-print(confu_matrix)
-# Total number of predictions
-total_predictions = confu_matrix.sum()
-
-# Total correct predictions
-correct_predictions = np.trace(confu_matrix)
-
-# Accuracy
-accuracy = correct_predictions / total_predictions
-
-# Recall for each class
-recall_1 = confu_matrix[0, 0] / confu_matrix[0, :].sum()
-recall_2 = confu_matrix[1, 1] / confu_matrix[1, :].sum()
-recall_3 = confu_matrix[2, 2] / confu_matrix[2, :].sum()
-
-print(f"Accuracy: {accuracy:.2f}")
-print(f"Recall for Class 1: {recall_1:.2f}")
-print(f"Recall for Class 2: {recall_2:.2f}")
-print(f"Recall for Class 3: {recall_3:.2f}")
-# print(f"Positive Recall: {positive_recall:.2f}")
