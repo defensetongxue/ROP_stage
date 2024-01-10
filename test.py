@@ -39,16 +39,16 @@ all_targets = []
 probs_list = []
 with open(os.path.join(args.data_path,'annotations.json'),'r') as f:
     data_dict=json.load(f)
-with open(os.path.join(args.data_path,'split',f"{args.split_name}.json"),'r') as f:
+with open(os.path.join(args.data_path,'split',f"clr_{args.split_name}.json"),'r') as f:
     split_all_list=json.load(f)['test']
 split_list=[]
 for image_name in split_all_list:
-    if data_dict[image_name]['stage']>0:
-        split_list.append(image_name)
-
+    # if data_dict[image_name]['stage']>0:
+    #     split_list.append(image_name)
+    split_list.append(image_name)
 os.makedirs("./experiments/visual/",exist_ok=True)
 os.system(f"rm -rf ./experiments/visual/*")
-for i in ["1","2","3"]:
+for i in ["0","1","2","3"]:
     os.makedirs("./experiments/visual/"+i,exist_ok=True)
 img_norm=transforms.Compose([
             transforms.ToTensor(),
@@ -60,55 +60,71 @@ pred_list=[]
 with torch.no_grad():
     for image_name in split_list:
         data=data_dict[image_name]
-        label=int(data['stage'])-1
+        label=int(data['stage'])
         img=Image.open(data["image_path"]).convert("RGB")
         inputs=[]
-        for x,y in data['ridge_seg']['point_list']:
-            _,patch=crop_patches(img,args.patch_size,x,y,
-                                 abnormal_mask=None,stage=0,save_dir=None)
-            patch=img_norm(patch)
-            inputs.append(patch.unsqueeze(0))
-        inputs=torch.cat(inputs,dim=0)
-        
-        outputs=model(inputs.to(device))
-        probs = torch.softmax(outputs.cpu(), axis=1)
-        # output shape is bc,num_class
-        # get pred for each patch
-        pred_labels = torch.argmax(probs, dim=1)
-        # get the max predict  label for this batch ( as  bc_pred)
-        bc_pred= int(torch.max(pred_labels))
-        # select the patch whose preds_label is equal to bc_pred
-        matching_indices = torch.where(pred_labels == bc_pred)[0]
-        selected_probs = probs[matching_indices]
-        # mean these selectes patches probs as bc_porb
-        bc_prob = torch.mean(selected_probs, dim=0)
-        bc_prob[-1]=1-torch.sum(bc_prob[:-1])
-        
-        probs_list.extend(bc_prob.unsqueeze(0).numpy())
+        if data['ridge_seg']["max_val"]<0.5:
+            bc_prob=np.zeros((1,4),dtype=float)
+            bc_prob[0,0]=1.
+            bc_pred=0
+        else:
+            for (x,y),val in zip(data['ridge_seg']['point_list'],data['ridge_seg']["value_list"]):
+                if val<=0.48:
+                    break
+                _,patch=crop_patches(img,args.patch_size,x,y,
+                                     abnormal_mask=None,stage=0,save_dir=None)
+                patch=img_norm(patch)
+                inputs.append(patch.unsqueeze(0))
+            if len(inputs)<=0:
+                print(inputs)
+                print(image_name)
+                print(data['ridge_seg']["value_list"])
+            inputs=torch.cat(inputs,dim=0)
+
+            outputs=model(inputs.to(device))
+            probs = torch.softmax(outputs.cpu(), axis=1)
+            # output shape is bc,num_class
+            # get pred for each patch
+            pred_labels = torch.argmax(probs, dim=1)
+            # get the max predict  label for this batch ( as  bc_pred)
+            bc_pred= int(torch.max(pred_labels))
+            # select the patch whose preds_label is equal to bc_pred
+            matching_indices = torch.where(pred_labels == bc_pred)[0]
+            selected_probs = probs[matching_indices]
+            # mean these selectes patches probs as bc_porb
+            bc_prob = torch.mean(selected_probs, dim=0)
+            bc_prob[-1]=1-torch.sum(bc_prob[:-1])
+            bc_prob=bc_prob.unsqueeze(0).numpy()
+            bc_prob = np.insert(bc_prob, 0, 0, axis=1)
+            
+            # visual the mismatch version
+            if label!=bc_pred+1:
+                # Get top k firmest predictions for bc_pred class
+                top_k = min(args.k,matching_indices.shape[0])  # Assuming args.k is defined and valid
+                class_probs = probs[:, bc_pred]  # Extract probabilities for bc_pred class
+                top_k_values, top_k_indices = torch.topk(class_probs, k=top_k)
+                visual_point=[]
+                visual_confidence=[]
+                for val,idx in zip(top_k_values,top_k_indices):
+                    x,y=data['ridge_seg']['point_list'][idx]
+                    visual_point.append([int(x),int(y)])
+                    visual_confidence.append(round(float(val),2))
+                
+                visual_sentences(
+                    data_dict[image_name]['image_path'],
+                    points=visual_point,
+                    patch_size=224,
+                    text=f"label: {label}",
+                    confidences=visual_confidence,
+                    label=bc_pred+1,
+                    save_path=os.path.join('./experiments/visual/',str(label),image_name),
+                    sample_visual=data['ridge_seg']['point_list']
+                )
+            bc_pred+=1
+        probs_list.extend(bc_prob)
         labels_list.append(label)
         pred_list.append(bc_pred)
-        if label!=bc_pred:
-            # Get top k firmest predictions for bc_pred class
-            top_k = min(args.k,matching_indices.shape[0])  # Assuming args.k is defined and valid
-            class_probs = probs[:, bc_pred]  # Extract probabilities for bc_pred class
-            top_k_values, top_k_indices = torch.topk(class_probs, k=top_k)
-            visual_point=[]
-            visual_confidence=[]
-            for val,idx in zip(top_k_values,top_k_indices):
-                x,y=data['ridge_seg']['point_list'][idx]
-                visual_point.append([int(x),int(y)])
-                visual_confidence.append(round(float(val),2))
-            
-            visual_sentences(
-                data_dict[image_name]['image_path'],
-                points=visual_point,
-                patch_size=224,
-                text=f"label: {label+1}",
-                confidences=visual_confidence,
-                label=bc_pred+1,
-                save_path=os.path.join('./experiments/visual/',str(label+1),image_name),
-                sample_visual=data['ridge_seg']['point_list']
-            )
+        
 probs_list=np.vstack(probs_list)
 pred_labels=np.array(pred_list)
 labels_list=np.array(labels_list)
@@ -119,8 +135,9 @@ print(f"acc: {accuracy:.4f}, auc: {auc:.4f}")
 
 from sklearn.metrics import recall_score
 
-# Initialize an array to store recall for each class
-num_classes = probs_list.shape[1]  # Assuming probs_list has shape (num_samples, num_classes)
+
+# Assuming probs_list has shape (num_samples, num_classes) and pred_labels, labels_list are 1D arrays
+num_classes = probs_list.shape[1]
 recall_per_class = np.zeros(num_classes)
 
 # Calculate recall for each class
@@ -129,6 +146,12 @@ for i in range(num_classes):
     predicted_class = pred_labels == i
     recall_per_class[i] = recall_score(true_class, predicted_class)
 
-# Print recall for each class
+# Calculate recall for positive classes (classes > 0)
+true_positive = labels_list > 0
+predicted_positive = pred_labels > 0
+recall_positive = recall_score(true_positive, predicted_positive)
+
+# Print recall for each class and positive recall
 for i, recall in enumerate(recall_per_class):
     print(f"Recall for class {i}: {recall:.4f}")
+print(f"Recall for positive classes: {recall_positive:.4f}")

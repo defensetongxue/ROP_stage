@@ -56,7 +56,7 @@ test_loader=  DataLoader(test_dataset,
                         shuffle=False, num_workers=args.configs['num_works'])
 if args.configs["smoothing"]> 0.:
     from timm.loss import LabelSmoothingCrossEntropy
-    criterion = LabelSmoothingCrossEntropy()
+    criterion = LabelSmoothingCrossEntropy(0.2)
 else:
     from torch.nn import CrossEntropyLoss
     criterion = CrossEntropyLoss()

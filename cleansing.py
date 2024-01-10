@@ -43,9 +43,6 @@ if __name__ == '__main__':
             os.makedirs(save_dir,exist_ok=True)
             stage_list=[]
             for cnt,(x,y) in enumerate(sample_list):
-                save_path= os.path.join(save_dir,str(cnt)+'.jpg')
-                # for convinient the stage is call by save_image name
-                # save_path=os.path.join(save_dir,f"{str(patch_stage)}_{image_cnt}.jpg")
                 patch_stage,_=crop_patches(img,args.patch_size,x,y,abnormal_mask,data['stage'],
                             save_dir=save_dir,image_cnt=str(cnt))
                 stage_list.append(patch_stage)

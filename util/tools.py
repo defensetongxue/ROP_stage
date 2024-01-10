@@ -30,14 +30,13 @@ def crop_patches(img,patch_size,x,y,
                  abnormal_mask,  # abnormal means stage 3 abnormal
                  stage,max_weight=1599,max_height=1199, check_padding=50,save_dir=None,image_cnt='1'):
     '''
-    const resize_height=600
-    const resize_weight=800
     keep the size as conv ridge segmentation model
     '''
     left  = int(x - patch_size // 2)
     upper = int(y - patch_size // 2)
     right = int(x + patch_size // 2)
     lower = int(y + patch_size // 2)
+    
     # Pad if necessary
     padding = [max(0, -left), max(0, -upper), max(0, right - max_weight), max(0, lower - max_height)]
     left=max(0, left)

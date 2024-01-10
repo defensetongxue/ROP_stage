@@ -1,7 +1,7 @@
 {
     "num_works": 12,
     "num_classes":3,
-    "smoothing":0.1,
+    "smoothing":0.2,
     "save_name":"nlp.pth",
     "pretrained_path":"../ROP_diagnoise/pretrained/RETFound_cfp_weights.pth",
     "model":{
@@ -11,7 +11,7 @@
     },
     "lr_strategy":{
         "warmup_epochs":10,
-        "lr":5e-4,
+        "lr":1e-4,
         "min_lr":1e-6,
         "epochs":50
     },
