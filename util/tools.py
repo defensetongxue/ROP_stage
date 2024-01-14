@@ -145,3 +145,26 @@ def visual_sentences(image_path, points, patch_size, label=None, confidences=Non
         img.save(save_path)
     else:
         img.show()
+        
+def k_max_values_and_indices(scores, k,r=100,threshold=0.0):
+    # Flatten the array and get the indices of the top-k values
+
+    preds_list = []
+    maxvals_list = []
+
+    for _ in range(k):
+        idx = np.unravel_index(np.argmax(scores, axis=None), scores.shape)
+
+        maxval = scores[idx]
+        if maxval<threshold:
+            break
+        maxvals_list.append(float(maxval))
+        preds_list.append(idx)
+        # Clear the square region around the point
+        x, y = idx[0], idx[1]
+        xmin, ymin = max(0, x - r // 2), max(0, y - r // 2)
+        xmax, ymax = min(scores.shape[0], x + r // 2), min(scores.shape[1], y + r // 2)
+        scores[ xmin:xmax,ymin:ymax] = -9
+    maxvals_list=np.array(maxvals_list,dtype=np.float16)
+    preds_list=np.array(preds_list,dtype=np.float16)
+    return maxvals_list, preds_list

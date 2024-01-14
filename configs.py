@@ -13,6 +13,10 @@ def get_config():
                         help='which split to use.')
     parser.add_argument('--max_sample_number', type=int, default=6,
                         help='which split to use.')
+    # for resample
+    parser.add_argument('--ridge_seg_number', type=int, default=6, help='Number of segments for ridge sampling.')
+    parser.add_argument('--sample_distance', type=int, default=100, help='Sample interval distance.')
+
     # split
     parser.add_argument('--split_name', type=str, default='1',
                         help='which split to use.')
