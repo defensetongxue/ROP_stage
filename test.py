@@ -46,10 +46,14 @@ for image_name in split_all_list:
     # if data_dict[image_name]['stage']>0:
     #     split_list.append(image_name)
     split_list.append(image_name)
-os.makedirs("./experiments/visual/",exist_ok=True)
-os.system(f"rm -rf ./experiments/visual/*")
+os.makedirs("./experiments/mistake/",exist_ok=True)
+# os.system(f"rm -rf ./experiments/mistake/*")
 for i in ["0","1","2","3"]:
-    os.makedirs("./experiments/visual/"+i,exist_ok=True)
+    os.makedirs("./experiments/mistake/"+i,exist_ok=True)
+os.makedirs("./experiments/right/",exist_ok=True)
+# os.system(f"rm -rf ./experiments/right/*")
+for i in ["0","1","2","3"]:
+    os.makedirs("./experiments/right/"+i,exist_ok=True)
 img_norm=transforms.Compose([
             transforms.ToTensor(),
             transforms.Normalize(
@@ -68,9 +72,11 @@ with torch.no_grad():
             bc_prob[0,0]=1.
             bc_pred=0
         else:
+            sample_visual=[]
             for (x,y),val in zip(data['ridge_seg']['point_list'],data['ridge_seg']["value_list"]):
                 if val<=0.48:
                     break
+                sample_visual.append([x,y])
                 _,patch=crop_patches(img,args.patch_size,x,y,
                                      abnormal_mask=None,stage=0,save_dir=None)
                 patch=img_norm(patch)
@@ -98,7 +104,7 @@ with torch.no_grad():
             bc_prob = np.insert(bc_prob, 0, 0, axis=1)
             
             # visual the mismatch version
-            if label!=bc_pred+1:
+            if label!=bc_pred+1 or True:
                 # Get top k firmest predictions for bc_pred class
                 top_k = min(args.k,matching_indices.shape[0])  # Assuming args.k is defined and valid
                 class_probs = probs[:, bc_pred]  # Extract probabilities for bc_pred class
@@ -109,16 +115,20 @@ with torch.no_grad():
                     x,y=data['ridge_seg']['point_list'][idx]
                     visual_point.append([int(x),int(y)])
                     visual_confidence.append(round(float(val),2))
-                
+                if label!=bc_pred+1:
+                    save_path=os.path.join('./experiments/mistake/',str(label),image_name)
+                else:
+                    save_path=os.path.join('./experiments/right/',str(label),image_name)
+                    
                 visual_sentences(
                     data_dict[image_name]['image_path'],
                     points=visual_point,
-                    patch_size=224,
+                    patch_size=args.patch_size,
                     text=f"label: {label}",
                     confidences=visual_confidence,
                     label=bc_pred+1,
-                    save_path=os.path.join('./experiments/visual/',str(label),image_name),
-                    sample_visual=data['ridge_seg']['point_list']
+                    save_path=save_path,
+                    sample_visual=sample_visual
                 )
             bc_pred+=1
         probs_list.extend(bc_prob)
