@@ -39,16 +39,16 @@ all_targets = []
 probs_list = []
 with open(os.path.join(args.data_path,'annotations.json'),'r') as f:
     data_dict=json.load(f)
-with open(os.path.join(args.data_path,'split',f"clr_{args.split_name}.json"),'r') as f:
+with open(os.path.join('./stage_split',f"clr_{args.split_name}.json"),'r') as f:
     split_all_list=json.load(f)['test']
 split_list=[]
 for image_name in split_all_list:
     if data_dict[image_name]['stage']>0:
         split_list.append(image_name)
-os.makedirs("./experiments/visual/",exist_ok=True)
-os.system(f"rm -rf ./experiments/visual/*")
-for i in ["0","1","2","3"]:
-    os.makedirs("./experiments/visual/"+i,exist_ok=True)
+os.makedirs("./experiments/stage_only/",exist_ok=True)
+os.system(f"rm -rf ./experiments/stage_only/*")
+for i in ["1","2","3"]:
+    os.makedirs("./experiments/stage_only/"+i,exist_ok=True)
 img_norm=transforms.Compose([
             transforms.ToTensor(),
             transforms.Normalize(
@@ -64,8 +64,10 @@ with torch.no_grad():
         inputs=[]
         if 'point_list' not in data['ridge_seg']:
             continue
+        
+        sample_visual=[]
         for (x,y),val in zip(data['ridge_seg']['point_list'],data['ridge_seg']["value_list"]):
-            
+            sample_visual.append([x,y])
             _,patch=crop_patches(img,args.patch_size,x,y,
                                  abnormal_mask=None,stage=0,save_dir=None)
             patch=img_norm(patch)
@@ -95,7 +97,7 @@ with torch.no_grad():
         bc_prob=bc_prob.unsqueeze(0).numpy()
         assert label<=2
         # visual the mismatch version
-        if label!=bc_pred and False:
+        if label!=bc_pred:
             # Get top k firmest predictions for bc_pred class
             top_k = min(args.k,matching_indices.shape[0])  # Assuming args.k is defined and valid
             class_probs = probs[:, bc_pred]  # Extract probabilities for bc_pred class
@@ -114,8 +116,8 @@ with torch.no_grad():
                 text=f"label: {label}",
                 confidences=visual_confidence,
                 label=bc_pred+1,
-                save_path=os.path.join('./experiments/visual/',str(label),image_name),
-                sample_visual=data['ridge_seg']['point_list']
+                save_path=os.path.join('./experiments/stage_only/',str(label+1),image_name),
+                sample_visual=sample_visual
             )
         probs_list.extend(bc_prob)
         labels_list.append(label)

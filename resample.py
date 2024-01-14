@@ -33,10 +33,12 @@ if __name__ == '__main__':
             # Update data_dict
             data_dict[image_name]['ridge_seg'].update({
                 "value_list": value_list,
-                "point_list": point_list
+                "point_list": point_list,
+                "sample_number":args.ridge_seg_number,
+                "sample_interval":args.sample_distance
             })
 
     # Optionally, save the updated data_dict back to file
-    # with open(os.path.join(args.data_path, 'annotations_updated.json'), 'w') as f:
-    with open('./annotations_updated.json', 'w') as f:
+    with open(os.path.join(args.data_path, 'annotations_updated.json'), 'w') as f:
+    # with open('./annotations_updated.json', 'w') as f:
         json.dump(data_dict, f, indent=4)
