@@ -1,61 +1,65 @@
-import torch
+import os
+import json
 from PIL import Image
-from  models import build_model
-import os,json
+import torch
 import numpy as np
 from configs import get_config
 from models import build_model
-from sklearn.metrics import accuracy_score, roc_auc_score
-from util.tools import visual_sentences,crop_patches
+from sklearn.metrics import accuracy_score, roc_auc_score, recall_score
+from util.tools import visual_sentences, crop_patches
 from torchvision import transforms
-from util.dataset import IMAGENET_DEFAULT_MEAN,IMAGENET_DEFAULT_STD
-# Initialize the folder
-os.makedirs("checkpoints",exist_ok=True)
-os.makedirs("experiments",exist_ok=True)
+from util.dataset import IMAGENET_DEFAULT_MEAN, IMAGENET_DEFAULT_STD
+args=get_config()
+# Initialize the folders
+os.makedirs("checkpoints", exist_ok=True)
+os.makedirs("experiments", exist_ok=True)
+os.makedirs(args.save_dir, exist_ok=True)
+os.makedirs("./experiments/stage_only/", exist_ok=True)
+os.system(f"rm -rf ./experiments/stage_only/*")
+for i in ["1","2","3"]:
+    os.makedirs("./experiments/stage_only/"+i,exist_ok=True)
+    
+# Set seeds for reproducibility
 torch.manual_seed(0)
 np.random.seed(0)
+
 # Parse arguments
 args = get_config()
+print(f"Saving the model in {args.save_dir}")
 
-os.makedirs(args.save_dir,exist_ok=True)
-print("Saveing the model in {}".format(args.save_dir))
-# Create the model and criterion
-model= build_model(args.configs['model'])# as we are loading the exite
+# Create the model
+model = build_model(args.configs['model'])
 # model.load_pretrained(pretrained_path=args.configs["pretrained_path"])
 
 # Set up the device
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 model = model.to(device)
-print(f"using {device} for training")
+print(f"Using {device} for training")
 
-save_model_name=args.split_name+args.configs['save_name']
-print(os.path.join(args.save_dir, save_model_name))
-model.load_state_dict(
-    torch.load(os.path.join(args.save_dir, save_model_name)))
+# Load the model
+save_model_name = args.split_name + args.configs['save_name']
+model.load_state_dict(torch.load(os.path.join(args.save_dir, save_model_name)))
 model.eval()
 
-all_predictions = []
-all_targets = []
-probs_list = []
-with open(os.path.join(args.data_path,'annotations.json'),'r') as f:
-    data_dict=json.load(f)
-with open(os.path.join('./stage_split',f"clr_{args.split_name}.json"),'r') as f:
-    split_all_list=json.load(f)['test']
-split_list=[]
-for image_name in split_all_list:
-    if data_dict[image_name]['stage']>0:
-        split_list.append(image_name)
-os.makedirs("./experiments/stage_only/",exist_ok=True)
-os.system(f"rm -rf ./experiments/stage_only/*")
-for i in ["1","2","3"]:
-    os.makedirs("./experiments/stage_only/"+i,exist_ok=True)
-img_norm=transforms.Compose([
-            transforms.ToTensor(),
-            transforms.Normalize(
-                mean=IMAGENET_DEFAULT_MEAN,std=IMAGENET_DEFAULT_STD)])
-probs_list=[]
-labels_list=[]
-pred_list=[]   
+# Load annotations and split list
+with open(os.path.join(args.data_path, 'annotations.json'), 'r') as f:
+    data_dict = json.load(f)
+with open(os.path.join('./stage_split', f"clr_{args.split_name}.json"), 'r') as f:
+    split_all_list = json.load(f)['test']
+
+# Filter images
+split_list = [image_name for image_name in split_all_list if data_dict[image_name]['stage'] > 0]
+
+# Image normalization
+img_norm = transforms.Compose([
+    transforms.ToTensor(),
+    transforms.Normalize(mean=IMAGENET_DEFAULT_MEAN, std=IMAGENET_DEFAULT_STD)
+])
+
+# Processing images
+probs_list, labels_list, pred_list = [], [], []
+visual = False
+
 with torch.no_grad():
     for image_name in split_list:
         data=data_dict[image_name]
@@ -72,7 +76,7 @@ with torch.no_grad():
                                  abnormal_mask=None,stage=0,save_dir=None)
             patch=img_norm(patch)
             inputs.append(patch.unsqueeze(0))
-            if val<=0.48:
+            if val<args.sample_low_threshold:
                 break
         if len(inputs)<=0:
             print(inputs)
@@ -97,7 +101,7 @@ with torch.no_grad():
         bc_prob=bc_prob.unsqueeze(0).numpy()
         assert label<=2
         # visual the mismatch version
-        if label!=bc_pred:
+        if label!=bc_pred and visual:
             # Get top k firmest predictions for bc_pred class
             top_k = min(args.k,matching_indices.shape[0])  # Assuming args.k is defined and valid
             class_probs = probs[:, bc_pred]  # Extract probabilities for bc_pred class
@@ -126,25 +130,45 @@ with torch.no_grad():
 probs_list=np.vstack(probs_list)
 pred_labels=np.array(pred_list)
 labels_list=np.array(labels_list)
-print(np.min(labels_list),probs_list.shape)
-accuracy=accuracy_score(labels_list,pred_list)
-auc=roc_auc_score(labels_list,probs_list, multi_class='ovo')
-print(f"acc: {accuracy:.4f}, auc: {auc:.4f}")
 
-from sklearn.metrics import recall_score
-
-
-# Assuming probs_list has shape (num_samples, num_classes) and pred_labels, labels_list are 1D arrays
-num_classes = probs_list.shape[1]
-recall_per_class = np.zeros(num_classes)
+# Performance metrics
+accuracy = accuracy_score(labels_list, pred_list)
+auc = roc_auc_score(labels_list, probs_list, multi_class='ovo')
 
 # Calculate recall for each class
+num_classes = probs_list.shape[1]
+recall_per_class = np.zeros(num_classes)
 for i in range(num_classes):
     true_class = labels_list == i
     predicted_class = pred_labels == i
     recall_per_class[i] = recall_score(true_class, predicted_class)
 
-
-# Print recall for each class and positive recall
+print(f"acc: {accuracy:.4f}, auc: {auc:.4f}")
 for i, recall in enumerate(recall_per_class):
     print(f"Recall for class {i}: {recall:.4f}")
+
+
+# Record results
+record_path = './experiments/record_stage.json'
+key = f"{args.ridge_seg_number}_{args.sample_distance}_{int(100 * args.sample_low_threshold)}"
+content = {
+    "auc": auc,
+    "acc": accuracy,
+    "recall_per_class": recall_per_class.tolist()  # Convert numpy array to list for JSON serialization
+}
+
+# Check if record file exists and load it, otherwise create a new record
+if not os.path.exists(record_path):
+    record = {}
+else:
+    with open(record_path, 'r') as f:
+        record = json.load(f)
+
+# Update the record with new results
+record[key] = content
+
+# Save the updated record
+with open(record_path, 'w') as f:
+    json.dump(record, f, indent=4)
+
+print("Results saved in record_stage.json.")

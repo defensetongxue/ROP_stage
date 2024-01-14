@@ -39,6 +39,8 @@ def get_config():
     parser.add_argument('--lr', type=float, default=1e-3,
                         help='which split to use.')
     
+    parser.add_argument('--sample_low_threshold', type=float, default=0.48,
+                        help='which split to use.')
     # visual
     parser.add_argument('--k', type=int, default=2,
                         help='which split to use.')
