@@ -1,6 +1,6 @@
 import torch
 from torch.utils.data import DataLoader
-from util.dataset import CustomDataset
+from util.dataset import BaselineDataset as CustomDataset
 from  models import build_model
 import os,json
 from torch.nn import CrossEntropyLoss

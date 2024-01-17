@@ -32,3 +32,8 @@ Aux: Acc: 0.8135 Auc: 0.9072 RecallPos: 0.8169 Recall1: 0.3614 Recall2: 0.6974 R
 Last Epoch Train Loss: 0.0917, Val Loss: 0.3034, Acc: 0.9466, Auc: 0.9749, Recall (Pos): 0.9711, Recall (Class 1): 0.9158, Recall (Class 2): 0.3553, Recall (Class 3): 0.2037, 
 Aux: Acc: 0.7311 Auc: 0.8827 RecallPos: 0.8289 Recall1: 0.0912 Recall2: 0.5921 Recall3: 0.5370 
 Best Epoch Acc: 0.9448, Auc: 0.9807, Recall (Pos): 0.9759, Recall (Class 1): 0.7965, Recall (Class 2): 0.5658, Recall (Class 3): 0.4630, 
+
+Acc:0.7134, Auc: 0.5692
+Acc:0.6055, Auc: 0.6458
+ Acc:0.6700, Auc: 0.5890
+ Acc:0.7098, Auc: 0.7885

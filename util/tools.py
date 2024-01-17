@@ -62,6 +62,9 @@ def crop_patches(img,patch_size,x,y,
             patch_stage=3
         else:
             patch_stage=2
+            # in that case if we can ensure the other part of the ridge is stage 2?
+            if True: # if we ca
+                return -1,res
     else:
        patch_stage=stage
     if save_dir:

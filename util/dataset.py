@@ -54,6 +54,53 @@ class CustomDataset(Dataset):
     def __len__(self):
         return len(self.split_list)
     
+class BaselineDataset(Dataset):
+    def __init__(self, split,data_path,split_name,img_resize=256):
+        with open(os.path.join(data_path,'split',f'{split_name}.json'), 'r') as f:
+            ori_split_list=json.load(f)[split]
+        with open(os.path.join(data_path,'annotations.json'),'r') as f:
+            self.data_dict=json.load(f)
+        self.split_list=[]
+        for image_name in ori_split_list:
+            data=self.data_dict[image_name]
+            # buid patch image
+            if self.data_dict[image_name]['stage']==0:
+                continue
+            if not 'stage_sentence_path' in data:
+                continue
+            self.split_list.append(image_name)
+        if split=='test':
+            with open(f'./stage_split/clr_{split_name}.json') as f:
+                self.split_list=json.load(f)['test']
+        self.patch_enhance= transforms.Compose([
+            transforms.RandomHorizontalFlip(p=0.5),
+            transforms.RandomVerticalFlip(p=0.5),
+            # transforms.RandomRotation((0, 360)),
+            Fix_RandomRotation(),
+        ])
+        self.img_resize=transforms.Resize((img_resize,img_resize))
+        self.split = split
+        self.img_norm=transforms.Compose([
+            transforms.ToTensor(),
+            transforms.Normalize(
+                mean=IMAGENET_DEFAULT_MEAN,std=IMAGENET_DEFAULT_STD)])
+    def __getitem__(self, idx):
+        image_name = self.split_list[idx]
+        data=self.data_dict[image_name]
+        img=Image.open(data["image_path"]).convert("RGB")
+        img=self.img_resize(img)
+        if self.split=='train':
+            img=self.patch_enhance(img)
+        img=self.img_norm(img)
+        label=data['stage']-1
+        assert label<3
+        # save_path=os.path.join(save_dir,f"{str(patch_stage)}_{image_cnt}.jpg")
+        return img,label,image_name
+
+
+    def __len__(self):
+        return len(self.split_list)
+    
 class Fix_RandomRotation(object):
 
     def __init__(self, degrees=360, resample=False, expand=False, center=None):

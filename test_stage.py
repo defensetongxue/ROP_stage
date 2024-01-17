@@ -26,7 +26,7 @@ np.random.seed(0)
 # Parse arguments
 args = get_config()
 print(f"Saving the model in {args.save_dir}")
-
+args.configs['model']['name']=args.model_name
 # Create the model
 model = build_model(args.configs['model'])
 # model.load_pretrained(pretrained_path=args.configs["pretrained_path"])
@@ -52,6 +52,7 @@ split_list = [image_name for image_name in split_all_list if data_dict[image_nam
 
 # Image normalization
 img_norm = transforms.Compose([
+    transforms.Resize((args.resize,args.resize)),
     transforms.ToTensor(),
     transforms.Normalize(mean=IMAGENET_DEFAULT_MEAN, std=IMAGENET_DEFAULT_STD)
 ])
@@ -79,27 +80,30 @@ with torch.no_grad():
             if val<args.sample_low_threshold:
                 break
         if len(inputs)<=0:
-            print(inputs)
-            print(image_name)
-            print(data['ridge_seg']["value_list"])
+            print(f"{image_name} do not have enougph data, value list is ",data['ridge_seg']["value_list"] )
             continue
         inputs=torch.cat(inputs,dim=0)
 
         outputs=model(inputs.to(device))
         probs = torch.softmax(outputs.cpu(), axis=1)
+        
         # output shape is bc,num_class
         # get pred for each patch
         pred_labels = torch.argmax(probs, dim=1)
+        
         # get the max predict  label for this batch ( as  bc_pred)
         bc_pred= int(torch.max(pred_labels))
+        
         # select the patch whose preds_label is equal to bc_pred
         matching_indices = torch.where(pred_labels == bc_pred)[0]
         selected_probs = probs[matching_indices]
+        
         # mean these selectes patches probs as bc_porb
         bc_prob = torch.mean(selected_probs, dim=0)
         bc_prob[-1]=1-torch.sum(bc_prob[:-1])
         bc_prob=bc_prob.unsqueeze(0).numpy()
         assert label<=2
+        
         # visual the mismatch version
         if label!=bc_pred and visual:
             # Get top k firmest predictions for bc_pred class
@@ -150,12 +154,7 @@ for i, recall in enumerate(recall_per_class):
 
 # Record results
 record_path = './experiments/record_stage.json'
-key = f"{args.ridge_seg_number}_{args.sample_distance}_{int(100 * args.sample_low_threshold)}"
-content = {
-    "auc": auc,
-    "acc": accuracy,
-    "recall_per_class": recall_per_class.tolist()  # Convert numpy array to list for JSON serialization
-}
+key = f"{args.ridge_seg_number}_{args.sample_distance}_{int(100 * args.sample_low_threshold)}_{args.patch_size}"
 
 # Check if record file exists and load it, otherwise create a new record
 if not os.path.exists(record_path):
@@ -163,9 +162,14 @@ if not os.path.exists(record_path):
 else:
     with open(record_path, 'r') as f:
         record = json.load(f)
+if key not in record:
+    record[key]={}
+record[key][args.split_name]={
+        "auc": round(auc, 4),
+        "acc": round(accuracy, 4),
+        "recall_per_class": [round(recall, 4) if recall is not np.nan else None for recall in recall_per_class.tolist()]
+    }
 
-# Update the record with new results
-record[key] = content
 
 # Save the updated record
 with open(record_path, 'w') as f:

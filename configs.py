@@ -6,6 +6,9 @@ def get_config():
     parser.add_argument('--data_path', type=str, default='../autodl-tmp/dataset_ROP',
                         help='Path to the target folder to store the processed datasets.')
     
+    # model selection
+    parser.add_argument('--model_name', type=str, default='efficientnet_b7',
+                        help='Path to the target folder to store the processed datasets.')
     # for cleansing
     parser.add_argument('--patch_size', type=int, default=256,
                         help='which split to use.')
@@ -30,16 +33,16 @@ def get_config():
     # train and test
     parser.add_argument('--save_dir', type=str, default="./checkpoints",
                         help='Name of the file to save the best model during training.')
-    parser.add_argument('--resize', type=int, default=256,
+    parser.add_argument('--resize', type=int, default=224,
                         help='Name of the file to save the best model during training.')
     parser.add_argument('--result_path', type=str, default="experiments",
                         help='Path to the visualize result or the pytorch model will be saved.')
-    parser.add_argument('--wd', type=float, default=5e-4,
+    parser.add_argument('--wd', type=float, default=1e-4,
                         help='which split to use.')
-    parser.add_argument('--lr', type=float, default=1e-3,
+    parser.add_argument('--lr', type=float, default=1e-4,
                         help='which split to use.')
     
-    parser.add_argument('--sample_low_threshold', type=float, default=0.48,
+    parser.add_argument('--sample_low_threshold', type=float, default=0.45,
                         help='which split to use.')
     # visual
     parser.add_argument('--k', type=int, default=2,

@@ -30,7 +30,6 @@ if __name__ == '__main__':
                 abnormal_mask=np.zeros((1200,1600))
                 assert len(data['ridge']["vessel_abnormal_coordinate"])>0,image_name
                 for x,y in data['ridge']["vessel_abnormal_coordinate"]:
-                    # print(y,x)
                     abnormal_mask[int(y),int(x)]=1
                 
             else:
@@ -42,10 +41,31 @@ if __name__ == '__main__':
             save_dir=os.path.join(args.data_path,'stage_sentence',image_name[:-4])
             os.makedirs(save_dir,exist_ok=True)
             stage_list=[]
+            
+            rm_idx=[]
+            enhanced=False
+            enhanced_distance=50
             for cnt,(x,y) in enumerate(sample_list):
                 patch_stage,_=crop_patches(img,args.patch_size,x,y,abnormal_mask,data['stage'],
                             save_dir=save_dir,image_cnt=str(cnt))
+                if patch_stage==-1:
+                    rm_idx.append(cnt)
+                    continue
                 stage_list.append(patch_stage)
+                if enhanced:
+                    # Generate coordinates for near 8 points around (x, y)
+                    offsets = [-enhanced_distance, 0, enhanced_distance]
+                    near_points = [(x + dx, y + dy) for dx in offsets for dy in offsets if not (dx == 0 and dy == 0)]
+
+                    for enhanced_cnt, (x_extra, y_extra) in enumerate(near_points):
+                        unique_cnt = 100 * cnt + enhanced_cnt  # Unique identifier for each patch
+                        patch_stage, _ = crop_patches(img, args.patch_size, x_extra, y_extra, abnormal_mask, data['stage'],
+                                                      save_dir=save_dir, image_cnt=str(unique_cnt))
+            
+
+            if len(rm_idx) > 0:
+                sample_list = [item for cnt, item in enumerate(sample_list) if cnt not in rm_idx]
+
             data_dict[image_name]['stage_sentence_path']=save_dir
             data_dict[image_name]['stage_sample']=sample_list
             data_dict[image_name]['stage_list']=stage_list
