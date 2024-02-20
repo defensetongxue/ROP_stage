@@ -35,5 +35,6 @@ Best Epoch Acc: 0.9448, Auc: 0.9807, Recall (Pos): 0.9759, Recall (Class 1): 0.7
 
 Acc:0.7134, Auc: 0.5692
 Acc:0.6055, Auc: 0.6458
- Acc:0.6700, Auc: 0.5890
- Acc:0.7098, Auc: 0.7885
+
+acc 0.6746
+auc0.6481

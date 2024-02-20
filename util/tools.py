@@ -102,7 +102,7 @@ def sample_patch(ridge_diffusion_path, sample_dense, max_sample_number):
     return sample_list
 
 
-def visual_sentences(image_path, points, patch_size, label=None, confidences=None, text=None, save_path=None, font_size=20,sample_visual=[]):
+def visual_sentences(image_path, points, patch_size, label=None, confidences=None, text=None, save_path=None, font_size=60,sample_visual=[]):
     # Open the image
     img = Image.open(image_path)
     draw = ImageDraw.Draw(img)
