@@ -40,7 +40,7 @@ all_targets = []
 probs_list = []
 with open(os.path.join(args.data_path, 'annotations.json'), 'r') as f:
     data_dict = json.load(f)
-with open(os.path.join(args.data_path, 'split', f"clr_{args.split_name}.json"), 'r') as f:
+with open(os.path.join(args.data_path, 'split', f"{args.split_name}.json"), 'r') as f:
     split_all_list = json.load(f)['test']
 split_list = []
 for image_name in split_all_list:
@@ -70,9 +70,9 @@ if os.path.exists(model_prediction_path):
         model_prediction = json.load(f)
 else:
     model_prediction = {}
-visual_mistake = False
+visual_mistake =True
 visual_patch_size = 200
-save_visual_global = True
+save_visual_global = False
 global_path = os.path.join(args.data_path, 'visual_stage')
 os.makedirs(global_path, exist_ok=True)
 with torch.no_grad():
@@ -120,7 +120,8 @@ with torch.no_grad():
 
             bc_pred += 1
             # visual the mismatch version
-            if save_visual_global or visual_mistake:
+            # if save_visual_global or visual_mistake :
+            if False :
                 # Get top k firmest predictions for bc_pred class
                 # Assuming args.k is defined and valid
                 top_k = min(args.k, matching_indices.shape[0])
@@ -137,7 +138,7 @@ with torch.no_grad():
                 if visual_mistake:
                     if label != bc_pred:
                         save_path = os.path.join(
-                            './experiments/mistake/', str(label), image_name)
+                            './experiments/mistake/', str(bc_pred), image_name)
                     else:
                         continue  # mistake only
                         save_path = os.path.join(

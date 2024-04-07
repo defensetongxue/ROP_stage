@@ -28,7 +28,8 @@ if __name__ == '__main__':
                 max_number=100 
                 # build abnormal_mask
                 abnormal_mask=np.zeros((1200,1600))
-                assert len(data['ridge']["vessel_abnormal_coordinate"])>0,image_name
+                if not len(data['ridge']["vessel_abnormal_coordinate"])>0:
+                    continue
                 for x,y in data['ridge']["vessel_abnormal_coordinate"]:
                     abnormal_mask[int(y),int(x)]=1
                 

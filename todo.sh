@@ -1,13 +1,10 @@
 # python cleansing.py --patch_size 400
-# python train.py --split_name 1 --patch_size 400
-# python test_stage.py --split_name 1 --patch_size 400
-# python train.py --split_name 2 --patch_size 400
-# python test_stage.py --split_name 2 --patch_size 400
-# python train.py --split_name 3 --patch_size 400
-# python test_stage.py --split_name 3 --patch_size 400
-# python train.py --split_name 4 --patch_size 400
-# python test_stage.py --split_name 4 --patch_size 400
-python test.py --split_name 1  --patch_size 400
-python test.py --split_name 2  --patch_size 400
-python test.py --split_name 3  --patch_size 400
-python test.py --split_name 4  --patch_size 400
+python train.py --split_name clr_1 --patch_size 400
+python tmp --split_name clr_1 --patch_size 400
+python train.py --split_name clr_2 --patch_size 400
+python tmp --split_name clr_2 --patch_size 400
+python train.py --split_name clr_3 --patch_size 400
+python tmp --split_name clr_3 --patch_size 400
+python train.py --split_name clr_4 --patch_size 400
+python tmp --split_name clr_4 --patch_size 400
+python train.py --split_name all --patch_size 400

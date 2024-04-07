@@ -1,29 +1,48 @@
-def generate_shell_script():
-    # Define the ranges for each parameter
-    ridge_seg_numbers = range(1, 9)  # 1 to 8
-    sample_distances = range(60, 141, 20)  # 60 to 140, step 20
-    sample_low_thresholds = [i / 100.0 for i in range(38, 49)]  # 0.38 to 0.48, step 0.01
-    patch_size_range=[380,420]
-    with open('./todo.sh', 'w') as file:
-        for param_name, values in [
-            # ('ridge_seg_number', ridge_seg_numbers),
-            # ('sample_distance', sample_distances),
-            # ('sample_low_threshold', sample_low_thresholds)
-            ('patch_size',patch_size_range)
-        ]:
-            for val in values:
-                # Write the resample.py command
-                file.write(f"python cleansing.py --{param_name} {val}\n")
+from PIL import Image, ImageDraw, ImageFont
+import os
+import json
 
-                # Write the test_stage.py commands for each split
-                for split in range(1, 5):  # Split 1 to 4
-                    file.write(f"python train.py --split_name {split} --{param_name} {val}\n")
-                    
-                    file.write(f"python test_stage.py --split_name {split} --{param_name} {val}\n")
+# Load the necessary data
+with open('./confuse_list.json') as f:
+    confuse_list = json.load(f)
 
-                # Add an empty line for readability between parameter sets
-                file.write("\n")
+# Specify font
+font_path = './arial.ttf'
+font = ImageFont.truetype(font_path, 70)
 
-if __name__ == '__main__':
-    generate_shell_script()
-    print("Shell script todo.sh generated successfully.")
+# Ensure the output directory exists
+output_dir = './experiments/release_check'
+os.makedirs(output_dir, exist_ok=True)
+for stage_list in ['0','1','2','3']:
+    os.makedirs(output_dir+'/'+stage_list, exist_ok=True)
+# Process each image
+for image_name, details in confuse_list.items():
+    image_path = details["image_path"]
+    try:
+        # Open the image
+        image = Image.open(image_path)
+        draw = ImageDraw.Draw(image)
+
+        # Get image dimensions
+        width, height = image.size
+
+        # Define text positions
+        positions = [(0, 0), (width, 0), (0, height), (width, height)]
+        keys = ["annote", "xsj", "zy", "model_prediction"]
+
+        # Draw text in four corners
+        for pos, key in zip(positions, keys):
+            text = f"{key}: {str(confuse_list[image_name][key])}"
+            # Calculate text size using textbbox
+            bbox = draw.textbbox((0, 0), text, font=font)
+            text_width = bbox[2] - bbox[0]
+            text_height = bbox[3] - bbox[1]
+            # Adjust text position to not overlap the image borders
+            adjusted_pos = (max(pos[0] - text_width, 0), max(pos[1] - text_height, 0))
+            draw.text(adjusted_pos, text, font=font, fill="white")
+
+        # Save the image
+        save_path = os.path.join(output_dir,str(confuse_list[image_name]["annote"] ),image_name)
+        image.save(save_path)
+    except Exception as e:
+        print(f"Error processing {image_name}: {e}")

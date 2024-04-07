@@ -10,7 +10,7 @@ def get_config():
     parser.add_argument('--model_name', type=str, default='efficientnet_b7',
                         help='Path to the target folder to store the processed datasets.')
     # for cleansing
-    parser.add_argument('--patch_size', type=int, default=256,
+    parser.add_argument('--patch_size', type=int, default=400,
                         help='which split to use.')
     parser.add_argument('--sample_dense', type=int, default=128,
                         help='which split to use.')
@@ -21,7 +21,7 @@ def get_config():
     parser.add_argument('--sample_distance', type=int, default=100, help='Sample interval distance.')
 
     # split
-    parser.add_argument('--split_name', type=str, default='1',
+    parser.add_argument('--split_name', type=str, default='clr_1',
                         help='which split to use.')
     parser.add_argument('--word_size', type=int, default=4,
                         help='which split to use.')
