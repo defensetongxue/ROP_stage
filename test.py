@@ -17,6 +17,9 @@ torch.manual_seed(0)
 np.random.seed(0)
 # Parse arguments
 args = get_config()
+args.configs['train']['wd']=args.wd
+args.configs["lr_strategy"]['lr']=args.lr
+args.configs['model']['name']=args.model_name
 
 os.makedirs(args.save_dir, exist_ok=True)
 print("Saveing the model in {}".format(args.save_dir))
@@ -179,11 +182,6 @@ accuracy = accuracy_score(labels_list, pred_list)
 auc = roc_auc_score(labels_list, probs_list, multi_class='ovo')
 print(f"acc: {accuracy:.4f}, auc: {auc:.4f}")
 
-# with open(model_prediction_path, 'w') as f:
-#     json.dump(model_prediction,f)
-with open(os.path.join(args.data_path, 'annotations.json'), 'w') as f:
-    json.dump(data_dict, f)
-
 # Assuming probs_list has shape (num_samples, num_classes) and pred_labels, labels_list are 1D arrays
 num_classes = probs_list.shape[1]
 recall_per_class = np.zeros(num_classes)
@@ -203,3 +201,31 @@ recall_positive = recall_score(true_positive, predicted_positive)
 for i, recall in enumerate(recall_per_class):
     print(f"Recall for class {i}: {recall:.4f}")
 print(f"Recall for positive classes: {recall_positive:.4f}")
+
+record_path = './experiments/record.json'
+# record_path = './experiments/shen_record.json'
+if os.path.exists(record_path):
+    with open(record_path, 'r') as f:
+        record = json.load(f)
+else:
+    record = {}
+
+model_name=args.configs['model']['name']
+parameter_key=f"{str(args.lr)}_{str(args.wd)}"
+if model_name not in record:
+    record[model_name]={}
+if parameter_key not in record[model_name]:
+    record[model_name][parameter_key]={'patch':{},'all':{}}
+record[model_name][parameter_key]['all'][args.split_name] = {
+    "Accuracy": f"{accuracy:.4f}",
+    "AUC": f"{auc:.4f}",
+    "recall_pos": f"{recall_positive:.4f}",  
+    "0_recall": f"{recall_per_class[0]:.4f}", 
+    "1_recall": f"{recall_per_class[1]:.4f}",
+    "2_recall": f"{recall_per_class[2]:.4f}",
+    "3_recall": f"{recall_per_class[3]:.4f}",
+    # Add more metrics as needed following the pattern
+}
+# Write the updated record back to the file
+with open(record_path, 'w') as f:
+    json.dump(record, f, indent=4)

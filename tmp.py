@@ -1,48 +1,29 @@
-from PIL import Image, ImageDraw, ImageFont
-import os
-import json
+# 定义所有的model_name
+model_names = [
+    "inceptionv3",
+    "vgg16",
+    "resnet18",
+    "resnet50",
+    "mobelnetv3_large",
+    "mobelnetv3_small",
+    "efficientnet_b7"
+]
 
-# Load the necessary data
-with open('./confuse_list.json') as f:
-    confuse_list = json.load(f)
+# 定义所有的split_name
+split_names = ["clr_1", "clr_2", "clr_3", "clr_4", "all"]
 
-# Specify font
-font_path = './arial.ttf'
-font = ImageFont.truetype(font_path, 70)
+# 打开一个新的shell脚本文件写入
+with open("run_models.sh", "w") as file:
+    file.write("#!/bin/bash\n\n")
+    for model_name in model_names:
+        for split_name in split_names:
+            # 为除了"all"之外的split_name添加训练和测试命令
+            if split_name != "all":
+                file.write(f"python train.py --split_name {split_name} --model_name {model_name}\n")
+                file.write(f"python test.py --split_name {split_name} --model_name {model_name}\n")
+            else:
+                # "all" split只进行训练
+                file.write(f"python train.py --split_name {split_name} --model_name {model_name}\n")
+        file.write("\n")
 
-# Ensure the output directory exists
-output_dir = './experiments/release_check'
-os.makedirs(output_dir, exist_ok=True)
-for stage_list in ['0','1','2','3']:
-    os.makedirs(output_dir+'/'+stage_list, exist_ok=True)
-# Process each image
-for image_name, details in confuse_list.items():
-    image_path = details["image_path"]
-    try:
-        # Open the image
-        image = Image.open(image_path)
-        draw = ImageDraw.Draw(image)
-
-        # Get image dimensions
-        width, height = image.size
-
-        # Define text positions
-        positions = [(0, 0), (width, 0), (0, height), (width, height)]
-        keys = ["annote", "xsj", "zy", "model_prediction"]
-
-        # Draw text in four corners
-        for pos, key in zip(positions, keys):
-            text = f"{key}: {str(confuse_list[image_name][key])}"
-            # Calculate text size using textbbox
-            bbox = draw.textbbox((0, 0), text, font=font)
-            text_width = bbox[2] - bbox[0]
-            text_height = bbox[3] - bbox[1]
-            # Adjust text position to not overlap the image borders
-            adjusted_pos = (max(pos[0] - text_width, 0), max(pos[1] - text_height, 0))
-            draw.text(adjusted_pos, text, font=font, fill="white")
-
-        # Save the image
-        save_path = os.path.join(output_dir,str(confuse_list[image_name]["annote"] ),image_name)
-        image.save(save_path)
-    except Exception as e:
-        print(f"Error processing {image_name}: {e}")
+print("Shell script 'run_models.sh' has been generated.")

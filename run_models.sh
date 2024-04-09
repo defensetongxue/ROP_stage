@@ -1,14 +1,14 @@
 #!/bin/bash
 
-python train.py --split_name clr_1 --model_name inceptionv3 --resize 299
-python test.py --split_name clr_1 --model_name inceptionv3 --resize 299
-python train.py --split_name clr_2 --model_name inceptionv3 --resize 299
-python test.py --split_name clr_2 --model_name inceptionv3 --resize 299
-python train.py --split_name clr_3 --model_name inceptionv3 --resize 299
-python test.py --split_name clr_3 --model_name inceptionv3 --resize 299
-python train.py --split_name clr_4 --model_name inceptionv3 --resize 299
-python test.py --split_name clr_4 --model_name inceptionv3 --resize 299
-python train.py --split_name all --model_name inceptionv3 --resize 299
+python train.py --split_name clr_1 --model_name inceptionv3
+python test.py --split_name clr_1 --model_name inceptionv3
+python train.py --split_name clr_2 --model_name inceptionv3
+python test.py --split_name clr_2 --model_name inceptionv3
+python train.py --split_name clr_3 --model_name inceptionv3
+python test.py --split_name clr_3 --model_name inceptionv3
+python train.py --split_name clr_4 --model_name inceptionv3
+python test.py --split_name clr_4 --model_name inceptionv3
+python train.py --split_name all --model_name inceptionv3
 
 python train.py --split_name clr_1 --model_name vgg16
 python test.py --split_name clr_1 --model_name vgg16

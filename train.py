@@ -60,8 +60,10 @@ if args.configs["smoothing"]> 0.:
     from timm.loss import LabelSmoothingCrossEntropy
     criterion = LabelSmoothingCrossEntropy(0.2)
 else:
-    
     criterion = CrossEntropyLoss()
+if args.model_name=='inceptionv3':
+    from util.losses import InceptionV3Loss
+    criterion=InceptionV3Loss(args.configs["smoothing"])
 val_loss_function = CrossEntropyLoss()
 # init metic
 print("There is {} batch size".format(args.configs["train"]['batch_size']))
@@ -97,10 +99,33 @@ for epoch in range(last_epoch,total_epoches):
         if early_stop_counter >= args.configs['train']['early_stop']:
             print("Early stopping triggered")
             break 
-        
 model.load_state_dict(
     torch.load(os.path.join(args.save_dir,save_model_name)))
 print(f"test batch size: {args.configs['train']['batch_size']}, test batch number: {len(test_loader)}, test data number: {len(test_dataset)}")
 _,test_acc,test_auc= val_epoch(model,test_loader,val_loss_function,device)
 
 print("test in patch format ",f"Acc:{test_acc:.4f}, Auc: {test_auc:.4f}")
+
+record_path = './experiments/record.json'
+# record_path = './experiments/shen_record.json'
+if os.path.exists(record_path):
+    with open(record_path, 'r') as f:
+        record = json.load(f)
+else:
+    record = {}
+
+model_name=args.configs['model']['name']
+parameter_key=f"{str(args.lr)}_{str(args.wd)}"
+if model_name not in record:
+    record[model_name]={}
+if parameter_key not in record[model_name]:
+    record[model_name][parameter_key]={'patch':{},'all':{}}
+# Correct the syntax for storing metrics in the dictionary
+record[model_name][parameter_key]['patch'][args.split_name] = {
+    "Accuracy": f"{test_acc:.4f}",
+    "AUC": f"{test_auc:.4f}",
+}
+
+# Write the updated record back to the file
+with open(record_path, 'w') as f:
+    json.dump(record, f, indent=4)
