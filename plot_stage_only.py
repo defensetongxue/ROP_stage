@@ -1,70 +1,69 @@
-import json
+import json,os
 import matplotlib.pyplot as plt
-import os
-
-def decode_key(key):
-    ridge_seg_number, sample_distance, sample_low_threshold, patch_size = key.split('_')
-    return {
-        'ridge_seg_number': int(ridge_seg_number),
-        'sample_distance': int(sample_distance),
-        'sample_low_threshold': int(sample_low_threshold) / 100,
-        'patch_size': int(patch_size)
+with open('./experiments/record.json') as f:
+    data_record=json.load(f)["efficientnet_b7"]
+# Assuming `data_record` is already loaded as described
+def reformat_data(data_record):
+    metrics = {
+        "patch_level_acc": ("patch", "Accuracy"),
+        "patch_level_auc": ("patch", "AUC"),
+        "auc": ("all", "AUC"),
+        "acc": ("all", "Accuracy"),
+        "1_recall": ("all", "1_recall"),
+        "2_recall": ("all", "2_recall"),
+        "3_recall": ("all", "3_recall")
     }
 
-def load_data(record_path):
-    with open(record_path, 'r') as f:
-        return json.load(f)
+    structured_data = {metric: {} for metric in metrics}
 
-def verify_splits(record, required_splits):
-    for key, data in record.items():
-        missing_splits = [split for split in required_splits if split not in data]
-        if missing_splits:
-            raise ValueError(f"Missing splits {missing_splits} for parameters {decode_key(key)}")
+    for key, values in data_record.items():
+        params = key.split('_')
+        param_dict = {"ridge_seg_number": params[0], "sample_distance": params[1], "patch_size": params[2]}
+        
+        for metric, (category, name) in metrics.items():
+            if category in values and name in values[category]["clr_1"]:
+                value = float(values[category]["clr_1"][name])
+                
+                for parameter_name in ["ridge_seg_number", "sample_distance", "patch_size"]:
+                    parameter_value = param_dict[parameter_name]
+                    if parameter_name not in structured_data[metric]:
+                        structured_data[metric][parameter_name] = {}
+                    structured_data[metric][parameter_name][parameter_value] = value
 
-def calculate_mean_results(record):
-    for key, data in record.items():
-        acc_values = [data[split]['acc'] for split in data]
-        auc_values = [data[split]['auc'] for split in data]
-        record[key]['result'] = {
-            'mean_acc': sum(acc_values) / len(acc_values),
-            'mean_auc': sum(auc_values) / len(auc_values)
-        }
+    for metric in structured_data:
+        for parameter in structured_data[metric]:
+            sorted_items = sorted(structured_data[metric][parameter].items(), key=lambda x: float(x[0]) if x[0].isdigit() else -1)
+            structured_data[metric][parameter] = dict(sorted_items)
 
-def plot_results(record, param_name):
-    os.makedirs(f"./experiments/{param_name}", exist_ok=True)
-    param_to_key = {decode_key(key)[param_name]: key for key in record}
-    x_values = sorted(param_to_key.keys())
-    acc_values = [record[param_to_key[x_val]]['result']['mean_acc'] for x_val in x_values]
-    auc_values = [record[param_to_key[x_val]]['result']['mean_auc'] for x_val in x_values]
+    return structured_data
+structured_data = reformat_data(data_record)
+with open('./experiments/save_result.json','w') as f:
+    json.dump(structured_data,f)
+def ensure_directory(directory):
+    if not os.path.exists(directory):
+        os.makedirs(directory)
 
-    # Plotting Accuracy
-    plt.figure()
-    plt.plot(x_values, acc_values, label='Accuracy')
-    plt.xlabel(param_name)
-    plt.ylabel('Accuracy')
-    plt.title(f'Accuracy vs {param_name}')
-    plt.xticks(x_values)  # Set the x-ticks to the x_values only
-    plt.savefig(f"./experiments/{param_name}/acc.png")
-    plt.close()
+def plot_and_save_metrics(structured_data, output_dir='./experiments/plot'):
+    ensure_directory(output_dir)
 
-    # Plotting AUC
-    plt.figure()
-    plt.plot(x_values, auc_values, label='AUC')
-    plt.xlabel(param_name)
-    plt.ylabel('AUC')
-    plt.title(f'AUC vs {param_name}')
-    plt.xticks(x_values)  # Set the x-ticks to the x_values only
-    plt.savefig(f"./experiments/{param_name}/auc.png")
-    plt.close()
+    for metric, data in structured_data.items():
+        for parameter_name, values in data.items():
+            plt.figure(figsize=(10, 6))  # Specify a figure size
+            # Sorting data to maintain sequence
+            sorted_data = sorted(values.items(), key=lambda item: float(item[0]))
+            x, y = zip(*sorted_data)  # Ensure data is in the correct sequence
 
+            plt.plot(x, y, marker='o', linestyle='-', color='b', label=f'{metric} ({parameter_name})')
+            plt.title(f'{metric} by {parameter_name}')
+            plt.xlabel(parameter_name)
+            plt.ylabel('Value')
+            plt.grid(True)
+            plt.legend(loc='best')  # Include a legend to identify the plotted lines
+            plt.xticks(rotation=45)  # Rotate x-axis labels for better visibility
 
-if __name__ == '__main__':
-    record_path = './experiments/record_stage.json'
-    record = load_data(record_path)
-    required_splits = ['1', '2', '3', '4']
-    verify_splits(record, required_splits)
-    calculate_mean_results(record)
-
-    # for param in ['ridge_seg_number', 'sample_distance', 'sample_low_threshold', 'patch_size']:
-    for param in ['patch_size']:
-        plot_results(record, param)
+            filename = f"{parameter_name}_{metric}.png"
+            file_path = os.path.join(output_dir, filename)
+            plt.savefig(file_path, bbox_inches='tight')  # Save the plot with tight bounding box to include all labels
+            plt.close()
+            print(f"Saved plot to {file_path}")
+plot_and_save_metrics(structured_data)

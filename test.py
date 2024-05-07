@@ -211,7 +211,7 @@ else:
     record = {}
 
 model_name=args.configs['model']['name']
-parameter_key=f"{str(args.lr)}_{str(args.wd)}"
+parameter_key=f"{str(args.ridge_seg_number)}_{str(args.sample_distance)}_{str(args.patch_size)}"
 if model_name not in record:
     record[model_name]={}
 if parameter_key not in record[model_name]:
