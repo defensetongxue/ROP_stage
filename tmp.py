@@ -23,9 +23,14 @@ with open("todo.sh", "w") as f:
                     # Check if the model is inceptionv3 to add the resize parameter
                     if model == "inceptionv3":
                         command = f"python train.py --split_name {split_name} --model_name {model} --resize 299 --wd {wd} --lr {lr}\n"
+                        f.write(command)
+                        command = f"python test.py --split_name {split_name} --model_name {model} --resize 299 --wd {wd} --lr {lr}\n"
+                        f.write(command)
                     else:
-                        command = f"python train_sz.py --split_name {split_name} --model_name {model} --wd {wd} --lr {lr}\n"
+                        command = f"python train.py --split_name {split_name} --model_name {model} --wd {wd} --lr {lr}\n"
+                        f.write(command)
+                        command = f"python test.py --split_name {split_name} --model_name {model} --wd {wd} --lr {lr}\n"
                     # Write each command to the file
-                    f.write(command)
+                        f.write(command)
 
 print("Shell script generated successfully.")

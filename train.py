@@ -108,26 +108,25 @@ _,test_acc,test_auc= val_epoch(model,test_loader,val_loss_function,device)
 
 print("test in patch format ",f"Acc:{test_acc:.4f}, Auc: {test_auc:.4f}")
 
-record_path = './experiments/record.json'
-# record_path = './experiments/shen_record.json'
+record_path = './experiments/patch_level.json'
 if os.path.exists(record_path):
     with open(record_path, 'r') as f:
         record = json.load(f)
 else:
-    record = {}
+    record = []
 
-model_name=args.configs['model']['name']
-parameter_key=f"{str(args.ridge_seg_number)}_{str(args.sample_distance)}_{str(args.patch_size)}"
-if model_name not in record:
-    record[model_name]={}
-if parameter_key not in record[model_name]:
-    record[model_name][parameter_key]={'patch':{},'all':{}}
-# Correct the syntax for storing metrics in the dictionary
-record[model_name][parameter_key]['patch'][args.split_name] = {
-    "Accuracy": f"{test_acc:.4f}",
-    "AUC": f"{test_auc:.4f}",
-}
-
+record.append({
+    "parameter":{
+        "model_name":args.model_name,
+        "lr":args.lr,
+        "wd":args.wd,
+        "split_name":args.split_name
+    },
+    "results":{
+               "acc":test_acc,
+               "auc":auc
+               }
+})
 # Write the updated record back to the file
 with open(record_path, 'w') as f:
     json.dump(record, f, indent=4)

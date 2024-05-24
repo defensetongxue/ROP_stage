@@ -44,20 +44,7 @@ probs_list = []
 with open(os.path.join(args.data_path, 'annotations.json'), 'r') as f:
     data_dict = json.load(f)
 with open(os.path.join(args.data_path, 'split', f"{args.split_name}.json"), 'r') as f:
-    split_all_list = json.load(f)['test']
-split_list = []
-for image_name in split_all_list:
-    # if data_dict[image_name]['stage']>0:
-    #     split_list.append(image_name)
-    split_list.append(image_name)
-os.makedirs("./experiments/mistake/", exist_ok=True)
-os.system(f"rm -rf ./experiments/mistake/*")
-for i in ["0", "1", "2", "3"]:
-    os.makedirs("./experiments/mistake/"+i, exist_ok=True)
-os.makedirs("./experiments/right/", exist_ok=True)
-os.system(f"rm -rf ./experiments/right/*")
-for i in ["0", "1", "2", "3"]:
-    os.makedirs("./experiments/right/"+i, exist_ok=True)
+    split_list = json.load(f)['test']
 img_norm = transforms.Compose([
     transforms.Resize((args.resize, args.resize)),
     transforms.ToTensor(),
@@ -66,18 +53,6 @@ img_norm = transforms.Compose([
 probs_list = []
 labels_list = []
 pred_list = []
-
-model_prediction_path = './model_prediction.json'
-if os.path.exists(model_prediction_path):
-    with open(model_prediction_path, 'r') as f:
-        model_prediction = json.load(f)
-else:
-    model_prediction = {}
-visual_mistake =True
-visual_patch_size = 200
-save_visual_global = False
-global_path = os.path.join(args.data_path, 'visual_stage')
-os.makedirs(global_path, exist_ok=True)
 with torch.no_grad():
     for image_name in split_list:
         data = data_dict[image_name]
@@ -125,7 +100,6 @@ with torch.no_grad():
         probs_list.extend(bc_prob)
         labels_list.append(label)
         pred_list.append(bc_pred)
-        model_prediction[image_name] = bc_pred
 probs_list = np.vstack(probs_list)
 pred_labels = np.array(pred_list)
 labels_list = np.array(labels_list)
@@ -158,14 +132,22 @@ if os.path.exists(record_path):
     with open(record_path, 'r') as file:
         record = json.load(file)
 else:
-    record = {}
+    record =[]
 
 # 将新的结果添加到记录中
 split_name = args.split_name  # 你可以根据实际情况设置split_name
-record[split_name] = results
+record.append({
+    "parameter":{
+        "model_name":args.model_name,
+        "lr":args.lr,
+        "wd":args.wd,
+        "split_name":args.split_name
+    },
+    "results":results
+})
 
 # 保存记录到JSON文件
 with open(record_path, 'w') as file:
     json.dump(record, file, indent=4)
 
-print(f"Metrics for {split_name} have been saved to {record_path}")
+# print(f"Metrics for {split_name} have been saved to {record_path}")
