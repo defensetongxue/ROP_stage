@@ -6,7 +6,7 @@ import json
 import numpy as np
 from configs import get_config
 from models import build_model
-from sklearn.metrics import accuracy_score, roc_auc_score, recall_score
+from sklearn.metrics import accuracy_score, roc_auc_score, recall_score,f1_score
 from util.tools import visual_sentences, crop_patches
 from torchvision import transforms
 from util.dataset import IMAGENET_DEFAULT_MEAN, IMAGENET_DEFAULT_STD
@@ -122,54 +122,6 @@ with torch.no_grad():
             bc_prob = np.insert(bc_prob, 0, 0, axis=1)
 
             bc_pred += 1
-            # visual the mismatch version
-            # if save_visual_global or visual_mistake :
-            if False :
-                # Get top k firmest predictions for bc_pred class
-                # Assuming args.k is defined and valid
-                top_k = min(args.k, matching_indices.shape[0])
-                # Extract probabilities for bc_pred class
-                class_probs = probs[:, bc_pred-1]
-                top_k_values, top_k_indices = torch.topk(class_probs, k=top_k)
-                visual_point = []
-                visual_confidence = []
-                for val, idx in zip(top_k_values, top_k_indices):
-                    x, y = data['ridge_seg']['point_list'][idx]
-                    visual_point.append([int(x), int(y)])
-                    visual_confidence.append(round(float(val), 2))
-
-                if visual_mistake:
-                    if label != bc_pred:
-                        save_path = os.path.join(
-                            './experiments/mistake/', str(bc_pred), image_name)
-                    else:
-                        continue  # mistake only
-                        save_path = os.path.join(
-                            './experiments/right/', str(label), image_name)
-
-                    visual_sentences(
-                        data_dict[image_name]['image_path'],
-                        points=visual_point,
-                        patch_size=visual_patch_size,
-                        text=f"label: {label}",
-                        confidences=visual_confidence,
-                        label=bc_pred,
-                        save_path=save_path,
-                        sample_visual=sample_visual
-                    )
-                if save_visual_global:
-                    save_global_path = os.path.join(global_path, image_name)
-                    visual_sentences(
-                        data_dict[image_name]['image_path'],
-                        points=visual_point,
-                        patch_size=visual_patch_size,
-                        # text=f"label: {label}",
-                        confidences=visual_confidence,
-                        label=bc_pred,
-                        save_path=save_global_path,
-                        sample_visual=sample_visual
-                    )
-                    data_dict[image_name]['visual_stage_path'] = save_global_path
         probs_list.extend(bc_prob)
         labels_list.append(label)
         pred_list.append(bc_pred)
@@ -178,54 +130,42 @@ probs_list = np.vstack(probs_list)
 pred_labels = np.array(pred_list)
 labels_list = np.array(labels_list)
 
-accuracy = accuracy_score(labels_list, pred_list)
-auc = roc_auc_score(labels_list, probs_list, multi_class='ovo')
-print(f"acc: {accuracy:.4f}, auc: {auc:.4f}")
 
-# Assuming probs_list has shape (num_samples, num_classes) and pred_labels, labels_list are 1D arrays
-num_classes = probs_list.shape[1]
-recall_per_class = np.zeros(num_classes)
+# Calculate metrics for classes 1, 2, and 3
+results = {'recall': {}, 'auc': {}, 'f1': {}, 'accuracy': {}}
+for class_idx, class_name in zip([1, 2, 3], ["Class 1", "Class 2", "Class 3"]):
+    y_true = (labels_list == class_idx).astype(int)
+    y_pred = (pred_labels == class_idx).astype(int)
 
-# Calculate recall for each class
-for i in range(num_classes):
-    true_class = labels_list == i
-    predicted_class = pred_labels == i
-    recall_per_class[i] = recall_score(true_class, predicted_class)
+    # Recall
+    recall = recall_score(y_true, y_pred)
+    results['recall'][class_name] = recall
 
-# Calculate recall for positive classes (classes > 0)
-true_positive = labels_list > 0
-predicted_positive = pred_labels > 0
-recall_positive = recall_score(true_positive, predicted_positive)
+    # AUC
+    auc_score = roc_auc_score(y_true, probs_list[:, class_idx])
+    results['auc'][class_name] = auc_score
 
-# Print recall for each class and positive recall
-for i, recall in enumerate(recall_per_class):
-    print(f"Recall for class {i}: {recall:.4f}")
-print(f"Recall for positive classes: {recall_positive:.4f}")
+    # F1 Score
+    f1 = f1_score(y_true, y_pred)
+    results['f1'][class_name] = f1
 
-record_path = './experiments/record.json'
-# record_path = './experiments/shen_record.json'
+    # Accuracy
+    accuracy = accuracy_score(y_true, y_pred)
+    results['accuracy'][class_name] = accuracy
+# 检查记录文件是否存在
+record_path = './final.json'
 if os.path.exists(record_path):
-    with open(record_path, 'r') as f:
-        record = json.load(f)
+    with open(record_path, 'r') as file:
+        record = json.load(file)
 else:
     record = {}
 
-model_name=args.configs['model']['name']
-parameter_key=f"{str(args.ridge_seg_number)}_{str(args.sample_distance)}_{str(args.patch_size)}"
-if model_name not in record:
-    record[model_name]={}
-if parameter_key not in record[model_name]:
-    record[model_name][parameter_key]={'patch':{},'all':{}}
-record[model_name][parameter_key]['all'][args.split_name] = {
-    "Accuracy": f"{accuracy:.4f}",
-    "AUC": f"{auc:.4f}",
-    "recall_pos": f"{recall_positive:.4f}",  
-    "0_recall": f"{recall_per_class[0]:.4f}", 
-    "1_recall": f"{recall_per_class[1]:.4f}",
-    "2_recall": f"{recall_per_class[2]:.4f}",
-    "3_recall": f"{recall_per_class[3]:.4f}",
-    # Add more metrics as needed following the pattern
-}
-# Write the updated record back to the file
-with open(record_path, 'w') as f:
-    json.dump(record, f, indent=4)
+# 将新的结果添加到记录中
+split_name = 'your_split_name'  # 你可以根据实际情况设置split_name
+record[split_name] = results
+
+# 保存记录到JSON文件
+with open(record_path, 'w') as file:
+    json.dump(record, file, indent=4)
+
+print(f"Metrics for {split_name} have been saved to {record_path}")

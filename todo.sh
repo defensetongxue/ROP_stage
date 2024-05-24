@@ -1,4 +1,4 @@
 #!/bin/bash
-python tmp.py 
-python ring.py
-shutdown
+python test.py --split_name clr_2
+python test.py --split_name clr_3
+python test.py --split_name clr_4
