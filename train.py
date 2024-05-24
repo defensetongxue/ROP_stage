@@ -65,6 +65,8 @@ if args.model_name=='inceptionv3':
     from util.losses import InceptionV3Loss
     criterion=InceptionV3Loss(args.configs["smoothing"])
 val_loss_function = CrossEntropyLoss()
+
+
 # init metic
 print("There is {} batch size".format(args.configs["train"]['batch_size']))
 print(f"Train batch size numeber: {len(train_loader)}, data number:{len(train_dataset)}")
