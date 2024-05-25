@@ -192,3 +192,4 @@ python train.py --split_name clr_3 --model_name efficientnet_b7 --wd 0.001 --lr 
 python test.py --split_name clr_3 --model_name efficientnet_b7 --wd 0.001 --lr 0.0001
 python train.py --split_name clr_4 --model_name efficientnet_b7 --wd 0.001 --lr 0.0001
 python test.py --split_name clr_4 --model_name efficientnet_b7 --wd 0.001 --lr 0.0001
+python ring.py
