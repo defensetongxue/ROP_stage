@@ -92,6 +92,77 @@ def sample_patch(ridge_diffusion_path, sample_dense, max_sample_number):
 
         # Add the point to the sample list
         sample_list.append([int(x), int(y)])  # format: width_coord, height_coord
+    # build ridge_diffusion_map
+    if ridge_diffusion_path is not None:
+        ridge_mask=Image.open(ridge_diffusion_path).resize((800,600))
+        ridge_mask=np.array(ridge_mask)
+        ridge_mask[ridge_mask>0]=1
+    else:
+        ridge_mask=None
+    # build abnormal_mask
+    if abnormal_cooridinate is not None:
+        abnormal_mask=np.zeros((600,800), dtype=np.uint8)
+        for y,x in abnormal_cooridinate:
+            abnormal_mask[int(x/2),int(y/2)]=1
+    else:
+        abnormal_mask=None
+    stage_list=[]
+    cnt=0
+    # Prepare patches
+    for( y, x),val in zip(point_list[:word_number],value_list[:word_number]):  # Use only first 'word_number' points
+        # Scale points according to resized image
+        if val < lower_bound:
+            # create a zero image in jpg format and save in 
+            patch = Image.new('RGB', (patch_size, patch_size), (0, 0, 0))
+            patch.save(os.path.join(save_path,f"{str(cnt)}.jpg"))
+            cnt+=1
+            stage_list.append(0)
+            continue
+        left = x - patch_size // 2
+        upper = y - patch_size // 2
+        right = x + patch_size // 2
+        lower = y + patch_size // 2
+
+        # Pad if necessary
+        padding = [max(0, -left), max(0, -upper), max(0, right - 800), max(0, lower - 600)]
+        left=max(0, left)
+        upper=max(0,upper)
+        right=min(800, right)
+        lower= min(600, lower)
+        # Crop the patch
+        patch = img.crop((left, upper, right, lower))
+        patch = ImageOps.expand(patch, tuple(padding), fill=255) 
+        # Create a black image for the background
+        res = Image.new('RGB', (patch_size, patch_size), (0, 0, 0))
+
+        # Create a circular mask for the inscribed circle
+        mask = Image.new('L', (patch_size, patch_size), 0)
+        draw = ImageDraw.Draw(mask)
+        radius = patch_size // 2
+        center = (radius, radius)
+        draw.ellipse((center[0] - radius, center[1] - radius, center[0] + radius, center[1] + radius), fill=255)
+        res.paste(patch, (0, 0), mask=mask)
+        res.save(os.path.join(save_path, f"{cnt}.jpg"))
+        cnt += 1
+        if ridge_mask is None or \
+            not judge(ridge_mask,left,upper,right,lower,1):
+            stage_list.append(0) # ridge in this patch
+            continue
+        if stage==3:
+            assert abnormal_mask is not None
+            if judge(abnormal_mask,left,upper,right,lower,1):
+                stage_list.append(3)
+            else:
+                stage_list.append(2)
+            continue
+        stage_list.append(stage)
+    return stage_list
+def visual_sentence(image_path, x, y, patch_size, label=1, confidence=0.0, text=None, save_path=None, font_size=20):
+    # Open the image and resize
+    img = Image.open(image_path).resize((800, 600))
+
+    # Set the box color based on the label
+    box_color = 'green' if label == 1 else 'yellow' if label == 2 else 'red'
 
         # Clear the square region around the point
         xmin, xmax = max(0, x - sample_dense), min(ridge_mask.shape[1], x + sample_dense + 1)
