@@ -1,11 +1,4 @@
-python -u train.py --lr 5e-4 --wd 5e-4
-# python -u train.py --lr 1e-4 --wd 5e-4
-python -u train.py --lr 1e-3 --wd 5e-4
-
-python -u train.py --lr 5e-4 --wd 5e-3
-# python -u train.py --lr 1e-4 --wd 5e-3
-# python -u train.py --lr 1e-3 --wd 5e-3
-
-python -u train.py --lr 5e-4 --wd 5e-2
-# python -u train.py --lr 1e-4 --wd 5e-2
-# python -u train.py --lr 1e-3 --wd 5e-2
+#!/bin/bash
+python test.py --split_name clr_2
+python test.py --split_name clr_3
+python test.py --split_name clr_4

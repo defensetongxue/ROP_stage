@@ -7,6 +7,7 @@ from torch.nn import CrossEntropyLoss
 import numpy as np
 from util.functions import train_epoch,val_epoch,get_optimizer,lr_sche
 from configs import get_config
+from PIL import Image
 # Initialize the folder
 os.makedirs("checkpoints",exist_ok=True)
 os.makedirs("experiments",exist_ok=True)
@@ -42,18 +43,14 @@ last_epoch = args.configs['train']['begin_epoch']
 
 # Load the datasets
 train_dataset=CustomDataset(
-    split='train',data_path=args.data_path,split_name=args.split_name,img_resize=args.resize)
-val_dataset=CustomDataset(split='val',data_path=args.data_path,split_name=args.split_name,img_resize=args.resize)
-test_dataset=CustomDataset(split='test',data_path=args.data_path,split_name=args.split_name,img_resize=args.resize)
+    split='train',data_path=args.data_path,split_name='all',img_resize=args.resize)
+val_dataset=CustomDataset(split='val',data_path=args.data_path,split_name='all',img_resize=args.resize)
 # Create the data loaders
     
 train_loader = DataLoader(train_dataset, 
                           batch_size=args.configs['train']['batch_size'],
                           shuffle=True, num_workers=args.configs['num_works'],drop_last=True)
 val_loader = DataLoader(val_dataset,
-                        batch_size=args.configs['train']['batch_size'],
-                        shuffle=False, num_workers=args.configs['num_works'])
-test_loader=  DataLoader(test_dataset,
                         batch_size=args.configs['train']['batch_size'],
                         shuffle=False, num_workers=args.configs['num_works'])
 if args.configs["smoothing"]> 0.:
@@ -101,31 +98,50 @@ for epoch in range(last_epoch,total_epoches):
             break 
 model.load_state_dict(
     torch.load(os.path.join(args.save_dir,save_model_name)))
-print(f"test batch size: {args.configs['train']['batch_size']}, test batch number: {len(test_loader)}, test data number: {len(test_dataset)}")
-_,test_acc,test_auc= val_epoch(model,test_loader,val_loss_function,device)
-
-print("test in patch format ",f"Acc:{test_acc:.4f}, Auc: {test_auc:.4f}")
-
-record_path = './experiments/record.json'
-# record_path = './experiments/shen_record.json'
+shen_path='../autodl-tmp/ROP_shen'
+with open(os.path.join(shen_path,'split','clr.json'),'r') as f:
+    split_list=json.load(f)['test']
+pred_dict={k:0 for k in split_list}
+with open(os.path.join(shen_path,'annotations.json'))as f:
+    data_dict=json.load(f)
+from util.dataset import TestPatchDataset
+test_dataset=TestPatchDataset(os.path.join(shen_path,'stage_crop','annotations.json'))
+test_loader=DataLoader(test_dataset,batch_size=args.configs['train']['batch_size'],
+                          shuffle=True, num_workers=args.configs['num_works'],drop_last=True)
+with torch.no_grad():
+    for img,images_names in test_loader:
+      
+        outputs = model(img.to(device))
+        probs = torch.softmax(outputs.cpu(), axis=1)
+        # output shape is bc,num_class
+        # get pred for each patch
+        pred_labels = torch.argmax(probs, dim=1)
+        
+        for pred_label,image_name in zip(pred_labels,images_names):
+            pred_dict[image_name]=max(pred_dict[image_name],int(pred_label)+1)
+pred_list=[]
+label_list=[]
+for image_name in split_list:
+    pred_list.append(pred_dict[image_name])
+    label_list.append(data_dict[image_name]['stage'])
+from sklearn.metrics import accuracy_score, roc_auc_score, recall_score
+accuracy = accuracy_score(label_list, pred_list)
+print(accuracy)
+record_path = './experiments/shen_record.json'
 if os.path.exists(record_path):
     with open(record_path, 'r') as f:
         record = json.load(f)
 else:
     record = {}
-
 model_name=args.configs['model']['name']
-parameter_key=f"{str(args.ridge_seg_number)}_{str(args.sample_distance)}_{str(args.patch_size)}"
+
 if model_name not in record:
     record[model_name]={}
-if parameter_key not in record[model_name]:
-    record[model_name][parameter_key]={'patch':{},'all':{}}
+parameter_key=f"{str(args.lr)}_{str(args.wd)}"
 # Correct the syntax for storing metrics in the dictionary
-record[model_name][parameter_key]['patch'][args.split_name] = {
-    "Accuracy": f"{test_acc:.4f}",
-    "AUC": f"{test_auc:.4f}",
+record[model_name][parameter_key] = {
+    "Accuracy": f"{accuracy:.4f}"
 }
-
 # Write the updated record back to the file
 with open(record_path, 'w') as f:
     json.dump(record, f, indent=4)

@@ -6,7 +6,7 @@ import json
 import numpy as np
 from configs import get_config
 from models import build_model
-from sklearn.metrics import accuracy_score, roc_auc_score, recall_score,f1_score
+from sklearn.metrics import accuracy_score, roc_auc_score, recall_score
 from util.tools import visual_sentences, crop_patches
 from torchvision import transforms
 from util.dataset import IMAGENET_DEFAULT_MEAN, IMAGENET_DEFAULT_STD
@@ -17,9 +17,6 @@ torch.manual_seed(0)
 np.random.seed(0)
 # Parse arguments
 args = get_config()
-args.configs['train']['wd']=args.wd
-args.configs["lr_strategy"]['lr']=args.lr
-args.configs['model']['name']=args.model_name
 
 os.makedirs(args.save_dir, exist_ok=True)
 print("Saveing the model in {}".format(args.save_dir))
@@ -43,21 +40,11 @@ all_targets = []
 probs_list = []
 with open(os.path.join(args.data_path, 'annotations.json'), 'r') as f:
     data_dict = json.load(f)
-with open(os.path.join(args.data_path, 'split', f"{args.split_name}.json"), 'r') as f:
+with open(os.path.join(args.data_path, 'split', f"clr_{args.split_name}.json"), 'r') as f:
     split_all_list = json.load(f)['test']
 split_list = []
 for image_name in split_all_list:
-    # if data_dict[image_name]['stage']>0:
-    #     split_list.append(image_name)
     split_list.append(image_name)
-os.makedirs("./experiments/mistake/", exist_ok=True)
-os.system(f"rm -rf ./experiments/mistake/*")
-for i in ["0", "1", "2", "3"]:
-    os.makedirs("./experiments/mistake/"+i, exist_ok=True)
-os.makedirs("./experiments/right/", exist_ok=True)
-os.system(f"rm -rf ./experiments/right/*")
-for i in ["0", "1", "2", "3"]:
-    os.makedirs("./experiments/right/"+i, exist_ok=True)
 img_norm = transforms.Compose([
     transforms.Resize((args.resize, args.resize)),
     transforms.ToTensor(),
@@ -73,9 +60,9 @@ if os.path.exists(model_prediction_path):
         model_prediction = json.load(f)
 else:
     model_prediction = {}
-visual_mistake =True
+visual_mistake = False
 visual_patch_size = 200
-save_visual_global = False
+save_visual_global = True
 global_path = os.path.join(args.data_path, 'visual_stage')
 os.makedirs(global_path, exist_ok=True)
 with torch.no_grad():
@@ -122,6 +109,7 @@ with torch.no_grad():
             bc_prob = np.insert(bc_prob, 0, 0, axis=1)
 
             bc_pred += 1
+        model_prediction[image_name]=bc_pred
         probs_list.extend(bc_prob)
         labels_list.append(label)
         pred_list.append(bc_pred)
@@ -130,42 +118,5 @@ probs_list = np.vstack(probs_list)
 pred_labels = np.array(pred_list)
 labels_list = np.array(labels_list)
 
-
-# Calculate metrics for classes 1, 2, and 3
-results = {'recall': {}, 'auc': {}, 'f1': {}, 'accuracy': {}}
-for class_idx, class_name in zip([1, 2, 3], ["Class 1", "Class 2", "Class 3"]):
-    y_true = (labels_list == class_idx).astype(int)
-    y_pred = (pred_labels == class_idx).astype(int)
-
-    # Recall
-    recall = recall_score(y_true, y_pred)
-    results['recall'][class_name] = recall
-
-    # AUC
-    auc_score = roc_auc_score(y_true, probs_list[:, class_idx])
-    results['auc'][class_name] = auc_score
-
-    # F1 Score
-    f1 = f1_score(y_true, y_pred)
-    results['f1'][class_name] = f1
-
-    # Accuracy
-    accuracy = accuracy_score(y_true, y_pred)
-    results['accuracy'][class_name] = accuracy
-# 检查记录文件是否存在
-record_path = './final.json'
-if os.path.exists(record_path):
-    with open(record_path, 'r') as file:
-        record = json.load(file)
-else:
-    record = {}
-
-# 将新的结果添加到记录中
-split_name = 'your_split_name'  # 你可以根据实际情况设置split_name
-record[split_name] = results
-
-# 保存记录到JSON文件
-with open(record_path, 'w') as file:
-    json.dump(record, file, indent=4)
-
-print(f"Metrics for {split_name} have been saved to {record_path}")
+with open(model_prediction_path, 'w') as f:
+    json.dump(model_prediction,f)
