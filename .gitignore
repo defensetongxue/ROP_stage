@@ -5,3 +5,6 @@ experiments
 ring.py
 tmp.py
 final.json
+*.json
+*.txt
+tmp.py
