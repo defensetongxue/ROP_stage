@@ -102,14 +102,15 @@ def sample_patch(ridge_diffusion_path, sample_dense, max_sample_number):
     return sample_list
 
 
-def visual_sentences(image_path, points, patch_size, label=None, confidences=None, text=None, save_path=None, font_size=60,sample_visual=[]):
+def visual_sentences(image_path, points, patch_size, labels=None, confidences=None, text=None, save_path=None, font_size=60,sample_visual=[],box_text=None):
     # Open the image
     img = Image.open(image_path)
     draw = ImageDraw.Draw(img)
     
-    box_color = 'green' if label == 1 else 'yellow' if label == 2 else 'red'
     # Iterate over each point
+    print(points)
     for i, (x, y) in enumerate(points):
+        box_color = 'green' if labels[i] == 1 else 'yellow' if labels[i] == 2 else 'red'
 
         # Set the box color based on the label
 
@@ -124,7 +125,10 @@ def visual_sentences(image_path, points, patch_size, label=None, confidences=Non
         draw.rectangle([top_left_x, top_left_y, bottom_right_x, bottom_right_y], outline=box_color, width=3)
 
         # Draw the confidence value near the top left of the box
-        confidence_text = f"{confidences[i]:.2f}"  # Format confidence to 2 decimal places
+        if box_text is not None:
+            confidence_text = box_text[i]
+        else:
+            confidence_text = f"{confidences[i]:.2f}"  # Format confidence to 2 decimal places
         draw.text((top_left_x, top_left_y - font_size - 2), confidence_text, fill=box_color, font=ImageFont.truetype("./arial.ttf", font_size))
 
     # Draw additional text if provided
