@@ -136,3 +136,25 @@ class Fix_RandomRotation(object):
             format_string += ', center={0}'.format(self.center)
         format_string += ')'
         return format_string
+    
+class TestPatchDataset(Dataset):
+    def __init__(self, record_path,img_resize=256):
+        with open(record_path, 'r') as f:
+            self.ori_split_list=json.load(f)
+      
+        
+        self.img_norm=transforms.Compose([
+            transforms.Resize((img_resize,img_resize)),
+            transforms.ToTensor(),
+            transforms.Normalize(
+                mean=IMAGENET_DEFAULT_MEAN,std=IMAGENET_DEFAULT_STD)])
+    def __getitem__(self, idx):
+        patch_record = self.ori_split_list[idx]
+        img=Image.open(patch_record['patch_path']).convert("RGB")
+        img=self.img_norm(img)
+        
+        return img,patch_record['image_name']
+
+
+    def __len__(self):
+        return len(self.ori_split_list)

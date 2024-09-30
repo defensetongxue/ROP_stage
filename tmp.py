@@ -1,48 +1,36 @@
-from PIL import Image, ImageDraw, ImageFont
-import os
-import json
+# Define the parameters for the training script
+models = [
+    "inceptionv3",
+    "vgg16",
+    "resnet18",
+    "resnet50",
+    "mobelnetv3_small",
+    "efficientnet_b7"
+]
+weight_decays = [1e-4, 1e-3]
+learning_rates = [1e-3, 1e-4]
 
-# Load the necessary data
-with open('./confuse_list.json') as f:
-    confuse_list = json.load(f)
+# Open a file to save the commands
+with open("todo.sh", "w") as f:
+    f.write("#!/bin/bash\n\n")
 
-# Specify font
-font_path = './arial.ttf'
-font = ImageFont.truetype(font_path, 70)
+    # Iterate over each model
+    for model in models:
+        # Iterate over each combination of weight decay and learning rate
+        for wd in weight_decays:
+            for lr in learning_rates:
+                for split_name in ['clr_1','clr_2','clr_3','clr_4']:
+                    # Check if the model is inceptionv3 to add the resize parameter
+                    if model == "inceptionv3":
+                        command = f"python train.py --split_name {split_name} --model_name {model} --resize 299 --wd {wd} --lr {lr}\n"
+                        f.write(command)
+                        command = f"python test.py --split_name {split_name} --model_name {model} --resize 299 --wd {wd} --lr {lr}\n"
+                        f.write(command)
+                    else:
+                        command = f"python train.py --split_name {split_name} --model_name {model} --wd {wd} --lr {lr}\n"
+                        f.write(command)
+                        command = f"python test.py --split_name {split_name} --model_name {model} --wd {wd} --lr {lr}\n"
+                    # Write each command to the file
+                        f.write(command)
 
-# Ensure the output directory exists
-output_dir = './experiments/release_check'
-os.makedirs(output_dir, exist_ok=True)
-for stage_list in ['0','1','2','3']:
-    os.makedirs(output_dir+'/'+stage_list, exist_ok=True)
-# Process each image
-for image_name, details in confuse_list.items():
-    image_path = details["image_path"]
-    try:
-        # Open the image
-        image = Image.open(image_path)
-        draw = ImageDraw.Draw(image)
-
-        # Get image dimensions
-        width, height = image.size
-
-        # Define text positions
-        positions = [(0, 0), (width, 0), (0, height), (width, height)]
-        keys = ["annote", "xsj", "zy", "model_prediction"]
-
-        # Draw text in four corners
-        for pos, key in zip(positions, keys):
-            text = f"{key}: {str(confuse_list[image_name][key])}"
-            # Calculate text size using textbbox
-            bbox = draw.textbbox((0, 0), text, font=font)
-            text_width = bbox[2] - bbox[0]
-            text_height = bbox[3] - bbox[1]
-            # Adjust text position to not overlap the image borders
-            adjusted_pos = (max(pos[0] - text_width, 0), max(pos[1] - text_height, 0))
-            draw.text(adjusted_pos, text, font=font, fill="white")
-
-        # Save the image
-        save_path = os.path.join(output_dir,str(confuse_list[image_name]["annote"] ),image_name)
-        image.save(save_path)
-    except Exception as e:
-        print(f"Error processing {image_name}: {e}")
+print("Shell script generated successfully.")
