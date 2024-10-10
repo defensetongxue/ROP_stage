@@ -129,7 +129,17 @@ def visual_sentences(image_path, points, patch_size, labels=None, confidences=No
             confidence_text = box_text[i]
         else:
             confidence_text = f"{confidences[i]:.2f}"  # Format confidence to 2 decimal places
-        draw.text((top_left_x, top_left_y - font_size - 2), confidence_text, fill=box_color, font=ImageFont.truetype("./arial.ttf", font_size))
+            
+        # Check if the box is too close to the top of the image
+        if top_left_y - font_size - 2 < 0:
+            # Show the text below the box if too close to the top
+            text_position = (top_left_x, bottom_right_y + 2)
+        else:
+            # Otherwise, show the text above the box
+            text_position = (top_left_x, top_left_y - font_size - 2)
+
+        # Draw the confidence value near the box
+        draw.text(text_position, confidence_text, fill=box_color, font=ImageFont.truetype("./arial.ttf", font_size))
 
     # Draw additional text if provided
     if text is not None:
@@ -175,3 +185,26 @@ def k_max_values_and_indices(scores, k,r=100,threshold=0.0):
     maxvals_list=np.array(maxvals_list,dtype=np.float16)
     preds_list=np.array(preds_list,dtype=np.float16)
     return maxvals_list, preds_list
+
+def visual_error(image_path,sample_list,x_min,x_max,y_min,y_max,save_path=None):
+    # Open the image
+    img = Image.open(image_path)
+    # 在sample_list的位置，每个坐标画一个*
+    draw = ImageDraw.Draw(img)
+    for x, y,_ in sample_list:
+        # Define the position for the star
+        star_position = (x, y)
+
+        # Define the star symbol and its color
+        star_symbol = "*"
+        star_color = "blue"  # You can choose any color you like
+
+        # Draw the star on the image
+        draw.text(star_position, star_symbol, fill=star_color, font=ImageFont.truetype("./arial.ttf", 60))
+    # Draw the box
+    draw.rectangle([x_min, y_min, x_max, y_max], outline='red', width=3)
+    # Save or show the image
+    if save_path:
+        img.save(save_path)
+    else:
+        img.show()

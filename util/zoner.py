@@ -6,7 +6,7 @@ class ZoneProcesser():
     def __init__(self,image_size=(1600,1200),
                  camrea_weight=1570,
                  camera_angle=math.pi/2,
-                 sample_dense=10,
+                 sample_dense=5,
                  threshold=0.5):
         self.weight,self.height=image_size
         self.camera_angle=camera_angle

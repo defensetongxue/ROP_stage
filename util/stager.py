@@ -36,13 +36,13 @@ class Stager:
                 sample_visual = []
                 for (x, y), val in zip(data['ridge_seg']['point_list'], data['ridge_seg']["value_list"]):
                 
+                    if val < self.sample_low_threshold:
+                        break
                     sample_visual.append([x, y])
                     _, patch = crop_patches(img, self.patch_size, x, y,
                                             abnormal_mask=None, stage=0, save_dir=None)
                     patch = self.img_norm(patch)
                     inputs.append(patch.unsqueeze(0))
-                    if val < self.sample_low_threshold:
-                        break
                 if len(inputs) <= 0:
                     print(f"{image_name} do not have enougph data, value list is ",
                           data['ridge_seg']["value_list"])
